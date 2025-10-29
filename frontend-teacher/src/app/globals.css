@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --godding-primary: #3BB5C1;
+  --godding-primary-dark: #2A9BA6;
+  --godding-primary-light: #4FC7D3;
+  --godding-secondary: #F8F9FA;
+  --godding-accent: #FF6B6B;
+  --godding-bg-primary: #F0F9FF;
+  --godding-bg-secondary: #E0F2FE;
+  --godding-bg-gradient: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+  --godding-text-primary: #1E293B;
+  --godding-text-secondary: #475569;
+  --godding-card-bg: rgba(255, 255, 255, 0.8);
+  --godding-card-border: rgba(59, 181, 193, 0.2);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-godding-primary: var(--godding-primary);
+  --color-godding-primary-dark: var(--godding-primary-dark);
+  --color-godding-primary-light: var(--godding-primary-light);
+  --color-godding-secondary: var(--godding-secondary);
+  --color-godding-accent: var(--godding-accent);
+  --color-godding-bg-primary: var(--godding-bg-primary);
+  --color-godding-bg-secondary: var(--godding-bg-secondary);
+  --color-godding-text-primary: var(--godding-text-primary);
+  --color-godding-text-secondary: var(--godding-text-secondary);
+  --color-godding-card-bg: var(--godding-card-bg);
+  --color-godding-card-border: var(--godding-card-border);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
