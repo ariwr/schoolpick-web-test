@@ -1,0 +1,21 @@
+{
+  "name": "@schoolpick/shared-utils",
+  "version": "0.1.0",
+  "private": true,
+  "types": "dist/index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "typescript": "^5"
+  }
+}
+

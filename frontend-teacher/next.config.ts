@@ -7,10 +7,11 @@ const nextConfig: NextConfig = {
     unoptimized: true, // 정적 export에서 이미지 최적화 비활성화
   },
   async rewrites() {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
     return [
       {
         source: '/api/:path*',
-        destination: 'https://godingpick.com/api/:path*',
+        destination: `${apiBase}/api/:path*`,
       },
     ];
   },

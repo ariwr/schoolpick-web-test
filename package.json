@@ -1,0 +1,21 @@
+{
+  "name": "schoolpick-web-monorepo",
+  "private": true,
+  "workspaces": [
+    "frontend-teacher",
+    "backend-teacher",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:frontend": "npm run dev -w frontend-teacher",
+    "build:frontend": "npm run build -w frontend-teacher",
+    "start:frontend": "npm run start -w frontend-teacher",
+    "dev:backend": "npm run dev -w backend-teacher || echo 'backend-teacher에 서버가 아직 구성되지 않았습니다.'",
+    "build:backend": "npm run build -w backend-teacher || echo 'backend-teacher에 빌드 스크립트가 없습니다.'",
+    "start:backend": "npm run start -w backend-teacher || echo 'backend-teacher에 시작 스크립트가 없습니다.'",
+    "dev": "npm run dev:frontend",
+    "build": "npm run build:frontend",
+    "start": "npm run start:frontend"
+  }
+}
+
