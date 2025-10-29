@@ -43,15 +43,29 @@ export default function LoginPage() {
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        // 로그인 성공 - 토큰과 사용자 정보 저장
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('userInfo', JSON.stringify(data.user));
+      if (response.ok && data.access_token) {
+        // 로그인 성공 - 토큰 저장
+        localStorage.setItem('token', data.access_token);
+        
+        // 사용자 정보 조회 (선택사항)
+        try {
+          const userResponse = await fetch('/api/users/me', {
+            headers: {
+              'Authorization': `Bearer ${data.access_token}`
+            }
+          });
+          if (userResponse.ok) {
+            const userData = await userResponse.json();
+            localStorage.setItem('userInfo', JSON.stringify(userData));
+          }
+        } catch (err) {
+          console.error('사용자 정보 조회 오류:', err);
+        }
         
         // 교사용 대시보드로 이동
         router.push('/dashboard');
       } else {
-        setError(data.message || '로그인에 실패했습니다.');
+        setError(data.detail || '로그인에 실패했습니다.');
       }
     } catch (error) {
       console.error('로그인 오류:', error);
@@ -69,7 +83,7 @@ export default function LoginPage() {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-godding-primary rounded-full mb-4 shadow-lg">
             <span className="text-2xl font-bold text-white">고</span>
           </div>
-          <h1 className="text-3xl font-bold text-godding-text-primary mb-2">고딩픽</h1>
+          <h1 className="text-3xl font-bold text-godding-text-primary mb-2">스쿨픽</h1>
           <p className="text-godding-text-secondary text-sm">교사용</p>
         </div>
 
@@ -129,14 +143,23 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          {/* 아이디/비밀번호 찾기 링크 */}
-          <div className="mt-6 text-center">
+          {/* 링크들 */}
+          <div className="mt-6 space-y-2 text-center">
             <Link 
               href="/find-account" 
-              className="text-sm text-godding-text-secondary hover:text-godding-primary transition-colors"
+              className="text-sm text-godding-text-secondary hover:text-godding-primary transition-colors block"
             >
               아이디/비밀번호 찾기
             </Link>
+            <div>
+              <span className="text-sm text-godding-text-secondary">계정이 없으신가요? </span>
+              <Link 
+                href="/register" 
+                className="text-sm text-godding-primary hover:text-godding-primary/80 font-semibold transition-colors"
+              >
+                회원가입
+              </Link>
+            </div>
           </div>
         </div>
 

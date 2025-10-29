@@ -1,0 +1,24 @@
+{
+  "name": "backend-teacher",
+  "version": "1.0.0",
+  "description": "스쿨픽 교사용 백엔드 서버",
+  "main": "main.py",
+  "scripts": {
+    "dev": "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+    "start": "uvicorn app.main:app --host 0.0.0.0 --port 8000",
+    "build": "echo 'No build step required for Python'",
+    "test": "pytest",
+    "lint": "flake8 app/",
+    "format": "black app/",
+    "db:migrate": "alembic upgrade head",
+    "db:revision": "alembic revision --autogenerate -m"
+  },
+  "dependencies": {
+    "@shared-types": "workspace:*",
+    "@shared-utils": "workspace:*"
+  },
+  "devDependencies": {},
+  "keywords": ["schoolpick", "teacher", "backend", "fastapi"],
+  "author": "SchoolPick Team",
+  "license": "MIT"
+}

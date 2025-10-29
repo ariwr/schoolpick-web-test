@@ -9,7 +9,7 @@ export default function Footer() {
                 <span className="text-white font-bold text-lg">고</span>
               </div>
               <div>
-                <span className="text-xl font-bold text-white">고딩픽 교사용</span>
+                <span className="text-xl font-bold text-white">스쿨픽 교사용</span>
                 <p className="text-xs text-white/80">교사들을 위한 통합 관리 플랫폼</p>
               </div>
             </div>
@@ -44,7 +44,7 @@ export default function Footer() {
         
         <div className="mt-12 pt-8 border-t border-white/20">
           <p className="text-center text-sm text-white/70">
-            © 2024 고딩픽 교사용 플랫폼. All rights reserved.
+            © 2024 스쿨픽 교사용 플랫폼. All rights reserved.
           </p>
         </div>
       </div>

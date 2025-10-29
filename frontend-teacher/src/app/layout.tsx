@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "고딩픽 교사용 - 고교학점제 교사 관리 플랫폼",
+  title: "스쿨픽 교사용 - 고교학점제 교사 관리 플랫폼",
   description: "고교학점제 도입에 따른 교사들을 위한 통합 관리 플랫폼",
 };
 

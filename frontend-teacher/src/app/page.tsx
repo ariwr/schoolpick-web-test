@@ -60,7 +60,7 @@ export default function Home() {
             </div>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold text-godding-text-primary mb-6">
-            고딩픽 교사용
+            스쿨픽 교사용
           </h1>
           <p className="text-xl md:text-2xl text-godding-text-secondary mb-4 max-w-4xl mx-auto leading-relaxed">
             고교학점제 도입에 따른 교사들을 위한 통합 관리 플랫폼

@@ -33,7 +33,7 @@ export default function Header() {
                 <span className="text-white font-bold text-lg">고</span>
               </div>
               <div>
-                <span className="text-xl font-bold text-white">고딩픽 교사용</span>
+                <span className="text-xl font-bold text-white">스쿨픽 교사용</span>
                 <p className="text-xs text-white/80">교사들을 위한 통합 관리 플랫폼</p>
               </div>
             </Link>
@@ -61,9 +61,11 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center space-x-3">
-            <Button variant="glass" size="sm">
-              로그인
-            </Button>
+            <Link href="/login">
+              <Button variant="glass" size="sm">
+                로그인
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

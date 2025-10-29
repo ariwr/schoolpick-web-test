@@ -1,0 +1,39 @@
+# psycopg2 대신 사용할 수 있는 다른 방법
+# requirements.txt를 수정하여 asyncpg 사용 (더 가벼움)
+
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# 데이터베이스 - asyncpg 사용 (Windows에서 설치 쉬움)
+sqlalchemy==2.0.23
+alembic==1.13.1
+asyncpg==0.29.0  # PostgreSQL 비동기 드라이버
+# 또는 psycopg 사용:
+# psycopg[binary]==3.1.18  # 새로운 psycopg3 (설치 더 쉬움)
+
+# 인증 및 보안
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart==0.0.6
+
+# 유틸리티
+python-dotenv==1.0.0
+httpx==0.25.2
+email-validator==2.1.0
+
+# 개발 및 테스트
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+flake8==6.1.0
+mypy==1.7.1
+
+# 로깅
+loguru==0.7.2
+
+# CORS
+fastapi-cors==0.0.6
+
+

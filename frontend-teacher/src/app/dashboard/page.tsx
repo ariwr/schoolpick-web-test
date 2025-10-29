@@ -115,7 +115,7 @@ export default function DashboardPage() {
                 <span className="text-white font-bold">고</span>
               </div>
               <div>
-                <h1 className="text-xl font-bold text-godding-text-primary">고딩픽 교사용</h1>
+                <h1 className="text-xl font-bold text-godding-text-primary">스쿨픽 교사용</h1>
                 <p className="text-sm text-godding-text-secondary">
                   안녕하세요, {user?.name}님!
                 </p>
