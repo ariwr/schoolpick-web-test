@@ -9,11 +9,10 @@ pydantic-settings==2.1.0
 # 데이터베이스
 sqlalchemy==2.0.23
 alembic==1.13.1
-# PostgreSQL 드라이버 (Windows 빌드 도구 필요시 아래 주석 해제)
-psycopg==3.1.18  # psycopg3 (설치 더 쉬움, Windows 친화적)
-
-# Windows에서 psycopg2-binary 설치가 안되는 경우:
-# pip install --only-binary psycopg2-binary psycopg2-binary
+# PostgreSQL 드라이버 (Windows에서는 psycopg2-binary 권장)
+psycopg2-binary==2.9.11  # Windows 친화적, 설치 쉬움
+# 또는 psycopg3 사용시:
+# psycopg==3.1.18
 
 # 인증 및 보안
 python-jose[cryptography]==3.3.0
@@ -22,7 +21,7 @@ python-multipart==0.0.6
 
 # 유틸리티
 python-dotenv==1.0.0
-httpx==0.25.2
+httpx==0.27.2  # OpenAI 1.12.0과 호환되도록 다운그레이드 (0.28.0+ 에서 proxies 파라미터 제거됨)
 email-validator==2.1.0
 
 # 개발 및 테스트
@@ -37,3 +36,14 @@ loguru==0.7.2
 
 # CORS
 fastapi-cors==0.0.6
+
+# OpenAI API
+openai==1.12.0
+
+# QR 코드 기반 출석 시스템
+PyJWT==2.8.0  # JWT 토큰 생성 및 검증
+qrcode  # QR 코드 생성 (Pillow 포함)
+Pillow  # 이미지 처리 (Python 3.14 호환을 위해 버전 고정 제거)
+
+# 배치 작업 스케줄러 (야자 출석 자동 처리용)
+APScheduler==3.10.4

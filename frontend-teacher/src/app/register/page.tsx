@@ -8,13 +8,13 @@ import { useState } from 'react';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: '',
     name: '',
     phone: '',
-    schoolName: '',
     position: '교과',
     hireDate: '',
     isHomeroomTeacher: false,
@@ -47,16 +47,48 @@ export default function RegisterPage() {
       return;
     }
 
-    // 필수 필드 확인
-    if (!formData.email || !formData.password || !formData.name || !formData.phone || !formData.schoolName) {
+    // 필수 필드 확인 (학교 이름은 더 이상 필수 아님)
+    if (!formData.email || !formData.password || !formData.name || !formData.phone) {
       setError('필수 항목을 모두 입력해주세요.');
       setIsLoading(false);
       return;
     }
 
     try {
-      // 백엔드 API 호출
-      const response = await fetch('/api/auth/register', {
+      console.log('회원가입 요청 시작:', `${API_BASE}/api/auth/register`);
+      
+      // 먼저 서버 연결 확인
+      try {
+        const healthCheck = await fetch(`${API_BASE}/health`, {
+          method: 'GET',
+          signal: AbortSignal.timeout(5000) // 5초 타임아웃
+        });
+        if (!healthCheck.ok) {
+          setError('서버 상태가 정상이 아닙니다. 잠시 후 다시 시도해주세요.');
+          return;
+        }
+        console.log('서버 연결 확인됨');
+      } catch (healthError: any) {
+        console.error('서버 연결 확인 실패:', healthError);
+        if (healthError.name === 'TimeoutError' || healthError.name === 'AbortError') {
+          setError('서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.');
+        } else {
+          setError('서버 연결을 확인할 수 없습니다.');
+        }
+        return;
+      }
+      
+      // 백엔드 API 호출 (60초 타임아웃 설정)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000); // 60초 타임아웃
+      
+      console.log('회원가입 데이터 전송:', {
+        email: formData.email,
+        name: formData.name,
+        phone: formData.phone
+      });
+      
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -67,26 +99,74 @@ export default function RegisterPage() {
           name: formData.name,
           phone: formData.phone,
           birth_date: null,
-          school_name: formData.schoolName,
           position: formData.position,
           hire_date: formData.hireDate || null,
           is_homeroom_teacher: formData.isHomeroomTeacher,
           certification_number: formData.certificationNumber || null
         }),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
+      console.log('응답 받음:', response.status, response.statusText);
 
-      const data = await response.json();
+      // 응답 본문을 한 번만 소비하도록 clone 사용
+      const responseClone = response.clone();
+      let data: any = {};
+      try {
+        data = await response.json();
+      } catch (_) {
+        // non-JSON 응답(예: HTML 에러 페이지) 대비
+      }
 
       if (response.ok) {
         // 회원가입 성공 - 로그인 페이지로 이동
         alert('회원가입이 완료되었습니다. 로그인해주세요.');
         router.push('/login');
       } else {
-        setError(data.detail || '회원가입에 실패했습니다.');
+        // 오류 메시지 처리
+        let errorMessage = '';
+        
+        if (data && data.detail) {
+          // FastAPI 검증 오류는 detail이 배열로 반환됨
+          if (Array.isArray(data.detail)) {
+            // 첫 번째 오류 메시지 추출
+            const firstError = data.detail[0];
+            if (firstError && firstError.msg) {
+              // "Value error, " 같은 접두사 제거
+              errorMessage = firstError.msg.replace(/^(Value error|type_error|value_error)[\s,]*/i, '');
+            } else {
+              errorMessage = JSON.stringify(data.detail);
+            }
+          } else if (typeof data.detail === 'string') {
+            // 문자열인 경우 그대로 사용
+            errorMessage = data.detail;
+          } else {
+            // 객체인 경우 메시지 추출 시도
+            errorMessage = JSON.stringify(data.detail);
+          }
+        }
+        
+        if (!errorMessage) {
+          // detail이 없으면 다른 방법 시도
+          let text = '';
+          try {
+            text = await responseClone.text();
+          } catch (_) {}
+          errorMessage = text || `회원가입에 실패했습니다. (status ${response.status})`;
+        }
+        
+        setError(errorMessage);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('회원가입 오류:', error);
-      setError('서버 연결에 실패했습니다.');
+      if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+        setError('서버 응답 시간이 초과되었습니다. 데이터베이스 연결 문제일 수 있습니다. 관리자에게 문의하세요.');
+      } else if (error instanceof TypeError && error.message.includes('fetch')) {
+        setError('서버에 연결할 수 없습니다. 백엔드 서버가 실행 중인지 확인해주세요.');
+      } else {
+        setError(error.message || '서버 연결에 실패했습니다.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -239,22 +319,7 @@ export default function RegisterPage() {
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-godding-text-primary border-b pb-2">교사 정보</h3>
               
-              {/* 학교 이름 */}
-              <div className="space-y-2">
-                <label htmlFor="schoolName" className="text-sm font-medium text-godding-text-primary">
-                  학교 이름 <span className="text-red-500">*</span>
-                </label>
-                <Input
-                  id="schoolName"
-                  name="schoolName"
-                  type="text"
-                  placeholder="학교 이름을 입력하세요"
-                  value={formData.schoolName}
-                  onChange={handleInputChange}
-                  required
-                  className="h-12 text-base"
-                />
-              </div>
+              {/* 학교 이름 입력은 DB 스키마에 없어 폼에서 제거 */}
 
               {/* 직책 */}
               <div className="space-y-2">

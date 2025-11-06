@@ -8,6 +8,7 @@ import { useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -30,7 +31,7 @@ export default function LoginPage() {
     
     try {
       // 백엔드 API 호출
-      const response = await fetch('/api/auth/login', {
+      const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -41,7 +42,10 @@ export default function LoginPage() {
         }),
       });
 
-      const data = await response.json();
+      let data: any = {};
+      try {
+        data = await response.json();
+      } catch (_) {}
 
       if (response.ok && data.access_token) {
         // 로그인 성공 - 토큰 저장
@@ -49,18 +53,29 @@ export default function LoginPage() {
         
         // 사용자 정보 조회 (선택사항)
         try {
-          const userResponse = await fetch('/api/users/me', {
+          const userResponse = await fetch(`${API_BASE}/api/users/me`, {
             headers: {
-              'Authorization': `Bearer ${data.access_token}`
+              'Authorization': `Bearer ${data.access_token}`,
+              'Content-Type': 'application/json'
             }
           });
+          
           if (userResponse.ok) {
             const userData = await userResponse.json();
             localStorage.setItem('userInfo', JSON.stringify(userData));
+          } else {
+            // 응답은 받았지만 오류 상태인 경우
+            const errorData = await userResponse.json().catch(() => ({ detail: '알 수 없는 오류' }));
+            console.error('사용자 정보 조회 실패:', userResponse.status, errorData);
           }
         } catch (err) {
+          // 네트워크 오류 또는 기타 오류
           console.error('사용자 정보 조회 오류:', err);
+          // 사용자 정보 조회 실패는 치명적이지 않으므로 로그만 남기고 계속 진행
         }
+        
+        // 헤더에 인증 상태 변경 알림
+        window.dispatchEvent(new Event('authStateChange'));
         
         // 교사용 대시보드로 이동
         router.push('/dashboard');

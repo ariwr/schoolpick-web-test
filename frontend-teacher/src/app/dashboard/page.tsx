@@ -1,9 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-    ArrowRightOnRectangleIcon,
     BookOpenIcon,
     ChartBarIcon,
     ClipboardDocumentListIcon,
@@ -46,12 +44,6 @@ export default function DashboardPage() {
       setIsLoading(false);
     }
   }, [router]);
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('userInfo');
-    router.push('/login');
-  };
 
   if (isLoading) {
     return (
@@ -106,33 +98,6 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary">
-      {/* 헤더 */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-godding-card-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 bg-godding-primary rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-white font-bold">고</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-godding-text-primary">스쿨픽 교사용</h1>
-                <p className="text-sm text-godding-text-secondary">
-                  안녕하세요, {user?.name}님!
-                </p>
-              </div>
-            </div>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="flex items-center space-x-2"
-            >
-              <ArrowRightOnRectangleIcon className="w-4 h-4" />
-              <span>로그아웃</span>
-            </Button>
-          </div>
-        </div>
-      </div>
-
       {/* 메인 콘텐츠 */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="text-center mb-12">

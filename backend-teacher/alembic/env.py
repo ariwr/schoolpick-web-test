@@ -10,7 +10,7 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from app.database import Base
-from app.models import user, student, attendance, schedule
+from app.models import existing_db, student, attendance, schedule
 
 # Alembic 설정 객체
 config = context.config
