@@ -12,10 +12,12 @@ from app.config import settings
 
 router = APIRouter()
 
-# OpenAI API 키 설정
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
+# OpenAI API 키 설정 (settings에서 읽어옴)
+OPENAI_API_KEY = settings.OPENAI_API_KEY
 if not OPENAI_API_KEY:
-    print("Warning: OPENAI_API_KEY가 설정되지 않았습니다. 세특 검열 기능을 사용하려면 환경변수를 설정하세요.")
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning("Warning: OPENAI_API_KEY가 설정되지 않았습니다. 세특 검열 기능을 사용하려면 환경변수를 설정하세요.")
 
 if OPENAI_API_KEY:
     openai.api_key = OPENAI_API_KEY

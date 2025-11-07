@@ -79,6 +79,49 @@ if 'ALLOWED_ORIGINS' in os.environ:
 # CORS 기본값 (클래스 밖으로 이동)
 DEFAULT_ALLOWED_ORIGINS = "http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,http://localhost:3002,http://127.0.0.1:3002"
 
+# Secrets Manager에서 OpenAI API 키 읽기
+def get_openai_api_key_from_secrets_manager():
+    """Secrets Manager에서 OpenAI API 키를 읽어옵니다."""
+    try:
+        import boto3
+        import json
+        
+        # 환경변수에서 먼저 확인
+        env_key = os.getenv("OPENAI_API_KEY")
+        if env_key:
+            return env_key
+        
+        # Secrets Manager에서 읽기
+        secrets_client = boto3.client('secretsmanager', region_name='ap-northeast-2')
+        secret_name = "godingpick/openai-api-key"
+        
+        try:
+            response = secrets_client.get_secret_value(SecretId=secret_name)
+            secret_string = response['SecretString']
+            
+            # JSON 형식인지 확인
+            try:
+                secret_dict = json.loads(secret_string)
+                # JSON 형식이면 'openai_api_key' 키에서 읽기
+                return secret_dict.get('openai_api_key', secret_dict.get('OPENAI_API_KEY', ''))
+            except json.JSONDecodeError:
+                # JSON이 아니면 문자열 그대로 사용
+                return secret_string
+                
+        except secrets_client.exceptions.ResourceNotFoundException:
+            logger.warning(f"Secrets Manager에서 '{secret_name}' Secret을 찾을 수 없습니다.")
+            return ""
+        except Exception as e:
+            logger.warning(f"Secrets Manager에서 OpenAI API 키를 읽는 중 오류 발생: {str(e)}")
+            return ""
+            
+    except ImportError:
+        logger.warning("boto3가 설치되지 않았습니다. Secrets Manager 기능을 사용할 수 없습니다.")
+        return ""
+    except Exception as e:
+        logger.warning(f"OpenAI API 키를 Secrets Manager에서 읽는 중 오류 발생: {str(e)}")
+        return ""
+
 class Settings(BaseSettings):
     # 앱 설정
     APP_NAME: str = "SchoolPick Teacher Backend"
@@ -145,6 +188,11 @@ class Settings(BaseSettings):
         # 임시 환경변수 제거
         if '_ALLOWED_ORIGINS_TEMP' in os.environ:
             del os.environ['_ALLOWED_ORIGINS_TEMP']
+        
+        # OpenAI API 키를 Secrets Manager에서 읽기
+        self.OPENAI_API_KEY = get_openai_api_key_from_secrets_manager()
+        if not self.OPENAI_API_KEY:
+            logger.warning("OpenAI API 키가 설정되지 않았습니다. 세특 검열 기능을 사용할 수 없습니다.")
     
     # 이메일 설정
     SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.gmail.com")
@@ -155,6 +203,10 @@ class Settings(BaseSettings):
     # 로깅 설정
     LOG_LEVEL: str = os.getenv("LOG_LEVEL", "INFO")
     LOG_FILE: str = os.getenv("LOG_FILE", "logs/app.log")
+    
+    # OpenAI API 설정 (Secrets Manager 또는 환경변수에서 읽기)
+    # __init__에서 Secrets Manager를 통해 읽어옴
+    OPENAI_API_KEY: str = ""
     
     model_config = {
         # env_file을 None으로 설정: safe_load_dotenv()에서 이미 환경변수를 로드했으므로

@@ -14,10 +14,7 @@
     "db:migrate": "alembic upgrade head",
     "db:revision": "alembic revision --autogenerate -m"
   },
-  "dependencies": {
-    "@shared-types": "workspace:*",
-    "@shared-utils": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {},
   "keywords": ["schoolpick", "teacher", "backend", "fastapi"],
   "author": "SchoolPick Team",
