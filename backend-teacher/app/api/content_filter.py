@@ -14,13 +14,52 @@ router = APIRouter()
 
 # OpenAI API 키 설정 (settings에서 읽어옴)
 OPENAI_API_KEY = settings.OPENAI_API_KEY
-if not OPENAI_API_KEY:
-    import logging
-    logger = logging.getLogger(__name__)
-    logger.warning("Warning: OPENAI_API_KEY가 설정되지 않았습니다. 세특 검열 기능을 사용하려면 환경변수를 설정하세요.")
 
+# 파인튜닝된 모델 ID 설정 (환경변수 또는 기본값)
+FINE_TUNED_MODEL_ID = os.getenv("FINE_TUNED_MODEL_ID", None)
+
+# 파인튜닝 모델 ID를 파일에서 읽기 시도
+if not FINE_TUNED_MODEL_ID:
+    fine_tuned_model_file = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+        "fine-tuning",
+        "fine_tuned_model.json"
+    )
+    if os.path.exists(fine_tuned_model_file):
+        try:
+            import json
+            with open(fine_tuned_model_file, 'r', encoding='utf-8') as f:
+                model_info = json.load(f)
+                FINE_TUNED_MODEL_ID = model_info.get("model_id")
+        except Exception as e:
+            pass  # 파일 읽기 실패 시 무시
+
+# 기본 모델 (파인튜닝된 모델이 없을 경우)
+DEFAULT_MODEL = "gpt-3.5-turbo"
+
+# 사용할 모델 결정
+OPENAI_MODEL = FINE_TUNED_MODEL_ID if FINE_TUNED_MODEL_ID else DEFAULT_MODEL
+
+# 디버깅: 키 상태 로깅
+import logging
+logger = logging.getLogger(__name__)
+
+# 키가 있는지 확인 (빈 문자열도 체크)
 if OPENAI_API_KEY:
+    # 키의 앞 10자만 로깅 (보안)
+    key_preview = OPENAI_API_KEY[:10] + "..." if len(OPENAI_API_KEY) > 10 else "***"
+    logger.info(f"OpenAI API 키가 로드되었습니다. (길이: {len(OPENAI_API_KEY)}, 미리보기: {key_preview})")
+    
+    # 키가 유효한 형식인지 확인 (sk- 또는 sk-proj-로 시작하는지)
+    if not (OPENAI_API_KEY.startswith("sk-") or OPENAI_API_KEY.startswith("sk-proj-")):
+        logger.warning(f"OpenAI API 키 형식이 올바르지 않을 수 있습니다. (sk- 또는 sk-proj-로 시작하지 않음)")
+    else:
+        logger.info(f"OpenAI API 키 형식이 올바릅니다.")
+    
     openai.api_key = OPENAI_API_KEY
+else:
+    logger.warning("Warning: OPENAI_API_KEY가 설정되지 않았습니다. 세특 검열 기능을 사용하려면 환경변수를 설정하세요.")
+    OPENAI_API_KEY = None  # 명시적으로 None으로 설정
 
 
 class ContentFilterRequest(BaseModel):
@@ -225,8 +264,12 @@ type 설명:
         client = OpenAI(api_key=OPENAI_API_KEY)
         logger.info("OpenAI 클라이언트 초기화 완료")
         
+        # 사용할 모델 결정 (파인튜닝된 모델이 있으면 사용, 없으면 기본 모델)
+        model_to_use = OPENAI_MODEL
+        logger.info(f"사용할 모델: {model_to_use}")
+        
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",  # GPT-3.5 모델 사용
+            model=model_to_use,  # 파인튜닝된 모델 또는 기본 모델
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
@@ -239,7 +282,9 @@ type 설명:
         if hasattr(response, 'usage') and response.usage:
             usage = response.usage
             logger.info(f"토큰 사용량 - 입력: {usage.prompt_tokens} 토큰, 출력: {usage.completion_tokens} 토큰, 총: {usage.total_tokens} 토큰")
-            logger.info(f"예상 비용 (GPT-3.5-turbo): 입력 ${usage.prompt_tokens / 1000 * 0.0005:.6f}, 출력 ${usage.completion_tokens / 1000 * 0.0015:.6f}, 총 ${usage.total_tokens / 1000 * 0.0008:.6f} (대략적)")
+            # 모델에 따른 비용 계산 (파인튜닝된 모델은 기본 모델과 동일한 가격)
+            model_name = model_to_use if 'model_to_use' in locals() else OPENAI_MODEL
+            logger.info(f"예상 비용 ({model_name}): 입력 ${usage.prompt_tokens / 1000 * 0.0005:.6f}, 출력 ${usage.completion_tokens / 1000 * 0.0015:.6f}, 총 ${usage.total_tokens / 1000 * 0.0008:.6f} (대략적)")
         
         # 응답 파싱
         response_text = response.choices[0].message.content
@@ -282,9 +327,174 @@ type 설명:
         logger.error(error_msg)
         logger.error(f"에러 타입: {type(e).__name__}")
         logger.error(f"에러 상세: {traceback.format_exc()}")
+        
+        # API 키 관련 오류인지 확인
+        error_str = str(e).lower()
+        if "api key" in error_str or "authentication" in error_str or "invalid" in error_str:
+            logger.error("OpenAI API 키가 유효하지 않거나 인증에 실패했습니다.")
+            logger.error(f"현재 설정된 키 미리보기: {OPENAI_API_KEY[:10] + '...' if OPENAI_API_KEY and len(OPENAI_API_KEY) > 10 else 'N/A'}")
+            raise HTTPException(
+                status_code=500,
+                detail="OpenAI API 키가 유효하지 않습니다. 환경변수 OPENAI_API_KEY를 확인하세요."
+            )
+        
         raise HTTPException(
             status_code=500,
             detail=error_msg
+        )
+
+
+class SetuekCheckRequest(BaseModel):
+    """세특 검열 요청 모델 (새로운 형식)"""
+    text: str = Field(..., description="검열할 세특 내용", max_length=2000)
+
+
+class ErrorDetail(BaseModel):
+    """오류 상세 모델 (프론트엔드 형식)"""
+    id: str = Field(..., description="고유 ID")
+    original: str = Field(..., description="오류 원본")
+    corrected: Optional[str] = Field(None, description="교정 제안")
+    type: str = Field(..., description="오류 유형")
+    help: str = Field(..., description="도움말")
+    start_index: int = Field(..., description="오류 시작 위치")
+
+
+class CheckResponse(BaseModel):
+    """세특 검열 응답 모델 (프론트엔드 형식)"""
+    original_text: str = Field(..., description="원본 텍스트")
+    errors: List[ErrorDetail] = Field(default_factory=list, description="오류 목록")
+
+
+@router.get("/check/api-key-status")
+async def check_api_key_status():
+    """
+    OpenAI API 키 상태를 확인합니다 (디버깅용).
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    key_status = {
+        "has_key": bool(OPENAI_API_KEY),
+        "key_length": len(OPENAI_API_KEY) if OPENAI_API_KEY else 0,
+        "key_preview": OPENAI_API_KEY[:10] + "..." if OPENAI_API_KEY and len(OPENAI_API_KEY) > 10 else "N/A",
+        "key_starts_with_sk": OPENAI_API_KEY.startswith("sk-") if OPENAI_API_KEY else False,
+        "key_starts_with_sk_proj": OPENAI_API_KEY.startswith("sk-proj-") if OPENAI_API_KEY else False,
+        "key_format_valid": (OPENAI_API_KEY.startswith("sk-") or OPENAI_API_KEY.startswith("sk-proj-")) if OPENAI_API_KEY else False,
+        "source": "unknown"
+    }
+    
+    # 모델 정보 추가
+    model_info = {
+        "default_model": DEFAULT_MODEL,
+        "fine_tuned_model_id": FINE_TUNED_MODEL_ID,
+        "current_model": OPENAI_MODEL,
+        "is_fine_tuned": bool(FINE_TUNED_MODEL_ID)
+    }
+    
+    # 환경변수에서 확인
+    env_key = os.getenv("OPENAI_API_KEY")
+    if env_key and env_key.strip():
+        key_status["source"] = "environment_variable"
+    else:
+        key_status["source"] = "secrets_manager_or_not_set"
+    
+    return {
+        "status": "ok" if OPENAI_API_KEY else "no_key",
+        "key_info": key_status,
+        "model_info": model_info,
+        "message": "OpenAI API 키가 설정되어 있습니다." if OPENAI_API_KEY else "OpenAI API 키가 설정되지 않았습니다."
+    }
+
+
+@router.post("/check/setuek", response_model=CheckResponse)
+async def check_setuek(request: SetuekCheckRequest):
+    """
+    세특 내용을 검열합니다 (새로운 형식).
+    
+    Args:
+        request: 검열 요청 (text)
+        
+    Returns:
+        CheckResponse: 검열 결과 (프론트엔드 형식)
+    """
+    import logging
+    import traceback
+    import uuid
+    
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # 요청 로깅
+        logger.info(f"세특 검열 요청 수신 (/check/setuek): 내용 길이={len(request.text)}자")
+        
+        # OpenAI 키 확인 (빈 문자열도 체크)
+        if not OPENAI_API_KEY or (isinstance(OPENAI_API_KEY, str) and OPENAI_API_KEY.strip() == ""):
+            logger.warning("OpenAI API 키가 설정되지 않았습니다. 빈 결과를 반환합니다.")
+            return CheckResponse(
+                original_text=request.text,
+                errors=[]
+            )
+        
+        # 기존 필터링 함수 호출
+        max_bytes = 2000
+        result = await call_chatgpt_for_filtering(request.text, max_bytes)
+        
+        # 프론트엔드 형식으로 변환
+        errors = []
+        for idx, issue in enumerate(result.issues):
+            # 타입 변환: delete -> banned_*, modify -> modify, spelling -> spelling
+            error_type = issue.type
+            if issue.type == "delete":
+                # reason에서 금지 유형 추론
+                if "대회" in issue.reason or "대회" in issue.original_text:
+                    error_type = "banned_competition"
+                elif "대학" in issue.reason or any(uni in issue.original_text for uni in ["서울대", "고려대", "하버드", "MIT"]):
+                    error_type = "banned_university"
+                elif "기관" in issue.reason or any(org in issue.original_text for org in ["보건복지부", "유엔", "OECD", "WHO"]):
+                    error_type = "banned_organization"
+                elif "회사" in issue.reason or any(comp in issue.original_text for comp in ["삼성", "애플", "구글"]):
+                    error_type = "banned_company"
+                else:
+                    error_type = "banned_word"
+            
+            # 고유 ID 생성
+            error_id = f"error_{uuid.uuid4().hex[:8]}_{idx}_{issue.position}"
+            
+            error_detail = ErrorDetail(
+                id=error_id,
+                original=issue.original_text,
+                corrected=issue.suggestion if issue.suggestion else None,
+                type=error_type,
+                help=issue.reason,
+                start_index=issue.position
+            )
+            errors.append(error_detail)
+        
+        logger.info(f"세특 검열 완료: 오류 개수={len(errors)}")
+        return CheckResponse(
+            original_text=request.text,
+            errors=errors
+        )
+    except HTTPException as http_exc:
+        # HTTPException은 그대로 전달하되, OpenAI 키 관련 오류는 빈 결과로 변환
+        if "OpenAI API 키" in str(http_exc.detail):
+            logger.warning("OpenAI API 키가 설정되지 않아 빈 결과를 반환합니다.")
+            return CheckResponse(
+                original_text=request.text,
+                errors=[]
+            )
+        # 다른 HTTPException은 그대로 전달
+        raise
+    except Exception as e:
+        # 예상치 못한 오류 로깅
+        error_trace = traceback.format_exc()
+        logger.error(f"세특 검열 중 예상치 못한 오류 발생: {str(e)}")
+        logger.error(f"오류 상세:\n{error_trace}")
+        
+        # 사용자에게는 간단한 메시지만 전달
+        raise HTTPException(
+            status_code=500,
+            detail=f"검열 중 오류가 발생했습니다: {str(e)}"
         )
 
 

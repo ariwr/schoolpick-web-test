@@ -40,3 +40,6 @@ async def approve_checkout(
         attendance=AttendanceResponse.model_validate(attendance)
     )
 
+
+
+

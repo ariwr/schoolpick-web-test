@@ -227,3 +227,6 @@ class AttendanceValidationService:
         return True, None, status
 
 
+
+
+

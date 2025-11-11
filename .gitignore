@@ -56,3 +56,10 @@ __pycache__/
 dist/
 build/
 *.egg
+venv/
+env/
+ENV/
+
+# Fine-tuning (exclude from git)
+backend-teacher/fine-tuning/
+temp-py-hanspell/

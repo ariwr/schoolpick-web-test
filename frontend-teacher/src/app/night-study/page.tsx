@@ -98,25 +98,58 @@ export default function NightStudyPage() {
     }
   }
 
-  // 인증 확인
+  // 인증 확인 및 토큰 검증
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    const userInfo = localStorage.getItem('userInfo')
-    
-    if (!token || !userInfo) {
-      router.push('/login')
-      return
+    const checkAuth = async () => {
+      const token = localStorage.getItem('token')
+      const userInfo = localStorage.getItem('userInfo')
+      
+      if (!token || !userInfo) {
+        router.push('/login')
+        return
+      }
+      
+      // 토큰 유효성 검증
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/users/me`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          signal: AbortSignal.timeout(5000)
+        })
+        
+        if (!response.ok) {
+          // 401 또는 403인 경우 토큰이 유효하지 않음
+          if (response.status === 401 || response.status === 403) {
+            console.log('토큰이 유효하지 않습니다. 로그인 페이지로 이동합니다.')
+            localStorage.removeItem('token')
+            localStorage.removeItem('userInfo')
+            window.dispatchEvent(new Event('authStateChange'))
+            router.push('/login')
+            return
+          }
+        }
+        
+        // 토큰이 유효한 경우
+        setIsAuthenticated(true)
+        
+        // 서버 연결 테스트
+        testServerConnection().then(isConnected => {
+          if (!isConnected) {
+            setServerError('백엔드 서버가 실행되지 않았습니다. 서버를 시작해주세요.')
+          }
+        })
+      } catch (error) {
+        // 네트워크 오류인 경우 토큰은 유지하되 서버 연결 오류 표시
+        console.log('토큰 검증 중 네트워크 오류:', error)
+        setIsAuthenticated(true) // 토큰은 있으므로 인증된 것으로 간주
+        setServerError('백엔드 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.')
+      }
     }
     
-    setIsAuthenticated(true)
-    
-    // 서버 연결 테스트
-    testServerConnection().then(isConnected => {
-      if (!isConnected) {
-        setServerError('백엔드 서버가 실행되지 않았습니다. 서버를 시작해주세요.')
-      }
-    })
-  }, [router])
+    checkAuth()
+  }, [router, API_BASE_URL])
 
   // localStorage에서 참여 학생 목록 불러오기
   const loadParticipatingStudents = (): number[] => {

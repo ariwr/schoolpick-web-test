@@ -28,6 +28,7 @@ def safe_load_dotenv():
             
             # 간단한 .env 파일 파서
             loaded_count = 0
+            skipped_count = 0
             for line in lines:
                 line = line.strip()
                 # 주석 무시
@@ -38,6 +39,9 @@ def safe_load_dotenv():
                 if '=' in line:
                     key, value = line.split('=', 1)
                     key = key.strip()
+                    # BOM 제거 (UTF-8 with BOM 처리)
+                    key = key.lstrip('\ufeff')
+                    key = key.strip()
                     value = value.strip()
                     
                     # 따옴표 제거
@@ -46,13 +50,31 @@ def safe_load_dotenv():
                     elif value.startswith("'") and value.endswith("'"):
                         value = value[1:-1]
                     
+                    # 키와 값이 모두 있어야 함
+                    if not key:
+                        continue
+                    
                     # 환경변수가 없으면 설정 (기존 환경변수 보존)
-                    if key and key not in os.environ:
+                    if key not in os.environ:
                         os.environ[key] = value
                         loaded_count += 1
+                        # OPENAI_API_KEY는 특히 로깅
+                        if key == "OPENAI_API_KEY":
+                            logger.info(f"✅ OPENAI_API_KEY 환경변수 설정 완료 (길이: {len(value)})")
+                    else:
+                        skipped_count += 1
+                        # OPENAI_API_KEY가 이미 있으면 경고
+                        if key == "OPENAI_API_KEY":
+                            logger.warning(f"⚠️ OPENAI_API_KEY가 이미 환경변수에 설정되어 있어 건너뜁니다.")
             
             if loaded_count > 0:
-                logger.info(f".env 파일을 {encoding} 인코딩으로 성공적으로 로드했습니다. ({loaded_count}개 변수 설정)")
+                logger.info(f".env 파일을 {encoding} 인코딩으로 성공적으로 로드했습니다. ({loaded_count}개 변수 설정, {skipped_count}개 건너뜀)")
+                # OPENAI_API_KEY 확인
+                openai_key = os.getenv("OPENAI_API_KEY")
+                if openai_key:
+                    logger.info(f"✅ OPENAI_API_KEY 확인: 길이={len(openai_key)}, 시작={openai_key[:10]}...")
+                else:
+                    logger.warning("⚠️ OPENAI_API_KEY가 .env 파일에서 로드되지 않았습니다.")
                 return
             
         except UnicodeDecodeError:
@@ -83,13 +105,40 @@ DEFAULT_ALLOWED_ORIGINS = "http://localhost:3000,http://127.0.0.1:3000,http://lo
 def get_openai_api_key_from_secrets_manager():
     """Secrets Manager에서 OpenAI API 키를 읽어옵니다."""
     try:
-        import boto3
-        import json
-        
         # 환경변수에서 먼저 확인
         env_key = os.getenv("OPENAI_API_KEY")
-        if env_key:
-            return env_key
+        if env_key and env_key.strip():
+            logger.info(f"환경변수에서 OpenAI API 키를 찾았습니다. (길이: {len(env_key)})")
+            return env_key.strip()
+        
+        # 환경변수에 없으면 .env 파일에서 직접 읽기 시도
+        logger.info("환경변수에서 OpenAI API 키를 찾을 수 없습니다. .env 파일에서 직접 읽기를 시도합니다.")
+        env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
+        if os.path.exists(env_path):
+            try:
+                with open(env_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        line = line.strip()
+                        if line and not line.startswith('#') and '=' in line:
+                            key, value = line.split('=', 1)
+                            key = key.strip().lstrip('\ufeff').strip()
+                            value = value.strip()
+                            # 따옴표 제거
+                            if value.startswith('"') and value.endswith('"'):
+                                value = value[1:-1]
+                            elif value.startswith("'") and value.endswith("'"):
+                                value = value[1:-1]
+                            if key == "OPENAI_API_KEY" and value:
+                                # 환경변수에 설정하고 반환
+                                os.environ["OPENAI_API_KEY"] = value
+                                logger.info(f"✅ .env 파일에서 OpenAI API 키를 직접 읽어 환경변수에 설정했습니다. (길이: {len(value)})")
+                                return value.strip()
+            except Exception as e:
+                logger.warning(f".env 파일에서 직접 읽기 실패: {str(e)}")
+        
+        logger.info("환경변수와 .env 파일에서 OpenAI API 키를 찾을 수 없습니다. Secrets Manager에서 시도합니다.")
+        import boto3
+        import json
         
         # Secrets Manager에서 읽기
         secrets_client = boto3.client('secretsmanager', region_name='ap-northeast-2')
@@ -103,10 +152,21 @@ def get_openai_api_key_from_secrets_manager():
             try:
                 secret_dict = json.loads(secret_string)
                 # JSON 형식이면 'openai_api_key' 키에서 읽기
-                return secret_dict.get('openai_api_key', secret_dict.get('OPENAI_API_KEY', ''))
+                key = secret_dict.get('openai_api_key', secret_dict.get('OPENAI_API_KEY', ''))
+                if key and key.strip():
+                    logger.info(f"Secrets Manager에서 OpenAI API 키를 찾았습니다. (길이: {len(key)})")
+                    return key.strip()
+                else:
+                    logger.warning("Secrets Manager에서 OpenAI API 키를 찾았지만 값이 비어있습니다.")
+                    return ""
             except json.JSONDecodeError:
                 # JSON이 아니면 문자열 그대로 사용
-                return secret_string
+                if secret_string and secret_string.strip():
+                    logger.info(f"Secrets Manager에서 OpenAI API 키를 찾았습니다. (길이: {len(secret_string)})")
+                    return secret_string.strip()
+                else:
+                    logger.warning("Secrets Manager에서 OpenAI API 키를 찾았지만 값이 비어있습니다.")
+                    return ""
                 
         except secrets_client.exceptions.ResourceNotFoundException:
             logger.warning(f"Secrets Manager에서 '{secret_name}' Secret을 찾을 수 없습니다.")
@@ -191,8 +251,12 @@ class Settings(BaseSettings):
         
         # OpenAI API 키를 Secrets Manager에서 읽기
         self.OPENAI_API_KEY = get_openai_api_key_from_secrets_manager()
-        if not self.OPENAI_API_KEY:
+        if not self.OPENAI_API_KEY or not self.OPENAI_API_KEY.strip():
             logger.warning("OpenAI API 키가 설정되지 않았습니다. 세특 검열 기능을 사용할 수 없습니다.")
+            logger.warning("환경변수 OPENAI_API_KEY를 설정하거나 AWS Secrets Manager에 키를 저장하세요.")
+            self.OPENAI_API_KEY = ""  # 빈 문자열로 명시적 설정
+        else:
+            logger.info(f"OpenAI API 키가 성공적으로 로드되었습니다. (길이: {len(self.OPENAI_API_KEY)})")
     
     # 이메일 설정
     SMTP_HOST: str = os.getenv("SMTP_HOST", "smtp.gmail.com")

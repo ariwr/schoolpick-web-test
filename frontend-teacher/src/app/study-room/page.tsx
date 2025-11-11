@@ -10,9 +10,10 @@ import {
   MapIcon,
   PlusIcon,
   QrCodeIcon,
-  UserIcon
+  UserIcon,
+  TrashIcon
 } from "@heroicons/react/24/outline"
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 interface StudyRoom {
   id: string
@@ -236,39 +237,9 @@ export default function StudyRoomPage() {
     return { code: `ROOMQR_${token}`, expiresAt: today.toISOString() }
   }
 
-  // Mock data - 초기값은 빈 배열로 설정하고 useEffect에서 클라이언트에서만 생성
+  // Mock data - 초기값은 빈 배열로 설정 (등록부터 시작)
   const [studyRooms, setStudyRooms] = useState<StudyRoom[]>([])
-  const [isInitialized, setIsInitialized] = useState(false)
-  
-  // 클라이언트에서만 QR 코드를 생성하여 Hydration 오류 방지
-  useEffect(() => {
-    // 이미 초기화되었으면 다시 생성하지 않음
-    if (isInitialized) return
-    
-    const initialQr1 = generateEntranceQRCode()
-    const initialQr2 = generateEntranceQRCode()
-    
-    setStudyRooms([
-      {
-        id: '1',
-        name: '1정독실',
-        capacity: 30,
-        description: '1층 정독실',
-        entranceQrCode: initialQr1.code,
-        qrExpiresAt: initialQr1.expiresAt
-      },
-      {
-        id: '2',
-        name: '도서관',
-        capacity: 50,
-        description: '중앙 도서관',
-        entranceQrCode: initialQr2.code,
-        qrExpiresAt: initialQr2.expiresAt
-      }
-    ])
-    setIsInitialized(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // 컴포넌트 마운트 시 한 번만 실행
+  const [isInitialized, setIsInitialized] = useState(true) // 초기화 완료로 설정하여 빈 배열 유지
 
   const [checkInRecords] = useState<CheckInRecord[]>([
     {
@@ -307,6 +278,17 @@ export default function StudyRoomPage() {
       }
       setStudyRooms([...studyRooms, room])
       setNewRoom({ name: '', capacity: 0, description: '' })
+    }
+  }
+
+  const deleteRoom = (roomId: string) => {
+    if (confirm('정말 이 정독실을 삭제하시겠습니까?')) {
+      setStudyRooms(studyRooms.filter(room => room.id !== roomId))
+      // 선택된 방이 삭제되면 선택 해제
+      if (selectedRoom?.id === roomId) {
+        setSelectedRoom(null)
+        setCurrentStep('setup')
+      }
     }
   }
 
@@ -439,6 +421,15 @@ export default function StudyRoomPage() {
                           >
                             <EyeIcon className="w-4 h-4 mr-1" />
                             대시보드
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => deleteRoom(room.id)}
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                          >
+                            <TrashIcon className="w-4 h-4 mr-1" />
+                            삭제
                           </Button>
                         </div>
                       </div>

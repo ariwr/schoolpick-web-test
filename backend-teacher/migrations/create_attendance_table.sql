@@ -52,3 +52,6 @@ COMMENT ON COLUMN attendance.geo_data IS 'GPS 및 Wi-Fi 원본 데이터 (JSON)'
 COMMENT ON COLUMN attendance.device_id IS '스캔 시 사용된 기기 ID';
 COMMENT ON COLUMN attendance.is_fraud_detected IS '부정행위 의심 기록 여부';
 
+
+
+

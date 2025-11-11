@@ -61,6 +61,46 @@ async def log_requests(request: Request, call_next):
         logger.info(f"OPTIONS 응답: {response.status_code}")
     return response
 
+# 데이터베이스 연결 오류 전역 핸들러
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    """HTTP 예외 핸들러 - FastAPI의 HTTPException은 이미 처리되므로 여기서는 Starlette의 HTTPException만 처리"""
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={"detail": exc.detail}
+    )
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    """전역 예외 핸들러 - 데이터베이스 연결 오류 등 처리"""
+    from sqlalchemy.exc import OperationalError
+    from fastapi import HTTPException
+    
+    # HTTPException은 FastAPI가 처리하도록 함
+    if isinstance(exc, HTTPException):
+        raise exc
+    
+    error_msg = str(exc)
+    
+    # 데이터베이스 연결 오류 처리
+    if isinstance(exc, OperationalError) or "password authentication failed" in error_msg.lower():
+        logger.error(f"데이터베이스 연결 오류: {error_msg}")
+        return JSONResponse(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            content={
+                "detail": "데이터베이스 연결에 실패했습니다. .env 파일의 DATABASE_PASSWORD를 확인하세요."
+            }
+        )
+    
+    # 기타 예외는 기본 처리
+    logger.error(f"예상치 못한 오류 발생: {error_msg}", exc_info=True)
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": f"서버 오류가 발생했습니다: {error_msg[:200]}"}
+    )
+
 # 검증 오류 예외 핸들러 추가 (사용자 친화적인 메시지)
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -177,6 +217,9 @@ app.include_router(attendance.router, prefix="/api/attendance", tags=["출석"])
 app.include_router(admin.router, prefix="/api/admin", tags=["관리자"])
 app.include_router(schedule.router, prefix="/api/schedule", tags=["시간표"])
 app.include_router(content_filter.router, prefix="/api/content-filter", tags=["세특 검열"])
+# /check/setuek 엔드포인트를 위한 별도 라우터 등록 (prefix 없이)
+from app.api.content_filter import router as check_router
+app.include_router(check_router, tags=["세특 검열"])
 
 # 야자 출석 스케줄러 시작
 @app.on_event("startup")

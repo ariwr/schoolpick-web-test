@@ -24,47 +24,71 @@ def _ensure_env_loaded():
         logger.info(f".env 파일 존재: {os.path.exists(env_path)}")
         
         if os.path.exists(env_path):
-            try:
-                with open(env_path, 'r', encoding='utf-8') as f:
-                    lines = f.readlines()
-                    logger.info(f".env 파일 라인 수: {len(lines)}")
-                    
-                    for line_num, line in enumerate(lines, 1):
-                        original_line = line
-                        line = line.strip()
-                        logger.debug(f"라인 {line_num}: {line[:50]}...")
+            # 여러 인코딩 시도 (config.py의 safe_load_dotenv와 동일한 방식)
+            encodings = ['utf-8', 'utf-8-sig', 'cp949', 'euc-kr', 'latin-1', 'windows-1252']
+            
+            password_found = False
+            for encoding in encodings:
+                try:
+                    with open(env_path, 'r', encoding=encoding, errors='replace') as f:
+                        lines = f.readlines()
+                        logger.info(f".env 파일 라인 수: {len(lines)} (인코딩: {encoding})")
                         
-                        if line and not line.startswith('#') and '=' in line:
-                            key, value = line.split('=', 1)
-                            key = key.strip()
-                            # BOM 제거 (UTF-8 with BOM 처리)
-                            key = key.lstrip('\ufeff')
-                            key = key.strip()
-                            value = value.strip()
+                        for line_num, line in enumerate(lines, 1):
+                            original_line = line
+                            line = line.strip()
+                            logger.debug(f"라인 {line_num}: {line[:50]}...")
                             
-                            logger.info(f"라인 {line_num} 파싱: key={repr(key)}, value={value[:10]}...")
-                            
-                            if key == "DATABASE_PASSWORD":
-                                os.environ[key] = value
-                                os.environ['DATABASE_PASSWORD'] = value  # 중복 설정으로 확실하게
+                            if line and not line.startswith('#') and '=' in line:
+                                key, value = line.split('=', 1)
+                                key = key.strip()
+                                # BOM 제거 (UTF-8 with BOM 처리)
+                                key = key.lstrip('\ufeff')
+                                key = key.strip()
+                                value = value.strip()
                                 
-                                logger.info(f"✅ DATABASE_PASSWORD 설정 완료: {value[:5]}... (라인 {line_num})")
-                                # 즉시 확인
-                                verify = os.getenv("DATABASE_PASSWORD", "")
-                                logger.info(f"✅ 확인: os.getenv('DATABASE_PASSWORD') = '{verify[:15]}...' if len(verify) > 15 else verify")
+                                logger.info(f"라인 {line_num} 파싱: key={repr(key)}, value={value[:10]}...")
                                 
-                                if verify and verify != "password":
-                                    return True
-                                else:
-                                    logger.error(f"❌ 환경변수 설정 실패! verify='{verify}'")
-                                    # 다시 시도
-                                    os.environ['DATABASE_PASSWORD'] = value
-                                    logger.info(f"✅ 재설정 시도: {os.getenv('DATABASE_PASSWORD', 'FAILED')[:15]}")
-                    logger.warning("⚠️ DATABASE_PASSWORD 라인을 찾지 못했습니다.")
-            except Exception as e:
-                logger.error(f"❌ .env 파일 읽기 실패: {e}")
-                import traceback
-                logger.error(traceback.format_exc())
+                                if key == "DATABASE_PASSWORD":
+                                    password_found = True
+                                    os.environ[key] = value
+                                    os.environ['DATABASE_PASSWORD'] = value  # 중복 설정으로 확실하게
+                                    
+                                    logger.info(f"✅ DATABASE_PASSWORD 설정 완료: {value[:5]}... (라인 {line_num}, 인코딩: {encoding})")
+                                    # 즉시 확인
+                                    verify = os.getenv("DATABASE_PASSWORD", "")
+                                    if len(verify) > 15:
+                                        verify_display = verify[:15] + "..."
+                                    else:
+                                        verify_display = verify
+                                    logger.info(f"✅ 확인: os.getenv('DATABASE_PASSWORD') = '{verify_display}'")
+                                    
+                                    # 값이 설정되었는지만 확인 (빈 값이 아니면 성공)
+                                    if verify:
+                                        logger.info(f"✅ DATABASE_PASSWORD 환경변수 설정 성공!")
+                                        return True
+                                    else:
+                                        logger.error(f"❌ 환경변수 설정 실패! verify가 비어있습니다.")
+                                        # 다시 시도
+                                        os.environ['DATABASE_PASSWORD'] = value
+                                        verify_retry = os.getenv('DATABASE_PASSWORD', 'FAILED')
+                                        logger.info(f"✅ 재설정 시도: {verify_retry[:15] if len(verify_retry) > 15 else verify_retry}")
+                        
+                        # 이 인코딩으로 파일을 성공적으로 읽었지만 DATABASE_PASSWORD를 찾지 못한 경우
+                        if not password_found:
+                            logger.warning(f"⚠️ DATABASE_PASSWORD 라인을 찾지 못했습니다. (인코딩: {encoding})")
+                        # 인코딩이 성공했으므로 다음 인코딩 시도하지 않고 종료
+                        break
+                except UnicodeDecodeError:
+                    # 이 인코딩으로 읽을 수 없으면 다음 인코딩 시도
+                    continue
+                except Exception as e:
+                    logger.warning(f"⚠️ .env 파일 읽기 시도 실패 (인코딩: {encoding}): {str(e)}")
+                    continue
+            
+            # 모든 인코딩 시도 후에도 DATABASE_PASSWORD를 찾지 못한 경우에만 오류
+            if not password_found:
+                logger.error(f"❌ .env 파일에서 DATABASE_PASSWORD를 찾을 수 없습니다.")
         else:
             logger.warning(f"⚠️ .env 파일을 찾을 수 없습니다: {env_path}")
     else:

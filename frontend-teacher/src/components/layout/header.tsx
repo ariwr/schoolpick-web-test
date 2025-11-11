@@ -107,9 +107,6 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-                <span className="text-white font-bold text-lg">고</span>
-              </div>
               <div>
                 <span className="text-xl font-bold text-white">스쿨픽 교사용</span>
                 <p className="text-xs text-white/80">교사들을 위한 통합 관리 플랫폼</p>

@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+// Popover 컴포넌트가 없으므로 커스텀 Popover 구현
 import { getByteLength } from "@/lib/utils"
 import { 
   ClipboardDocumentListIcon, 
@@ -63,11 +64,12 @@ interface StudentResponse {
 
 // 새로운 API 구조 타입 정의
 interface ErrorDetail {
+  id: string             // 고유 ID (개별 객체 식별용)
   original: string        // 오류 원본
   corrected: string | null // 교정 제안 (금칙어는 null)
   type: string           // 오류 유형 (e.g., 'banned_university', 'spelling')
   help: string           // 도움말
-  start_index: number    // 오류 시작 위치
+  start_index: number    // 오류 시작 위치 (참고용, 실제 매칭은 id 기반)
 }
 
 interface CheckResponse {
@@ -143,8 +145,7 @@ export default function SaeTeukPage() {
   const [filterErrors, setFilterErrors] = useState<ErrorDetail[]>([]) // errors로 변경
   const [isFiltering, setIsFiltering] = useState(false)
   const [filterError, setFilterError] = useState<string | null>(null)
-  const [showInlineHighlights, setShowInlineHighlights] = useState(false)
-  const [selectedErrorIndex, setSelectedErrorIndex] = useState<number | null>(null)
+  const [selectedErrorId, setSelectedErrorId] = useState<string | null>(null) // 선택된 오류 ID
 
   // Mock data - 더 많은 샘플 데이터 추가
   const [activityRequests, setActivityRequests] = useState<ActivityRequest[]>([
@@ -733,43 +734,160 @@ export default function SaeTeukPage() {
     )
   }
 
-  // InlineError 컴포넌트: 오류 텍스트와 제안 상자 표시
+  // InlineError 컴포넌트: 오류 텍스트와 Popover 표시
   const InlineError = ({
     errorData,
     onFix
   }: {
     errorData: ErrorDetail
-    onFix: (correctedText: string | null) => void
+    onFix: (correctedText: string | null, errorId: string) => void
   }) => {
-    const { original, corrected, help } = errorData
+    const { original, corrected, help, id } = errorData
     const isBanned = errorData.type.startsWith('banned_')
+    const [isOpen, setIsOpen] = useState(false)
+    const [position, setPosition] = useState<{ top: number; left: number } | null>(null)
+    const [spanElement, setSpanElement] = useState<HTMLSpanElement | null>(null)
+
+    // Popover 위치 계산
+    useEffect(() => {
+      if (isOpen && spanElement) {
+        const rect = spanElement.getBoundingClientRect()
+        const popoverWidth = 320 // w-80 = 320px
+        const popoverHeight = 150 // 예상 높이
+        const padding = 8
+        
+        let top = rect.bottom + window.scrollY + padding
+        let left = rect.left + window.scrollX
+        
+        // 화면 오른쪽 경계 체크
+        if (left + popoverWidth > window.innerWidth) {
+          left = window.innerWidth - popoverWidth - padding
+        }
+        
+        // 화면 아래 경계 체크
+        if (rect.bottom + popoverHeight > window.innerHeight) {
+          // 위쪽에 표시
+          top = rect.top + window.scrollY - popoverHeight - padding
+          if (top < window.scrollY) {
+            // 위쪽도 공간이 없으면 아래쪽에 표시하되 스크롤 가능하도록
+            top = rect.bottom + window.scrollY + padding
+          }
+        }
+        
+        // 화면 왼쪽 경계 체크
+        if (left < 0) {
+          left = padding
+        }
+        
+        setPosition({ top, left })
+      }
+    }, [isOpen, spanElement])
+
+    // 외부 클릭 시 닫기
+    useEffect(() => {
+      if (!isOpen) return
+
+      const handleClickOutside = (event: MouseEvent) => {
+        const target = event.target as HTMLElement
+        if (spanElement && !spanElement.contains(target)) {
+          const popover = document.getElementById(`popover-${id}`)
+          if (popover && !popover.contains(target)) {
+            setIsOpen(false)
+          }
+        }
+      }
+
+      const handleScroll = () => {
+        setIsOpen(false)
+      }
+
+      document.addEventListener('mousedown', handleClickOutside)
+      window.addEventListener('scroll', handleScroll, true)
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside)
+        window.removeEventListener('scroll', handleScroll, true)
+      }
+    }, [isOpen, spanElement, id])
 
     return (
-      <span className="relative inline-block">
-        {/* 제안 상자 (오류 위에 표시) */}
-        {corrected && (
-          <button
-            onClick={() => onFix(corrected)}
-            className="absolute -top-7 left-0 bg-gray-900 text-white text-xs px-2 py-1 rounded shadow-lg z-10 hover:bg-gray-800 transition-colors whitespace-nowrap"
-            title={help}
-          >
-            {corrected}
-          </button>
-        )}
-        {isBanned && !corrected && (
-          <button
-            onClick={() => onFix(null)}
-            className="absolute -top-7 left-0 bg-red-900 text-white text-xs px-2 py-1 rounded shadow-lg z-10 hover:bg-red-800 transition-colors whitespace-nowrap"
-            title={help}
-          >
-            삭제
-          </button>
-        )}
-        {/* 오류 텍스트 (빨간 밑줄) */}
-        <span className="underline decoration-red-500 decoration-2 underline-offset-2">
+      <>
+        <span 
+          ref={setSpanElement}
+          className="underline decoration-wavy decoration-red-500 decoration-2 underline-offset-2 text-red-700 cursor-pointer hover:bg-red-50 px-1 rounded relative inline-block"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setIsOpen(true)
+          }}
+        >
           {original}
         </span>
-      </span>
+        {isOpen && position && (
+          <div
+            id={`popover-${id}`}
+            className="fixed z-50 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-4"
+            style={{
+              top: `${position.top}px`,
+              left: `${position.left}px`,
+            }}
+          >
+            {/* 도움말 */}
+            <div className="mb-3">
+              <div className="text-sm font-semibold text-gray-900 mb-1">{help}</div>
+              <div className="text-xs text-gray-600 flex items-center gap-2 flex-wrap">
+                <span className="font-mono bg-gray-100 px-2 py-0.5 rounded">{original}</span>
+                {corrected && (
+                  <>
+                    <span>→</span>
+                    <span className="font-mono bg-blue-100 px-2 py-0.5 rounded text-blue-800">{corrected}</span>
+                  </>
+                )}
+              </div>
+            </div>
+            
+            {/* 액션 버튼 */}
+            <div className="flex items-center gap-2">
+              {corrected && (
+                <Button
+                  size="sm"
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onFix(corrected, id)
+                    setIsOpen(false)
+                  }}
+                >
+                  수정하기
+                </Button>
+              )}
+              {isBanned && (
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="flex-1"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    onFix(null, id)
+                    setIsOpen(false)
+                  }}
+                >
+                  삭제하기
+                </Button>
+              )}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsOpen(false)
+                }}
+              >
+                무시
+              </Button>
+            </div>
+          </div>
+        )}
+      </>
     )
   }
 
@@ -781,7 +899,7 @@ export default function SaeTeukPage() {
   }: {
     originalText: string
     errors: ErrorDetail[]
-    onFix: (correctedText: string | null, errorIndex: number) => void
+    onFix: (correctedText: string | null, errorId: string) => void
   }) => {
     const segments = segmentText(originalText, errors)
 
@@ -791,15 +909,12 @@ export default function SaeTeukPage() {
           if (segment.type === 'correct') {
             return <span key={index}>{segment.content}</span>
           } else {
-            // error 타입인 경우, 해당 error의 인덱스 찾기
-            const errorIndex = errors.findIndex(
-              e => e.start_index === segment.data.start_index && e.original === segment.data.original
-            )
+            // error 타입인 경우, 해당 error의 ID 사용
             return (
               <InlineError
-                key={index}
+                key={segment.data.id}
                 errorData={segment.data}
-                onFix={(correctedText) => onFix(correctedText, errorIndex)}
+                onFix={(correctedText) => onFix(correctedText, segment.data.id)}
               />
             )
           }
@@ -809,8 +924,8 @@ export default function SaeTeukPage() {
   }
 
   // 수정/삭제 적용 함수 (SpellCheckDisplay에서 사용)
-  const handleFixError = async (correctedText: string | null, errorIndex: number) => {
-    const error = filterErrors[errorIndex]
+  const handleFixError = async (correctedText: string | null, errorId: string) => {
+    const error = filterErrors.find(e => e.id === errorId)
     if (!error) return
 
     const studentKey = `${selectedRequest?.id}_${selectedStudent?.studentId}`
@@ -866,7 +981,7 @@ export default function SaeTeukPage() {
 
     // API 재호출로 인덱스 밀림 문제 해결
     setIsFiltering(true)
-    setSelectedErrorIndex(null)
+    setSelectedErrorId(null)
     
     try {
       // 수정된 텍스트로 다시 검열 API 호출
@@ -878,10 +993,214 @@ export default function SaeTeukPage() {
     }
   }
 
+  // 하이라이트된 텍스트를 렌더링하는 컴포넌트 (부산대 맞춤법 검사기 스타일)
+  const HighlightedTextEditor = ({ 
+    value, 
+    onChange, 
+    errors, 
+    selectedErrorId,
+    onHighlightClick,
+    placeholder
+  }: {
+    value: string
+    onChange: (newValue: string) => void
+    errors: ErrorDetail[]
+    selectedErrorId: string | null
+    onHighlightClick: (errorId: string) => void
+    placeholder?: string
+  }) => {
+    const editorRef = React.useRef<HTMLDivElement>(null)
+    const [isEditing, setIsEditing] = useState(false)
+
+    // 텍스트를 세그먼트로 분할 (하이라이트 컴포넌트 삽입)
+    const renderSegments = () => {
+      if (errors.length === 0) {
+        return value || <span className="text-gray-400">{placeholder}</span>
+      }
+
+      // errors를 start_index 기준으로 정렬
+      const sortedErrors = [...errors].sort((a, b) => a.start_index - b.start_index)
+      
+      const segments: React.ReactNode[] = []
+      let lastIndex = 0
+
+      sortedErrors.forEach((error) => {
+        const { start_index, original, id } = error
+        const endIndex = start_index + original.length
+
+        // 오류 전의 정상 텍스트
+        if (start_index > lastIndex) {
+          segments.push(
+            <span key={`text-${lastIndex}`}>
+              {value.substring(lastIndex, start_index)}
+            </span>
+          )
+        }
+
+        // 오류 텍스트 (하이라이트)
+        const isSelected = selectedErrorId === id
+        segments.push(
+          <span
+            key={id}
+            id={`highlight-${id}`}
+            className={`inline-block cursor-pointer underline decoration-wavy decoration-red-500 decoration-2 underline-offset-2 text-red-700 bg-red-50 px-1 rounded ${
+              isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-red-100'
+            } transition-all`}
+            onClick={(e) => {
+              e.stopPropagation()
+              onHighlightClick(id)
+            }}
+            title={original}
+          >
+            {original}
+          </span>
+        )
+
+        lastIndex = endIndex
+      })
+
+      // 마지막 오류 이후의 정상 텍스트
+      if (lastIndex < value.length) {
+        segments.push(
+          <span key={`text-${lastIndex}`}>
+            {value.substring(lastIndex)}
+          </span>
+        )
+      }
+
+      return segments
+    }
+
+    // 선택된 하이라이트로 스크롤
+    useEffect(() => {
+      if (selectedErrorId && editorRef.current && !isEditing) {
+        const highlightElement = document.getElementById(`highlight-${selectedErrorId}`)
+        if (highlightElement) {
+          highlightElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }
+    }, [selectedErrorId, isEditing])
+
+    // 편집 모드: contentEditable div 사용
+    // 하이라이트가 있을 때는 읽기 전용 모드로 표시, 클릭 시 편집 모드로 전환
+    if (errors.length === 0 || isEditing) {
+      return (
+        <Textarea
+          value={value}
+          onChange={(e) => {
+            onChange(e.target.value)
+          }}
+          onBlur={() => {
+            setIsEditing(false)
+          }}
+          onFocus={() => {
+            setIsEditing(true)
+          }}
+          placeholder={placeholder}
+          rows={20}
+          className="resize-none min-h-[400px]"
+        />
+      )
+    }
+
+    return (
+      <div
+        ref={editorRef}
+        className="min-h-[400px] p-3 border border-gray-300 rounded-md bg-white whitespace-pre-wrap break-words overflow-y-auto cursor-text"
+        style={{ minHeight: '400px', maxHeight: '600px' }}
+        onClick={() => {
+          setIsEditing(true)
+        }}
+      >
+        {renderSegments()}
+      </div>
+    )
+  }
+
   if (currentView === 'workspace') {
     const studentKey = `${selectedRequest?.id}_${selectedStudent?.studentId}`
     const finalText = studentFinalTexts[studentKey] || {}
     const byteLimit = byteLimits[studentKey] || 1500
+    const currentText = finalText['main'] || ''
+
+    // 왼쪽 하이라이트 클릭 핸들러
+    const handleHighlightClick = (errorId: string) => {
+      setSelectedErrorId(errorId)
+      
+      // 오른쪽 카드 리스트에서 해당 카드로 스크롤
+      setTimeout(() => {
+        const cardElement = document.getElementById(`error-card-${errorId}`)
+        if (cardElement) {
+          cardElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 100)
+    }
+
+    // 오른쪽 카드 클릭 핸들러
+    const handleCardClick = (errorId: string) => {
+      setSelectedErrorId(errorId)
+      
+      // 왼쪽 하이라이트로 스크롤
+      setTimeout(() => {
+        const highlightElement = document.getElementById(`highlight-${errorId}`)
+        if (highlightElement) {
+          highlightElement.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 100)
+    }
+
+    // 수정 적용 핸들러
+    const handleApplyFix = (errorId: string) => {
+      const error = filterErrors.find(e => e.id === errorId)
+      if (!error || !error.corrected) return
+
+      const { start_index, original, corrected } = error
+      const beforeText = currentText.substring(0, start_index)
+      const afterText = currentText.substring(start_index + original.length)
+      const newText = beforeText + corrected + afterText
+
+      setStudentFinalTexts(prev => ({
+        ...prev,
+        [studentKey]: { ...prev[studentKey], main: newText }
+      }))
+
+      // 카드 제거 및 선택 해제
+      setFilterErrors(prev => prev.filter(e => e.id !== errorId))
+      if (selectedErrorId === errorId) {
+        setSelectedErrorId(null)
+      }
+    }
+
+    // 무시 핸들러
+    const handleIgnore = (errorId: string) => {
+      setFilterErrors(prev => prev.filter(e => e.id !== errorId))
+      if (selectedErrorId === errorId) {
+        setSelectedErrorId(null)
+      }
+    }
+
+    // 모두 적용 핸들러
+    const handleApplyAll = () => {
+      let newText = currentText
+      const sortedErrors = [...filterErrors].sort((a, b) => b.start_index - a.start_index) // 역순 정렬
+
+      sortedErrors.forEach(error => {
+        if (error.corrected) {
+          const { start_index, original, corrected } = error
+          const beforeText = newText.substring(0, start_index)
+          const afterText = newText.substring(start_index + original.length)
+          newText = beforeText + corrected + afterText
+        }
+      })
+
+      setStudentFinalTexts(prev => ({
+        ...prev,
+        [studentKey]: { ...prev[studentKey], main: newText }
+      }))
+
+      setFilterErrors([])
+      setSelectedErrorId(null)
+    }
 
     return (
       <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary py-8">
@@ -908,48 +1227,15 @@ export default function SaeTeukPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {/* 학생 답변 원문 */}
+            {/* 왼쪽: 세특 내용 입력 */}
             <Card className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border">
               <CardHeader>
-                <CardTitle className="text-godding-text-primary">학생 답변 원문</CardTitle>
-                <CardDescription className="text-godding-text-secondary">
-                  학생이 제출한 구조화된 답변 내용입니다 (읽기 전용)
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 max-h-[800px] overflow-y-auto">
-                {selectedRequest?.questions.map((question, index) => {
-                  const answer = selectedStudent?.answers[question.id] || '답변 없음'
-                  return (
-                    <div key={question.id} className="p-4 bg-white/50 rounded-lg border border-gray-200">
-                      <div className="flex items-start space-x-2 mb-2">
-                        <span className="font-semibold text-godding-text-primary">{index + 1}.</span>
-                        <h4 className="font-medium text-godding-text-primary flex-1">
-                          {question.text}
-                        </h4>
-                      </div>
-                      <div className="mt-2 p-3 bg-gray-50 rounded-md">
-                        <p className="text-sm text-godding-text-secondary whitespace-pre-wrap">
-                          {answer}
-                        </p>
-                      </div>
-                      {question.byteLimit && (
-                        <ByteCounter text={answer} limit={question.byteLimit} />
-                      )}
-                    </div>
-                  )
-                })}
-              </CardContent>
-            </Card>
-
-            {/* 교사용 편집기 */}
-            <Card className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border">
-              <CardHeader>
-                <CardTitle className="text-godding-text-primary">세특 최종안 작성</CardTitle>
+                <CardTitle className="text-godding-text-primary">세특 내용 입력</CardTitle>
                 <CardDescription className="text-godding-text-secondary">
                   학생의 답변을 바탕으로 세특을 작성하고 편집하세요
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4">
                 <div className="flex space-x-2">
                   <Button onClick={generateLLM} className="flex-1">
                     <ClipboardDocumentListIcon className="w-4 h-4 mr-2" />
@@ -960,148 +1246,180 @@ export default function SaeTeukPage() {
                   </Button>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-godding-text-primary mb-1">
-                      바이트 제한
-                    </label>
-                    <Input 
-                      type="number"
-                      value={byteLimit}
-                      onChange={(e) => setByteLimits(prev => ({ ...prev, [studentKey]: parseInt(e.target.value) || 1500 }))}
-                      placeholder="1500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-godding-text-primary mb-1">
-                      추가 키워드
-                    </label>
-                    <Input placeholder="리더십, 협력, 책임감" />
-                  </div>
-                </div>
-
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="block text-sm font-medium text-godding-text-primary">
-                      세특 최종안
+                      세특 내용
                     </label>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          // 임시 저장
-                          console.log('Saving draft...')
-                        }}
-                      >
-                        <DocumentArrowDownIcon className="w-4 h-4 mr-1" />
-                        임시 저장
-                      </Button>
-                    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        console.log('Saving draft...')
+                      }}
+                    >
+                      <DocumentArrowDownIcon className="w-4 h-4 mr-1" />
+                      임시 저장
+                    </Button>
                   </div>
-                  <div className="relative">
-                    {showInlineHighlights && filterErrors.length > 0 ? (
-                      // 검열 모드: SpellCheckDisplay 사용
-                      <SpellCheckDisplay
-                        originalText={finalText['main'] || ''}
-                        errors={filterErrors}
-                        onFix={handleFixError}
-                      />
-                    ) : (
-                      // 일반 편집 모드: Textarea 사용
-                      <Textarea
-                        value={finalText['main'] || ''}
-                        onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                          setStudentFinalTexts(prev => ({
-                            ...prev,
-                            [studentKey]: { ...prev[studentKey], main: e.target.value }
-                          }))
-                        }}
-                        placeholder="학생의 답변을 바탕으로 세특을 작성하거나, LLM 초안 생성 버튼을 클릭하여 자동으로 생성하세요"
-                        rows={15}
-                        className="resize-none"
-                      />
-                    )}
+                  <HighlightedTextEditor
+                    value={currentText}
+                    onChange={(newValue) => {
+                      setStudentFinalTexts(prev => ({
+                        ...prev,
+                        [studentKey]: { ...prev[studentKey], main: newValue }
+                      }))
+                    }}
+                    errors={filterErrors}
+                    selectedErrorId={selectedErrorId}
+                    onHighlightClick={handleHighlightClick}
+                    placeholder="학생의 답변을 바탕으로 세특을 작성하거나, LLM 초안 생성 버튼을 클릭하여 자동으로 생성하세요"
+                  />
+                  <ByteCounter text={currentText} limit={byteLimit} label="세특 내용" />
+                  
+                  <div className="flex space-x-2 mt-4">
+                    <Button 
+                      variant="outline"
+                      onClick={async () => {
+                        if (!currentText.trim()) {
+                          alert('검열할 내용이 없습니다. 세특을 먼저 작성해주세요.')
+                          return
+                        }
+                        await handleInlineFilter(currentText)
+                      }}
+                      disabled={isFiltering}
+                      className="flex-1"
+                    >
+                      {isFiltering ? (
+                        <>
+                          <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
+                          검열 중...
+                        </>
+                      ) : (
+                        <>
+                          <ShieldCheckIcon className="w-4 h-4 mr-2" />
+                          세특 검열
+                        </>
+                      )}
+                    </Button>
+                    <Button 
+                      className="flex-1"
+                      onClick={() => {
+                        console.log('Saving final text...')
+                      }}
+                    >
+                      <DocumentArrowDownIcon className="w-4 h-4 mr-2" />
+                      최종 저장
+                    </Button>
                   </div>
-                  <ByteCounter text={finalText['main'] || ''} limit={byteLimit} label="세특 최종안" />
-                  {showInlineHighlights && filterErrors.length > 0 && (
-                    <div className="mt-2 text-sm text-gray-600">
-                      <span className="font-medium">{filterErrors.length}개의 문제가 발견되었습니다.</span>
-                      <span className="ml-2 text-gray-500">하이라이트된 텍스트를 클릭하여 수정하세요.</span>
-                    </div>
-                  )}
+
                   {filterError && (
                     <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <p className="text-sm text-red-800">{filterError}</p>
                     </div>
                   )}
                 </div>
+              </CardContent>
+            </Card>
 
-                <div className="flex space-x-2">
-                  <Button 
-                    className="flex-1"
-                    onClick={() => {
-                      // 최종 저장
-                      console.log('Saving final text...')
-                    }}
-                  >
-                    <DocumentArrowDownIcon className="w-4 h-4 mr-2" />
-                    최종 저장
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    onClick={async () => {
-                      const contentToFilter = finalText['main'] || ''
-                      if (!contentToFilter.trim()) {
-                        alert('검열할 내용이 없습니다. 세특을 먼저 작성해주세요.')
-                        return
-                      }
-                      // 인라인 검열 모드로 전환
-                      setFilteringContent(contentToFilter)
-                      await handleInlineFilter(contentToFilter)
-                    }}
-                    disabled={isFiltering}
-                  >
-                    {isFiltering ? (
-                      <>
-                        <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                        검열 중...
-                      </>
-                    ) : (
-                      <>
-                        <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                        세특 검열
-                      </>
-                    )}
-                  </Button>
-                  {showInlineHighlights && (
-                    <Button 
-                      variant="outline"
-                      onClick={() => {
-                        setShowInlineHighlights(false)
-                        setFilterErrors([])
-                        setSelectedErrorIndex(null)
-                      }}
+            {/* 오른쪽: 수정 제안 카드 리스트 */}
+            <Card className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="text-godding-text-primary">
+                      수정 제안 {filterErrors.length > 0 && `(총 ${filterErrors.length}개)`}
+                    </CardTitle>
+                    <CardDescription className="text-godding-text-secondary mt-1">
+                      검열 결과를 확인하고 수정하세요
+                    </CardDescription>
+                  </div>
+                  {filterErrors.length > 0 && (
+                    <Button
+                      onClick={handleApplyAll}
+                      className="bg-blue-600 hover:bg-blue-700"
+                      size="sm"
                     >
-                      하이라이트 숨기기
+                      모두 적용
                     </Button>
                   )}
-                  <Button variant="outline">
-                    미리보기
-                  </Button>
                 </div>
+              </CardHeader>
+              <CardContent>
+                {filterErrors.length === 0 ? (
+                  <div className="text-center py-12 text-godding-text-secondary">
+                    <ShieldCheckIcon className="w-12 h-12 mx-auto mb-3 text-gray-400" />
+                    <p className="text-sm">검열 버튼을 클릭하여 검열을 시작하세요.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[600px] overflow-y-auto">
+                    {filterErrors.map((error) => {
+                      const isSelected = selectedErrorId === error.id
+                      return (
+                        <Card 
+                          key={error.id}
+                          id={`error-card-${error.id}`}
+                          className={`border transition-all cursor-pointer ${
+                            isSelected 
+                              ? 'border-blue-500 ring-2 ring-blue-300 bg-blue-50' 
+                              : 'border-gray-200 hover:border-blue-300'
+                          }`}
+                          onClick={() => handleCardClick(error.id)}
+                        >
+                          <CardContent className="p-4">
+                            <div className="space-y-3">
+                              <div>
+                                <div className="text-xs text-gray-500 mb-1">입력 내용</div>
+                                <div className="font-medium text-gray-900 bg-red-50 px-2 py-1 rounded">
+                                  {error.original}
+                                </div>
+                              </div>
+                              
+                              {error.corrected && (
+                                <div>
+                                  <div className="text-xs text-gray-500 mb-1">대치어</div>
+                                  <div className="font-medium text-blue-900 bg-blue-50 px-2 py-1 rounded">
+                                    {error.corrected}
+                                  </div>
+                                </div>
+                              )}
 
-                {/* 완료 체크박스 */}
-                <div className="flex items-center space-x-2 p-3 bg-blue-50 rounded-lg">
-                  <input
-                    type="checkbox"
-                    id="completed"
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                  />
-                  <label htmlFor="completed" className="text-sm font-medium text-godding-text-primary">
-                    이 학생의 세특 작성 완료
-                  </label>
-                </div>
+                              <div className="text-xs text-gray-600 bg-gray-50 px-2 py-1 rounded">
+                                {error.help}
+                              </div>
+
+                              <div className="flex space-x-2 pt-2">
+                                {error.corrected && (
+                                  <Button
+                                    size="sm"
+                                    className="flex-1 bg-blue-600 hover:bg-blue-700"
+                                    onClick={(e) => {
+                                      e.stopPropagation()
+                                      handleApplyFix(error.id)
+                                    }}
+                                  >
+                                    적용
+                                  </Button>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  className="flex-1"
+                                  onClick={(e) => {
+                                    e.stopPropagation()
+                                    handleIgnore(error.id)
+                                  }}
+                                >
+                                  무시
+                                </Button>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      )
+                    })}
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -1128,8 +1446,7 @@ export default function SaeTeukPage() {
     setIsFiltering(true)
     setFilterError(null)
     setFilterErrors([])
-    setShowInlineHighlights(false)
-    setSelectedErrorIndex(null)
+    setSelectedErrorId(null)
 
     try {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
@@ -1138,16 +1455,27 @@ export default function SaeTeukPage() {
         throw new Error("API 서버 주소가 설정되지 않았습니다.")
       }
 
-      // 새로운 API 엔드포인트 사용
-      const response = await fetch(`${API_BASE_URL}/check/setuek`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: content,
-        }),
-      })
+      let response
+      try {
+        // 새로운 API 엔드포인트 사용
+        response = await fetch(`${API_BASE_URL}/check/setuek`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: content,
+          }),
+        })
+      } catch (fetchError) {
+        // 네트워크 오류 처리 (CORS 오류 포함)
+        if (fetchError instanceof TypeError) {
+          if (fetchError.message.includes('fetch') || fetchError.message.includes('Failed to fetch')) {
+            throw new Error(`서버에 연결할 수 없습니다. 백엔드 서버(${API_BASE_URL})가 실행 중인지 확인해주세요.`)
+          }
+        }
+        throw new Error(`요청 실패: ${fetchError instanceof Error ? fetchError.message : '알 수 없는 오류'}`)
+      }
 
       if (!response.ok) {
         let errorMessage = "검열 중 오류가 발생했습니다."
@@ -1162,14 +1490,18 @@ export default function SaeTeukPage() {
 
       const data: CheckResponse = await response.json()
       
+      // errors에 고유 ID 추가 (개별 객체 형식)
+      const errorsWithId = (data.errors || []).map((error, index) => ({
+        ...error,
+        id: `error_${Date.now()}_${index}_${error.start_index}_${error.original.substring(0, 10)}`
+      }))
+      
       // errors를 start_index 기준으로 정렬
-      const sortedErrors = [...(data.errors || [])].sort((a, b) => a.start_index - b.start_index)
+      const sortedErrors = [...errorsWithId].sort((a, b) => a.start_index - b.start_index)
       setFilterErrors(sortedErrors)
-      setShowInlineHighlights(true)
-      setSelectedErrorIndex(null)
+      setSelectedErrorId(null)
     } catch (err) {
       setFilterError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
-      setShowInlineHighlights(false)
     } finally {
       setIsFiltering(false)
     }
@@ -1206,14 +1538,14 @@ export default function SaeTeukPage() {
 
       let response
       try {
-        response = await fetch(`${API_BASE_URL}/api/content-filter/filter`, {
+        // 새로운 API 엔드포인트 사용
+        response = await fetch(`${API_BASE_URL}/check/setuek`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            content: filteringContent,
-            max_bytes: maxBytes,
+            text: filteringContent,
           }),
         })
       } catch (fetchError) {
@@ -1236,110 +1568,21 @@ export default function SaeTeukPage() {
         throw new Error(errorMessage)
       }
 
-      let data
+      let data: CheckResponse
       try {
         data = await response.json()
       } catch (jsonError) {
         throw new Error("서버 응답을 파싱할 수 없습니다.")
       }
       
-      // issues의 original_text를 원본 filteringContent에서 정확히 찾아서 position 재계산
-      const validatedIssues = (data.issues || []).map((issue: any) => {
-        const originalText = issue.original_text || ''
-        if (!originalText) {
-          return issue
-        }
-        
-        // 원본 filteringContent에서 original_text 찾기
-        const searchResult = findTextInContent(originalText, filteringContent, issue.position)
-        if (searchResult.position !== -1) {
-          // 실제 찾은 위치와 텍스트로 업데이트
-          return {
-            ...issue,
-            position: searchResult.position,
-            length: searchResult.length,
-            original_text: searchResult.actualText || originalText
-          }
-        }
-        
-        // 못 찾으면 원래대로 반환
-        return issue
-      })
+      // CheckResponse 형식을 ErrorDetail 형식으로 변환
+      const errorsWithId = (data.errors || []).map((error: ErrorDetail, index: number) => ({
+        ...error,
+        id: error.id || `error_${Date.now()}_${index}_${error.start_index}_${error.original.substring(0, 10)}`
+      }))
       
-      // 원본과 filtered_content를 비교하여 issues에 없는 삭제된 항목 찾기
-      const missingIssues: typeof validatedIssues = []
-      const originalContent = filteringContent
-      const filteredContent = data.filtered_content
-      
-      // 금지된 단어 패턴 목록
-      const forbiddenPatterns = [
-        /대회/g,
-        /서울대|고려대|하버드|MIT|옥스포드|케임브리지/g,
-        /보건복지부|환경부|통계청|YMCA|OECD|유엔|WHO|식약처|질병관리청|국민연금관리공단/g,
-        /삼성|애플|구글|유튜브|틱톡|TED|인스타그램|넷플릭스/g,
-        /[·]/g, // 가운뎃점
-        /[""]/g, // 큰따옴표
-        /[<>]/g, // < > 괄호
-      ]
-      
-      // 원본에서 각 금지 단어를 찾아서 filtered_content에 없는지 확인
-      let searchIndex = 0
-      while (searchIndex < originalContent.length) {
-        let foundPattern = false
-        let foundText = ''
-        let foundPosition = -1
-        
-        for (const pattern of forbiddenPatterns) {
-          pattern.lastIndex = 0 // 패턴 리셋
-          const match = originalContent.substring(searchIndex).match(pattern)
-          if (match && match.index !== undefined) {
-            const matchText = match[0]
-            const matchPosition = searchIndex + match.index
-            
-            // 이 텍스트가 filtered_content에서 삭제되었는지 확인
-            const contextStart = Math.max(0, matchPosition - 20)
-            const contextEnd = Math.min(originalContent.length, matchPosition + matchText.length + 20)
-            const originalContext = originalContent.substring(contextStart, contextEnd)
-            
-            // filtered_content에서 이 문맥을 찾을 수 없거나 해당 단어가 없으면 삭제된 것으로 간주
-            if (!filteredContent.includes(matchText) || !filteredContent.includes(originalContext.replace(matchText, ''))) {
-              // 이미 issues에 포함되어 있는지 확인
-              const alreadyInIssues = validatedIssues.some(issue => {
-                const issueStart = issue.position
-                const issueEnd = issue.position + issue.length
-                return matchPosition >= issueStart && matchPosition + matchText.length <= issueEnd
-              })
-              
-              if (!alreadyInIssues) {
-                foundPattern = true
-                foundText = matchText
-                foundPosition = matchPosition
-                searchIndex = matchPosition + matchText.length
-                break
-              }
-            }
-          }
-        }
-        
-        if (foundPattern && foundPosition !== -1) {
-          // 삭제된 항목을 issues에 추가
-          missingIssues.push({
-            type: 'delete' as const,
-            position: foundPosition,
-            length: foundText.length,
-            original_text: foundText,
-            suggestion: null,
-            reason: `금지된 용어로 인해 삭제되었습니다.`
-          })
-        } else {
-          searchIndex++
-        }
-      }
-      
-      // validatedIssues와 missingIssues를 합침 (position 기준 정렬)
-      // 주의: 이 함수는 기존 모달용이며, 현재는 사용하지 않음
-      // const allIssues = [...validatedIssues, ...missingIssues].sort((a: any, b: any) => a.position - b.position)
-      // 모달은 현재 사용하지 않으므로 이 부분은 주석 처리
+      // filterErrors에 설정 (기존 코드와 호환)
+      setFilterErrors(errorsWithId)
     } catch (err) {
       setFilterError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
     } finally {
@@ -2001,11 +2244,10 @@ export default function SaeTeukPage() {
                 <Button
                   onClick={() => {
                     setShowFilterModal(false)
-                    setShowInlineHighlights(true)
                   }}
                   className="bg-blue-600 hover:bg-blue-700"
                 >
-                  인라인 검열로 전환
+                  닫기
                 </Button>
               )}
             </div>

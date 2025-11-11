@@ -29,9 +29,12 @@ export default function LoginPage() {
     setIsLoading(true);
     setError('');
     
+    const loginUrl = `${API_BASE}/api/auth/login`;
+    console.log('로그인 시도:', loginUrl);
+    
     try {
       // 백엔드 API 호출
-      const response = await fetch(`${API_BASE}/api/auth/login`, {
+      const response = await fetch(loginUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,14 +45,26 @@ export default function LoginPage() {
         }),
       });
 
+      // 응답 본문을 텍스트로 먼저 읽기 (JSON 파싱 실패 대비)
+      const responseText = await response.text();
       let data: any = {};
+      
       try {
-        data = await response.json();
-      } catch (_) {}
+        data = JSON.parse(responseText);
+      } catch (jsonError) {
+        // JSON 파싱 실패 시 원본 텍스트 사용
+        console.error('JSON 파싱 실패:', responseText);
+        setError(`서버 응답 오류 (${response.status}): ${responseText.substring(0, 200)}`);
+        setIsLoading(false);
+        return;
+      }
 
       if (response.ok && data.access_token) {
         // 로그인 성공 - 토큰 저장
         localStorage.setItem('token', data.access_token);
+        
+        // 로그인 성공 플래그 설정 (개발 환경에서 토큰 유지용)
+        sessionStorage.setItem('has_logged_in', 'true');
         
         // 사용자 정보 조회 (선택사항)
         try {
@@ -80,11 +95,29 @@ export default function LoginPage() {
         // 교사용 대시보드로 이동
         router.push('/dashboard');
       } else {
-        setError(data.detail || '로그인에 실패했습니다.');
+        // 서버 응답이 있지만 오류 상태인 경우
+        const errorMessage = data.detail || data.message || `로그인에 실패했습니다. (상태 코드: ${response.status})`;
+        
+        // 데이터베이스 연결 오류인 경우 더 명확한 메시지 표시
+        if (response.status === 503 && errorMessage.includes('데이터베이스')) {
+          setError(`${errorMessage}\n\n해결 방법:\n1. backend-teacher 폴더에 .env 파일이 있는지 확인하세요\n2. .env 파일에 DATABASE_PASSWORD가 올바르게 설정되어 있는지 확인하세요\n3. env.example 파일을 참고하여 .env 파일을 생성하세요`);
+        } else {
+          setError(errorMessage);
+        }
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('로그인 오류:', error);
-      setError('서버 연결에 실패했습니다.');
+      
+      // 더 구체적인 에러 메시지 제공
+      let errorMessage = '서버 연결에 실패했습니다.';
+      
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        errorMessage = `백엔드 서버에 연결할 수 없습니다. 확인 사항: 1) 백엔드 서버가 실행 중인지 확인 (${API_BASE}), 2) CORS 설정 확인, 3) 네트워크 연결 확인`;
+      } else if (error.message) {
+        errorMessage = `연결 오류: ${error.message}`;
+      }
+      
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -95,9 +128,6 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         {/* 로고 섹션 */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-godding-primary rounded-full mb-4 shadow-lg">
-            <span className="text-2xl font-bold text-white">고</span>
-          </div>
           <h1 className="text-3xl font-bold text-godding-text-primary mb-2">스쿨픽</h1>
           <p className="text-godding-text-secondary text-sm">교사용</p>
         </div>
@@ -143,7 +173,7 @@ export default function LoginPage() {
 
             {/* 에러 메시지 */}
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm whitespace-pre-wrap break-words">
                 {error}
               </div>
             )}

@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import { 
   ClipboardDocumentListIcon, 
   ChartBarIcon, 
@@ -49,16 +52,36 @@ const features = [
 ];
 
 export default function Home() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    const token = localStorage.getItem('token');
+    const userInfo = localStorage.getItem('userInfo');
+    
+    setIsAuthenticated(!!(token && userInfo));
+    
+    const handleStorageChange = () => {
+      const token = localStorage.getItem('token');
+      const userInfo = localStorage.getItem('userInfo');
+      setIsAuthenticated(!!(token && userInfo));
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('authStateChange', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('authStateChange', handleStorageChange);
+    };
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary">
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center">
-          <div className="flex justify-center mb-8">
-            <div className="w-20 h-20 bg-godding-primary rounded-3xl flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-3xl">고</span>
-            </div>
-          </div>
           <h1 className="text-5xl md:text-7xl font-bold text-godding-text-primary mb-6">
             스쿨픽 교사용
           </h1>
@@ -68,17 +91,19 @@ export default function Home() {
           <p className="text-lg text-godding-text-secondary mb-12 max-w-3xl mx-auto">
             <span className="font-semibold text-godding-text-primary">세특 작성부터 과목 수요 조사까지</span> 모든 것을 한 곳에서
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/login">
-              <Button size="lg" className="text-lg px-8 py-4">
-                <SparklesIcon className="w-5 h-5 mr-2" />
-                로그인하기
+          {!isAuthenticated && (
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/login">
+                <Button size="lg" className="text-lg px-8 py-4">
+                  <SparklesIcon className="w-5 h-5 mr-2" />
+                  로그인하기
+                </Button>
+              </Link>
+              <Button variant="outline" size="lg" className="text-lg px-8 py-4">
+                더 알아보기
               </Button>
-            </Link>
-            <Button variant="outline" size="lg" className="text-lg px-8 py-4">
-              더 알아보기
-            </Button>
-          </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -115,25 +140,6 @@ export default function Home() {
               </Card>
             </Link>
           ))}
-        </div>
-      </div>
-
-      {/* CTA Section */}
-      <div className="bg-godding-card-bg backdrop-blur-sm border-t border-godding-card-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center">
-            <h2 className="text-4xl font-bold text-godding-text-primary mb-6">
-              지금 시작해보세요
-            </h2>
-            <p className="text-xl text-godding-text-secondary mb-10 max-w-2xl mx-auto">
-              고교학점제 시대, 교사들의 든든한 파트너가 되어드립니다
-            </p>
-            <Link href="/login">
-              <Button size="lg" className="text-lg px-10 py-4">
-                무료로 시작하기
-              </Button>
-            </Link>
-          </div>
         </div>
       </div>
     </div>

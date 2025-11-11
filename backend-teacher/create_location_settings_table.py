@@ -62,3 +62,6 @@ def create_location_settings_table():
 if __name__ == "__main__":
     create_location_settings_table()
 
+
+
+

@@ -35,3 +35,6 @@ COMMENT ON COLUMN location_settings.attendance_end_time IS '출석 가능 종료
 COMMENT ON COLUMN location_settings.late_threshold_time IS '지각 기준 시간 (HH:MM 형식)';
 COMMENT ON COLUMN location_settings.checkout_time IS '야자 종료 시간 (HH:MM 형식)';
 
+
+
+
