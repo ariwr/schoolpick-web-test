@@ -1,0 +1,219 @@
+[
+  {
+    "pattern": "보건복지부(\\s*(장관|차관|과장|팀장))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "통계청(\\s*(장|차장|과장|팀장))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "질병관리청(\\s*(청장|차장|과장|팀장))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bCDC(\\s*(사무총장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "기획재정부\\s*(장관|차관|과장|팀장)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "과학기술정보통신부\\s*(장관|차관|과장|팀장)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "과기정통부\\s*(장관|차관|과장|팀장)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "유엔(\\s*(사무총장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bUN(\\s*(사무총장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bOECD(\\s*(사무총장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bWHO(\\s*(사무총장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "세계보건기구\\s*(사무총장|대표|기구)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "IMF\\s*(사무총장|대표|기구)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "국제통화기금\\s*(사무총장|대표|기구)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bYMCA(\\s*(회장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "YWCA\\s*(회장|대표|기구)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "적십자\\s*(사무총장|대표|기구)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "적십자사\\s*(사무총장|대표|기구)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(UN|유엔)",
+    "label": "기관명",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(OECD|오이시디)",
+    "label": "기관명",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(WHO|세계보건기구)",
+    "label": "기관명",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(UNICEF|유니세프)",
+    "label": "기관명",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성꿈장학재단)",
+    "label": "기관명",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울시교육청|경기도교육청|교육청)",
+    "label": "기관명",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교육부",
+    "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "대한민국학술원",
+    "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "국사편찬위원회",
+    "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "국립국제교육원",
+    "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "국립특수교육원",
+    "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교원소청심사위원회",
+    "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "중앙교육연수원",
+    "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]

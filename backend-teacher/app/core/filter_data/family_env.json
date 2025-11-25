@@ -1,0 +1,10 @@
+[
+  {
+    "pattern": "\\b(기초생활\\s*수급|차상위\\s*계층|취약계층)\\b",
+    "label": "가정환경",
+    "category": "FAMILY_ENV",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": ["수급", "취약"]
+  }
+]

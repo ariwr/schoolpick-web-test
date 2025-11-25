@@ -1,0 +1,248 @@
+[
+  {
+    "pattern": "토익\\s*점수?",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TOEIC\\s*점수?",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "토플\\s*점수?",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TOEFL\\s*점수?",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "텝스\\s*점수?",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TEPS\\s*점수?",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "토익\\s*\\d+",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TOEIC\\s*\\d+",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "토플\\s*\\d+",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TOEFL\\s*\\d+",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "텝스\\s*\\d+",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TEPS\\s*\\d+",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "한자능력검정",
+    "label": "한자시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "실용한자",
+    "label": "한자시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "HSK",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "JPT",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "JLPT",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "DELF",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "DALF",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "ZD",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TESTDAF",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "DSH",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "DSD",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "TORFL",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "DELE",
+    "label": "공인어학시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "상공회의소한자시험",
+    "label": "한자시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "한자급수자격검정",
+    "label": "한자시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "YBM\\s*상무한검",
+    "label": "한자시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "한자급수인증시험",
+    "label": "한자시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "한자자격검정",
+    "label": "한자시험",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "정보처리기사\\s*(자격증)?",
+    "label": "특정 자격증",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "컴퓨터활용능력\\s*(자격증)?",
+    "label": "특정 자격증",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "한글\\s*능력검정\\s*(자격증)?",
+    "label": "특정 자격증",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "워드프로세서\\s*(자격증)?",
+    "label": "특정 자격증",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "운전면허\\s*(자격증)?",
+    "label": "특정 자격증",
+    "category": "CERT",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]
+

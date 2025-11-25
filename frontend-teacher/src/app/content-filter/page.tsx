@@ -10,10 +10,15 @@ import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
   DocumentTextIcon,
-  ArrowPathIcon
+  ArrowPathIcon,
+  PencilIcon,
+  TrashIcon,
+  XMarkIcon,
+  ClipboardDocumentIcon
 } from "@heroicons/react/24/outline"
 
 interface FilterIssue {
+  id?: string // 고유 식별자
   type: 'delete' | 'modify' | 'spelling'
   position: number
   length: number
@@ -39,6 +44,7 @@ export default function ContentFilterPage() {
   const [byteCount, setByteCount] = useState(0)
   const [maxBytes] = useState(2000)
   const [isFiltered, setIsFiltered] = useState(false)
+  const [ruleOnly, setRuleOnly] = useState(false) // 1차 필터만 사용 옵션
 
   const handleContentChange = (value: string) => {
     setContent(value)
@@ -83,6 +89,7 @@ export default function ContentFilterPage() {
           body: JSON.stringify({
             content: content,
             max_bytes: maxBytes,
+            rule_only: ruleOnly,
           }),
         })
       } catch (fetchError) {
@@ -113,26 +120,31 @@ export default function ContentFilterPage() {
       }
       
       // issues의 original_text를 원본 content에서 정확히 찾아서 position 재계산
+      // 단, 텍스트는 백엔드에서 받은 original_text를 그대로 사용 (위치 기반 추출 제거)
       const validatedIssues = data.issues.map((issue) => {
         const originalText = issue.original_text || ''
         if (!originalText) {
           return issue
         }
         
-        // 원본 content에서 original_text 찾기
+        // 원본 content에서 original_text의 위치만 재확인 (텍스트는 백엔드에서 받은 것 사용)
         const searchResult = findTextInContent(originalText, content, issue.position)
         if (searchResult.position !== -1) {
-          // 실제 찾은 위치와 텍스트로 업데이트
+          // 위치만 업데이트하고, 텍스트는 백엔드에서 받은 original_text 그대로 사용
           return {
             ...issue,
             position: searchResult.position,
-            length: searchResult.length,
-            original_text: searchResult.actualText || originalText
+            length: originalText.length,  // 백엔드에서 받은 텍스트 길이 사용
+            original_text: originalText  // 백엔드에서 받은 정확한 텍스트 그대로 사용
           }
         }
         
-        // 못 찾으면 원래대로 반환
-        return issue
+        // 못 찾으면 원래대로 반환 (텍스트는 백엔드에서 받은 것 그대로 사용)
+        return {
+          ...issue,
+          length: originalText.length,  // 백엔드에서 받은 텍스트 길이 사용
+          original_text: originalText  // 백엔드에서 받은 정확한 텍스트 그대로 사용
+        }
       })
       
       // 원본과 filtered_content를 비교하여 issues에 없는 삭제된 항목 찾기
@@ -207,10 +219,57 @@ export default function ContentFilterPage() {
       }
       
       // validatedIssues와 missingIssues를 합침 (position 기준 정렬)
-      const allIssues = [...validatedIssues, ...missingIssues].sort((a, b) => a.position - b.position)
+      // 각 이슈에 고유 ID 부여
+      const allIssues = [...validatedIssues, ...missingIssues]
+        .map((issue, idx) => ({
+          ...issue,
+          id: issue.id || `issue-${issue.position}-${issue.type}-${issue.original_text.substring(0, 10)}-${idx}`
+        }))
+        .sort((a, b) => a.position - b.position)
+      
+      // 중복 제거: 같은 position과 original_text를 가진 이슈 제거
+      const uniqueIssues: FilterIssue[] = []
+      const seenIssues = new Set<string>()
+      
+      allIssues.forEach((issue) => {
+        // position과 original_text를 조합한 고유 키 생성
+        const key = `${issue.position}-${issue.original_text}-${issue.type}`
+        
+        // 이미 같은 키가 있으면 건너뛰기
+        if (seenIssues.has(key)) {
+          return
+        }
+        
+        // 겹치는 위치의 이슈도 확인 (position이 겹치는 경우)
+        const isOverlapping = uniqueIssues.some(existing => {
+          const existingStart = existing.position
+          const existingEnd = existing.position + existing.length
+          const issueStart = issue.position
+          const issueEnd = issue.position + issue.length
+          
+          // 완전히 겹치거나 포함되는 경우
+          if (issueStart >= existingStart && issueEnd <= existingEnd) {
+            return true // 완전히 포함됨
+          }
+          if (existingStart >= issueStart && existingEnd <= issueEnd) {
+            return true // 기존 것이 완전히 포함됨
+          }
+          
+          // 부분적으로 겹치는 경우도 중복으로 간주
+          return !(issueEnd <= existingStart || issueStart >= existingEnd)
+        })
+        
+        if (!isOverlapping) {
+          seenIssues.add(key)
+          uniqueIssues.push(issue)
+        }
+      })
+      
+      // 다시 position 기준으로 정렬
+      uniqueIssues.sort((a, b) => a.position - b.position)
       
       setFilteredContent(data.filtered_content)
-      setIssues(allIssues)
+      setIssues(uniqueIssues)
       setIsFiltered(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
@@ -265,9 +324,15 @@ export default function ContentFilterPage() {
   }
 
   // 이슈 클릭 시 자동 수정/삭제
-  const handleIssueClick = (issue: FilterIssue, issueIndex: number) => {
-    // original_text를 직접 찾아서 교체하는 방식 사용 (position 기반보다 정확함)
+  const handleIssueClick = (issue: FilterIssue, action: 'modify' | 'remove' = 'modify') => {
+    // 고유 ID로 이슈 찾기
+    const issueIndex = issues.findIndex(i => i.id === issue.id)
+    if (issueIndex === -1) return
+    
     const originalText = issue.original_text || ''
+    
+    // 1차 필터 결과인지 확인 (reason에 "규칙 기반 필터" 포함) - 함수 상단에서 정의
+    const isRuleBasedFilter = issue.reason && issue.reason.includes("규칙 기반 필터")
     
     // 현재 컨텐츠에서 original_text 찾기 (여러 변형으로 시도)
     const searchResult = findTextInContent(originalText, content, issue.position)
@@ -280,14 +345,21 @@ export default function ContentFilterPage() {
     
     if (foundPosition !== -1 && foundText.length > 0) {
       const foundLength = foundText.length
-      if (issue.type === 'delete') {
-        // 삭제 타입: 해당 텍스트 제거
+      
+      // action이 'remove'이거나 delete 타입이면 X로 치환
+      if (action === 'remove' || issue.type === 'delete' || (!issue.suggestion && issue.type !== 'spelling')) {
+        // 제거 또는 삭제: 글자수만큼 X로 치환
+        const replacement = isRuleBasedFilter || issue.type === 'delete' || action === 'remove'
+          ? 'X'.repeat(foundLength)  // 글자수만큼 X로 치환
+          : ''  // 일반 삭제는 빈 문자열
+        
         newContent = content.substring(0, foundPosition) + 
+                     replacement + 
                      content.substring(foundPosition + foundLength)
         newFilteredContent = newContent
-        offset = -foundLength
-      } else if (issue.suggestion) {
-        // 수정/맞춤법 타입: suggestion으로 교체
+        offset = replacement.length - foundLength
+      } else if (action === 'modify' && issue.suggestion) {
+        // 수정: suggestion으로 교체
         newContent = content.substring(0, foundPosition) + 
                      issue.suggestion + 
                      content.substring(foundPosition + foundLength)
@@ -303,18 +375,28 @@ export default function ContentFilterPage() {
     } else {
       // 찾지 못한 경우 position 기반으로 폴백
       console.warn('Original text not found, using position-based replacement')
-      if (issue.type === 'delete' || !issue.suggestion) {
+      
+      if (action === 'remove' || issue.type === 'delete' || (!issue.suggestion && issue.type !== 'spelling')) {
+        const replacement = isRuleBasedFilter || issue.type === 'delete' || action === 'remove'
+          ? 'X'.repeat(issue.length)  // 글자수만큼 X로 치환
+          : ''
         const before = content.substring(0, issue.position)
         const after = content.substring(issue.position + issue.length)
-        newContent = before + after
+        newContent = before + replacement + after
         newFilteredContent = newContent
-        offset = -issue.length
-      } else {
+        offset = replacement.length - issue.length
+      } else if (action === 'modify' && issue.suggestion) {
         const before = content.substring(0, issue.position)
         const after = content.substring(issue.position + issue.length)
         newContent = before + issue.suggestion + after
         newFilteredContent = newContent
         offset = issue.suggestion.length - issue.length
+      } else {
+        const before = content.substring(0, issue.position)
+        const after = content.substring(issue.position + issue.length)
+        newContent = before + after
+        newFilteredContent = newContent
+        offset = -issue.length
       }
       foundPosition = issue.position
     }
@@ -326,12 +408,51 @@ export default function ContentFilterPage() {
     setByteCount(newByteCount)
     
     // 처리된 이슈 제거 및 나머지 이슈의 position 조정
+    // 수정/삭제된 텍스트와 겹치는 이슈도 제거
+    const actualPosition = foundPosition !== -1 ? foundPosition : issue.position
+    const foundLength = foundPosition !== -1 ? foundText.length : issue.length
+    
+    // replacementLength 계산
+    let replacementLength = issue.length
+    if (action === 'modify' && issue.suggestion) {
+      replacementLength = issue.suggestion.length
+    } else if (action === 'remove' || issue.type === 'delete' || (!issue.suggestion && issue.type !== 'spelling')) {
+      replacementLength = (isRuleBasedFilter || issue.type === 'delete' || action === 'remove') 
+        ? 'X'.repeat(foundLength).length 
+        : 0
+    }
+    
     const updatedIssues = issues
-      .filter((_, i) => i !== issueIndex) // 클릭한 이슈 제거
-      .map(remainingIssue => {
-        // 실제 교체된 위치 기준으로 조정
-        const actualPosition = foundPosition !== -1 ? foundPosition : issue.position
+      .filter(i => {
+        // 클릭한 이슈 제거
+        if (i.id === issue.id) return false
         
+        // 수정/삭제된 위치와 겹치는 이슈도 제거
+        const issueStart = i.position
+        const issueEnd = i.position + i.length
+        const modifiedStart = actualPosition
+        const modifiedEnd = actualPosition + replacementLength
+        
+        // 겹치는지 확인
+        if (issueStart < modifiedEnd && issueEnd > modifiedStart) {
+          return false  // 겹치면 제거
+        }
+        
+        // 수정된 텍스트가 다른 이슈의 original_text와 일치하는지 확인
+        if (action === 'modify' && issue.suggestion) {
+          const modifiedText = issue.suggestion
+          // 수정된 텍스트 위치에 있는 이슈 확인
+          if (i.position >= modifiedStart && i.position < modifiedEnd) {
+            // 수정된 텍스트와 일치하는 이슈 제거
+            if (i.original_text === modifiedText) {
+              return false
+            }
+          }
+        }
+        
+        return true
+      })
+      .map(remainingIssue => {
         // position이 삭제/수정된 텍스트보다 앞이면 그대로
         if (remainingIssue.position < actualPosition) {
           return remainingIssue
@@ -373,70 +494,77 @@ export default function ContentFilterPage() {
     }
   }
 
-  // 텍스트에 하이라이트 적용
+  // 텍스트에 하이라이트 적용 (원본 문서에만 하이라이트 표시)
   const renderHighlightedContent = () => {
     if (!isFiltered || issues.length === 0) {
-      return <p className="whitespace-pre-wrap">{content}</p>
+      return <div className="whitespace-pre-wrap">{content}</div>
     }
 
-    // position 기준으로 정렬 (이미 validatedIssues로 재계산된 position 사용)
+    // position 기준으로 정렬
     const sortedIssues = [...issues].sort((a, b) => a.position - b.position)
 
     let result: JSX.Element[] = []
     let lastIndex = 0
 
-    sortedIssues.forEach((issue, idx) => {
-      // validatedIssues에서 이미 실제 위치와 텍스트로 재계산되었으므로 직접 사용
-      // 하지만 한번 더 검증하여 정확도 향상
+    sortedIssues.forEach((issue) => {
+      // 백엔드에서 받은 original_text를 직접 사용
       const originalText = issue.original_text || ''
-      let actualPosition = issue.position
-      let actualText = originalText
-      let actualLength = issue.length
       
-      // 실제 컨텐츠에서 해당 위치의 텍스트 확인
-      const actualContentText = content.substring(actualPosition, Math.min(actualPosition + actualLength, content.length))
-      
-      // original_text가 실제 컨텐츠와 정확히 일치하는지 확인
-      if (actualContentText === originalText) {
-        // 일치하면 그대로 사용
-        actualText = originalText
-      } else if (originalText.length > 0) {
-        // 다르면 다시 찾기 (더 넓은 범위에서 검색)
-        const searchResult = findTextInContent(originalText, content, Math.max(0, actualPosition - 100))
-        if (searchResult.position !== -1) {
-          actualPosition = searchResult.position
-          actualText = searchResult.actualText
-          actualLength = searchResult.length
-        } else {
-          // 그래도 못 찾으면 실제 컨텐츠의 텍스트 사용 (가장 가까운 것)
-          actualText = actualContentText || originalText
-        }
-      } else {
-        // original_text가 없으면 position 기반으로
-        actualText = actualContentText
+      // original_text가 없으면 건너뛰기
+      if (!originalText) {
+        return
       }
       
+      // 백엔드에서 받은 position을 직접 사용 (재계산하지 않음)
+      let actualPosition = issue.position
+      const actualLength = originalText.length
       const actualEnd = actualPosition + actualLength
+      const issueId = issue.id || `issue-${actualPosition}`
 
-      // 이슈 전 텍스트
+      // 원본 content에서 해당 위치의 텍스트 확인
+      // 위치가 범위를 벗어나면 조정
+      if (actualPosition < 0) {
+        actualPosition = 0
+      }
+      if (actualPosition + actualLength > content.length) {
+        // 범위를 벗어나면 content 끝까지로 조정
+        const adjustedLength = content.length - actualPosition
+        if (adjustedLength <= 0) {
+          return // 유효하지 않은 위치
+        }
+      }
+      
+      // 원본 content에서 해당 위치의 텍스트 추출
+      const contentAtPosition = content.substring(actualPosition, Math.min(actualPosition + actualLength, content.length))
+      
+      // 텍스트가 일치하지 않아도 하이라이트 표시 (백엔드에서 검출된 것이므로)
+      // 단, 빈 텍스트는 건너뛰기
+      if (contentAtPosition.length === 0) {
+        return
+      }
+
+      // 이슈 전 텍스트 (원본 content에서 직접 추출)
       if (actualPosition > lastIndex) {
         result.push(
-          <span key={`text-${idx}`}>
+          <span key={`text-${issueId}`}>
             {content.substring(lastIndex, actualPosition)}
           </span>
         )
       }
 
-      // 이슈 텍스트 (하이라이트) - 실제 찾은 텍스트 사용
-      const issueText = actualText
+      // 이슈 텍스트 (하이라이트) - 원본 content에서 해당 위치의 텍스트 직접 사용
+      const issueText = content.substring(actualPosition, Math.min(actualEnd, content.length))
+      
+      // 1차 필터 결과인지 확인 (reason에 "규칙 기반 필터" 포함)
+      const isRuleBasedFilter = issue.reason && issue.reason.includes("규칙 기반 필터")
         
-      const colorClass = issue.type === "delete" 
-        ? "bg-red-200 text-red-900 underline decoration-red-500"
+      const colorClass = isRuleBasedFilter || issue.type === "delete" 
+        ? "bg-red-200 text-red-900 underline decoration-red-500"  // 1차 필터는 빨간색
         : issue.type === "modify"
         ? "bg-yellow-200 text-yellow-900 underline decoration-yellow-500"
         : "bg-blue-200 text-blue-900 underline decoration-blue-500"
 
-      // 중복 방지: lastIndex보다 앞에 있으면 건너뛰기
+      // 중복 방지: lastIndex보다 앞에 있으면 겹치는 부분만 하이라이트
       if (actualPosition < lastIndex) {
         // 겹치는 경우: 이전 이슈가 끝나는 지점부터 시작
         if (actualEnd > lastIndex) {
@@ -446,7 +574,7 @@ export default function ContentFilterPage() {
           if (overlapText.length > 0) {
             result.push(
               <span
-                key={`issue-${idx}`}
+                key={`issue-${issueId}`}
                 className={`${colorClass} cursor-help`}
                 title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
               >
@@ -456,23 +584,35 @@ export default function ContentFilterPage() {
           }
           lastIndex = Math.max(lastIndex, actualEnd)
         }
-        // 완전히 포함된 경우는 건너뛰기
+        // 완전히 포함된 경우도 하이라이트 표시 (모든 이슈를 표시하기 위해)
+        else if (actualEnd <= lastIndex) {
+          // 완전히 포함된 경우도 하이라이트 추가 (중복 표시되지만 모든 이슈를 보여주기 위해)
+          result.push(
+            <span
+              key={`issue-overlap-${issueId}`}
+              className={`${colorClass} cursor-help opacity-70`}
+              title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
+            >
+              {issueText}
+            </span>
+          )
+        }
       } else {
-        // 정상적인 경우: 하이라이트 추가
+        // 정상적인 경우: 하이라이트 추가 (원본 content에서 직접 추출한 텍스트 사용)
         result.push(
           <span
-            key={`issue-${idx}`}
+            key={`issue-${issueId}`}
             className={`${colorClass} cursor-help`}
             title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
           >
             {issueText}
           </span>
         )
-        lastIndex = actualEnd
+        lastIndex = Math.max(lastIndex, actualEnd)
       }
     })
 
-    // 마지막 이슈 이후 텍스트
+    // 마지막 이슈 이후 텍스트 (원본 content에서 직접 추출)
     if (lastIndex < content.length) {
       result.push(
         <span key="text-end">
@@ -481,7 +621,125 @@ export default function ContentFilterPage() {
       )
     }
 
-    return <p className="whitespace-pre-wrap">{result}</p>
+    return <div className="whitespace-pre-wrap">{result}</div>
+  }
+
+  // 검열된 텍스트에 하이라이트 적용 (검열 후 화면용)
+  const renderFilteredContent = () => {
+    if (!isFiltered || !filteredContent) {
+      return <div className="whitespace-pre-wrap text-gray-700">{content}</div>
+    }
+
+    // issues가 있으면 하이라이트 적용
+    if (issues.length === 0) {
+      return <div className="whitespace-pre-wrap text-gray-700">{filteredContent}</div>
+    }
+
+    const sortedIssues = [...issues].sort((a, b) => a.position - b.position)
+    let result: JSX.Element[] = []
+    let lastIndex = 0
+
+    sortedIssues.forEach((issue) => {
+      // 백엔드에서 받은 original_text를 직접 사용 (위치 기반 추출 제거)
+      const originalText = issue.original_text || ''
+      
+      // original_text가 없으면 건너뛰기
+      if (!originalText) {
+        return
+      }
+      
+      // 위치는 하이라이트 위치 확인용으로만 사용
+      const searchResult = findTextInContent(originalText, content, issue.position)
+      let actualPosition = searchResult.position !== -1 ? searchResult.position : issue.position
+      const actualText = originalText  // 백엔드에서 받은 정확한 텍스트 사용
+      const actualLength = originalText.length
+
+      // filteredContent에서 해당 텍스트 찾기 (더 넓은 범위에서 검색)
+      let filteredPosition = filteredContent.indexOf(actualText, Math.max(0, lastIndex - 100))
+      
+      // 찾지 못한 경우, 삭제된 텍스트일 수 있으므로 건너뛰기
+      if (filteredPosition === -1) {
+        // 삭제된 항목은 표시하지 않음
+        return
+      }
+
+      const actualEnd = filteredPosition + actualLength
+
+      // 이슈 전 텍스트
+      if (filteredPosition > lastIndex) {
+        result.push(
+          <span key={`text-${issue.id || actualPosition}`}>
+            {filteredContent.substring(lastIndex, filteredPosition)}
+          </span>
+        )
+      }
+
+      // 이슈 텍스트 (하이라이트) - 백엔드에서 받은 original_text 직접 사용
+      const colorClass = issue.type === "delete" 
+        ? "bg-red-200 text-red-900 underline decoration-red-500"
+        : issue.type === "modify"
+        ? "bg-yellow-200 text-yellow-900 underline decoration-yellow-500"
+        : "bg-blue-200 text-blue-900 underline decoration-blue-500"
+
+      if (filteredPosition >= lastIndex) {
+        const issueText = actualText  // 위치 기반 추출 대신 original_text 직접 사용
+        const issueId = issue.id || `issue-${actualPosition}`
+        
+        result.push(
+          <span
+            key={`issue-wrapper-${issueId}`}
+            className="relative inline-block"
+          >
+            {/* 인라인 수정/삭제 버튼 - 텍스트 위에 표시 */}
+            <span className="absolute -top-6 left-0 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+              {issue.suggestion && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    handleIssueClick(issue, 'modify')
+                  }}
+                  className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg hover:bg-gray-700 whitespace-nowrap"
+                  title={`수정: ${issue.suggestion}`}
+                >
+                  <PencilIcon className="w-3 h-3 inline mr-1" />
+                  수정
+                </button>
+              )}
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleIssueClick(issue, 'remove')
+                }}
+                className="bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg hover:bg-red-700 whitespace-nowrap"
+                title="제거"
+              >
+                <TrashIcon className="w-3 h-3 inline mr-1" />
+                {issue.type === 'delete' ? '삭제' : '제거'}
+              </button>
+            </span>
+            <span
+              key={`issue-${issueId}`}
+              className={`${colorClass} cursor-help relative group inline-block`}
+              title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
+            >
+              {issueText}
+            </span>
+          </span>
+        )
+        lastIndex = Math.max(lastIndex, actualEnd)
+      }
+    })
+
+    // 마지막 이슈 이후 텍스트
+    if (lastIndex < filteredContent.length) {
+      result.push(
+        <span key="text-end">
+          {filteredContent.substring(lastIndex)}
+        </span>
+      )
+    }
+
+    return <div className="whitespace-pre-wrap text-gray-700">{result}</div>
   }
 
   return (
@@ -501,198 +759,267 @@ export default function ContentFilterPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* 입력 영역 */}
-          <Card className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border">
-            <CardHeader>
-              <CardTitle className="text-godding-text-primary flex items-center space-x-2">
-                <DocumentTextIcon className="w-5 h-5" />
-                <span>세특 내용 입력</span>
-              </CardTitle>
-              <CardDescription className="text-godding-text-secondary">
-                검열할 세특 내용을 입력하세요
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Textarea
-                  value={content}
-                  onChange={(e) => handleContentChange(e.target.value)}
-                  placeholder="세특 내용을 입력하세요..."
-                  rows={15}
-                  className="resize-none"
-                />
-                <div className="mt-2 flex items-center justify-between text-sm">
-                  <span className={`font-medium ${
-                    byteCount > maxBytes ? 'text-red-600' : 
-                    byteCount > maxBytes * 0.9 ? 'text-yellow-600' : 
-                    'text-gray-600'
-                  }`}>
-                    바이트: {byteCount} / {maxBytes}
-                  </span>
-                  {byteCount > maxBytes && (
-                    <span className="text-red-600 font-bold">
-                      초과: {byteCount - maxBytes}바이트
+        {!isFiltered ? (
+          /* 검열 전: 입력 화면만 표시 */
+          <div className="max-w-3xl mx-auto">
+            <Card className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border">
+              <CardHeader>
+                <CardTitle className="text-godding-text-primary flex items-center space-x-2">
+                  <DocumentTextIcon className="w-5 h-5" />
+                  <span>원문</span>
+                </CardTitle>
+                <CardDescription className="text-godding-text-secondary">
+                  검열할 세특 내용을 입력하세요
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Textarea
+                    value={content}
+                    onChange={(e) => handleContentChange(e.target.value)}
+                    placeholder="내용을 입력해 주세요."
+                    rows={20}
+                    className="resize-none text-base"
+                  />
+                  <div className="mt-2 flex items-center justify-between text-sm">
+                    <span className={`font-medium ${
+                      byteCount > maxBytes ? 'text-red-600' : 
+                      byteCount > maxBytes * 0.9 ? 'text-yellow-600' : 
+                      'text-gray-600'
+                    }`}>
+                      {byteCount}자
                     </span>
+                  </div>
+                  {maxBytes && (
+                    <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                      <div
+                        className={`h-2 rounded-full transition-all ${
+                          byteCount > maxBytes ? 'bg-red-500' : 
+                          byteCount > maxBytes * 0.9 ? 'bg-yellow-500' : 
+                          'bg-blue-500'
+                        }`}
+                        style={{ width: `${Math.min((byteCount / maxBytes) * 100, 100)}%` }}
+                      />
+                    </div>
                   )}
                 </div>
-                {maxBytes && (
-                  <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                    <div
-                      className={`h-2 rounded-full transition-all ${
-                        byteCount > maxBytes ? 'bg-red-500' : 
-                        byteCount > maxBytes * 0.9 ? 'bg-yellow-500' : 
-                        'bg-blue-500'
-                      }`}
-                      style={{ width: `${Math.min((byteCount / maxBytes) * 100, 100)}%` }}
-                    />
-                  </div>
-                )}
-              </div>
 
-              <Button
-                onClick={handleFilter}
-                disabled={!content.trim() || isLoading || byteCount > maxBytes}
-                className="w-full"
-                size="lg"
-              >
-                {isLoading ? (
-                  <>
-                    <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                    검열 중...
-                  </>
-                ) : (
-                  <>
-                    <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                    세특 검열하기
-                  </>
-                )}
-              </Button>
-
-              {error && (
-                <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <p className="text-sm text-red-800">{error}</p>
+                {/* 1차 필터만 사용 옵션 */}
+                <div className="flex items-center space-x-2 mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <input
+                    type="checkbox"
+                    id="ruleOnly"
+                    checked={ruleOnly}
+                    onChange={(e) => setRuleOnly(e.target.checked)}
+                    className="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500"
+                  />
+                  <label htmlFor="ruleOnly" className="text-sm font-medium text-yellow-800 cursor-pointer">
+                    테스트 모드: 1차 규칙 기반 필터만 사용 (ChatGPT 건너뛰기)
+                  </label>
                 </div>
-              )}
-            </CardContent>
-          </Card>
 
-          {/* 검열 결과 영역 */}
-          <Card className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border">
-            <CardHeader>
-              <CardTitle className="text-godding-text-primary flex items-center space-x-2">
-                <ShieldCheckIcon className="w-5 h-5" />
-                <span>검열 결과</span>
-                {isFiltered && issues.length > 0 && (
-                  <span className="ml-2 px-2 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">
-                    {issues.length}개 문제 발견
-                  </span>
-                )}
-              </CardTitle>
-              <CardDescription className="text-godding-text-secondary">
-                {isFiltered 
-                  ? "검열된 결과와 발견된 문제들을 확인하세요"
-                  : "검열 버튼을 클릭하면 결과가 표시됩니다"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {!isFiltered ? (
-                <div className="text-center py-12 text-godding-text-secondary">
-                  <DocumentTextIcon className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <p>검열 결과가 여기에 표시됩니다</p>
-                </div>
-              ) : (
-                <>
-                  {/* 검열된 내용 표시 */}
-                  <div className="p-4 bg-white/50 rounded-lg border border-gray-200 min-h-[200px] max-h-[400px] overflow-y-auto">
-                    <div className="text-sm font-medium text-godding-text-primary mb-2">
-                      원본 내용 (문제 부분 하이라이트):
-                    </div>
-                    <div className="text-sm text-godding-text-secondary">
-                      {renderHighlightedContent()}
-                    </div>
-                  </div>
-
-                  {/* 검열된 최종 내용 */}
-                  {filteredContent && filteredContent !== content && (
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-200 min-h-[100px] max-h-[200px] overflow-y-auto">
-                      <div className="flex items-center space-x-2 mb-2">
-                        <CheckCircleIcon className="w-4 h-4 text-green-600" />
-                        <span className="text-sm font-medium text-green-800">
-                          검열된 최종 내용:
-                        </span>
-                      </div>
-                      <div className="text-sm text-green-900 whitespace-pre-wrap">
-                        {filteredContent}
-                      </div>
-                    </div>
+                <Button
+                  onClick={handleFilter}
+                  disabled={!content.trim() || isLoading || byteCount > maxBytes}
+                  className="w-full"
+                  size="lg"
+                >
+                  {isLoading ? (
+                    <>
+                      <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
+                      검열 중...
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheckIcon className="w-4 h-4 mr-2" />
+                      세특검열하기
+                    </>
                   )}
+                </Button>
 
-                  {/* 문제 목록 */}
-                  {issues.length > 0 ? (
-                    <div className="space-y-2 max-h-[300px] overflow-y-auto">
-                      <div className="text-sm font-medium text-godding-text-primary mb-2">
-                        발견된 문제 ({issues.length}개):
-                      </div>
-                      {issues.map((issue, idx) => {
-                        // 실제 content에서 해당 위치의 텍스트 확인 (카드와 하이라이트 매칭을 위해)
-                        const cardOriginalText = issue.original_text || ''
-                        const cardPosition = issue.position
-                        const cardTextFromContent = content.substring(
-                          cardPosition, 
-                          Math.min(cardPosition + (issue.length || cardOriginalText.length), content.length)
-                        )
-                        // 실제 매칭되는 텍스트 찾기
-                        const cardSearchResult = findTextInContent(cardOriginalText, content, cardPosition)
-                        const displayText = cardSearchResult.actualText || cardTextFromContent || cardOriginalText
-                        
-                        return (
-                          <div
-                            key={idx}
-                            className={`p-3 rounded-lg border ${getIssueColor(issue.type)} cursor-pointer hover:opacity-80 hover:shadow-md transition-all`}
-                            onClick={() => handleIssueClick(issue, idx)}
-                            title={`클릭하여 ${issue.type === 'delete' ? '삭제' : issue.suggestion ? '수정' : '처리'}하기`}
-                          >
-                            <div className="flex items-start justify-between mb-1">
-                              <span className="text-xs font-bold">
-                                {getIssueLabel(issue.type)}
-                              </span>
-                              <span className="text-xs">
-                                위치: {cardSearchResult.position !== -1 ? cardSearchResult.position : issue.position}번째 문자
-                              </span>
+                {error && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-800">{error}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        ) : (
+          /* 검열 후: 좌우 분할 화면 */
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* 왼쪽: 교정 문서 */}
+            <Card className="bg-white backdrop-blur-sm border-gray-200">
+              <CardHeader className="pb-4">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-lg font-semibold text-gray-800">
+                    교정 문서
+                  </CardTitle>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs text-gray-500">{getByteLength(filteredContent || content)}자</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        navigator.clipboard.writeText(filteredContent || content)
+                      }}
+                      className="h-7 px-2"
+                    >
+                      <ClipboardDocumentIcon className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-white border border-gray-200 rounded-lg p-4 min-h-[500px] max-h-[700px] overflow-y-auto">
+                  {renderHighlightedContent()}
+                </div>
+                <div className="mt-4 flex space-x-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setContent("")
+                      setFilteredContent("")
+                      setIssues([])
+                      setIsFiltered(false)
+                      setError(null)
+                      setByteCount(0)
+                    }}
+                    className="flex-1"
+                  >
+                    <DocumentTextIcon className="w-4 h-4 mr-2" />
+                    새글쓰기
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      setIsFiltered(false)
+                    }}
+                    className="flex-1"
+                  >
+                    <ArrowPathIcon className="w-4 h-4 mr-2" />
+                    돌아가기
+                  </Button>
+                  <Button
+                    onClick={() => {
+                      navigator.clipboard.writeText(filteredContent || content)
+                    }}
+                    className="flex-1"
+                  >
+                    <ClipboardDocumentIcon className="w-4 h-4 mr-2" />
+                    복사하기
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 오른쪽: 맞춤법/문법 오류 목록 */}
+            <Card className="bg-white backdrop-blur-sm border-gray-200">
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg font-semibold text-gray-800">
+                  맞춤법/문법 오류 {issues.length}개
+                </CardTitle>
+                <CardDescription className="text-sm text-gray-500">
+                  발견된 문제를 확인하고 수정하세요
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {issues.length > 0 ? (
+                  <div className="space-y-3 max-h-[700px] overflow-y-auto pr-2">
+                    {issues.map((issue) => {
+                      // 백엔드에서 받은 original_text를 직접 사용 (위치 기반 추출 제거)
+                      const displayText = issue.original_text || ''
+                      
+                      // original_text가 없으면 건너뛰기
+                      if (!displayText) {
+                        return null
+                      }
+                      
+                      const issueId = issue.id || `issue-${issue.position}-${issue.type}`
+                      
+                      return (
+                        <div
+                          key={issueId}
+                          className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                        >
+                          {/* 입력 내용 */}
+                          <div className="mb-3">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                              <span className="text-xs font-medium text-gray-600">입력 내용</span>
                             </div>
-                            <div className="text-sm font-medium mb-1">
+                            <div className="text-sm font-medium text-gray-800 pl-4">
                               "{displayText}"
                             </div>
-                            {issue.suggestion && (
-                              <div className="text-sm mb-1 bg-blue-50 px-2 py-1 rounded border border-blue-200">
-                                <span className="text-gray-600">대치어: </span>
-                                <span className="font-medium text-blue-700">{issue.suggestion}</span>
+                          </div>
+
+                          {/* 대치어 (수정 제안이 있는 경우) */}
+                          {issue.suggestion && (
+                            <div className="mb-3">
+                              <div className="flex items-center space-x-2 mb-1">
+                                <PencilIcon className="w-4 h-4 text-gray-400" />
+                                <span className="text-xs font-medium text-gray-600">대치어</span>
                               </div>
-                            )}
-                            <div className="text-xs mt-1 opacity-75">
+                              <div className="text-sm font-medium text-blue-700 pl-4">
+                                {issue.suggestion}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 도움말 */}
+                          <div className="mb-3">
+                            <span className="text-xs font-medium text-gray-600">도움말</span>
+                            <div className="text-xs text-gray-600 mt-1 pl-4">
                               {issue.reason}
                             </div>
-                            <div className="text-xs mt-2 pt-2 border-t border-opacity-20 text-center text-blue-600 font-semibold">
-                              클릭하여 {issue.type === 'delete' ? '삭제' : '수정'}하기 →
-                            </div>
                           </div>
-                        )
-                      })}
-                    </div>
-                  ) : (
-                    <div className="p-4 bg-green-50 rounded-lg border border-green-200 text-center">
-                      <CheckCircleIcon className="w-8 h-8 text-green-600 mx-auto mb-2" />
-                      <p className="text-sm text-green-800 font-medium">
-                        문제가 발견되지 않았습니다!
-                      </p>
-                    </div>
-                  )}
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </div>
+
+                          {/* 액션 버튼 */}
+                          <div className="flex space-x-2 pt-3 border-t border-gray-100">
+                            {issue.suggestion && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleIssueClick(issue, 'modify')}
+                                className="flex-1 text-xs"
+                              >
+                                <PencilIcon className="w-3 h-3 mr-1" />
+                                수정
+                              </Button>
+                            )}
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleIssueClick(issue, 'remove')}
+                              className="flex-1 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300"
+                            >
+                              <TrashIcon className="w-3 h-3 mr-1" />
+                              {issue.type === 'delete' ? '삭제' : '제거'}
+                            </Button>
+                          </div>
+
+                          {/* 오류 제보 링크 */}
+                          <div className="mt-2 text-right">
+                            <button className="text-xs text-gray-400 hover:text-gray-600">
+                              ◀ 오류 제보
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <CheckCircleIcon className="w-16 h-16 text-green-500 mx-auto mb-4" />
+                    <p className="text-sm text-gray-600 font-medium">
+                      문제가 발견되지 않았습니다!
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   )

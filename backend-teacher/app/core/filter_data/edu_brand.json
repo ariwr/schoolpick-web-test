@@ -1,0 +1,76 @@
+[
+  {
+    "pattern": "메가스터디",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": ["메가", "메가패스"]
+  },
+  {
+    "pattern": "대성마이맥",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": ["마이맥", "대성"]
+  },
+  {
+    "pattern": "진학사",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "EBSi",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "에듀윌",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": []
+  },
+  {
+    "pattern": "하이퍼스터디",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "이투스",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "스카이에듀",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "비상에듀",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "수능특강",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]
+

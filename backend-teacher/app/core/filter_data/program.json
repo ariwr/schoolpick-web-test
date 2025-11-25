@@ -1,0 +1,107 @@
+[
+  {
+    "pattern": "경진대회",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "올림피아드",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "과학경진대회",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "수학경진대회",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "영어경진대회",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "체육대회",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "전국대회",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "전국\\s+\\w+대회",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "표창장",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "감사장",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "공로상",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "우수상",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "장려상",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교외\\s+기관\\s+수상",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교외\\s+단체\\s+수상",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]

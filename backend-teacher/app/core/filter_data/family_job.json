@@ -1,0 +1,170 @@
+[
+  {
+    "pattern": "의사\\s*(분|님|선생님)?(?!\\s*소통)",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "의사\\s*(분|님|선생님)?\\s+(?!소통)",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "변호사\\s*(분|님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교수\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "판사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "검사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "변리사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "회계사\\s*(분|님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "세무사\\s*(분|님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "대기업\\s*(임원|사장|부사장|전무|상무|이사)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "공무원\\s*(고위|고등|고급)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "간호사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "연구원\\s*(님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교장\\s*(선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교감\\s*(선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "군인",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(장교|부사관)",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경찰|경찰관)\\s*(님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "소방관\\s*(님)?\\b",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(사업가|자영업자)",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(사장|대표|원장|회장|이사장|CEO|CFO|CTO)",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "은행원",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(공기업\\s*직원|공사\\s*직원|공단\\s*직원)",
+    "label": "특정 직업",
+    "category": "FAMILY_JOB",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]

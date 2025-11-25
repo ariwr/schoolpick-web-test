@@ -218,7 +218,7 @@ app.include_router(admin.router, prefix="/api/admin", tags=["관리자"])
 app.include_router(schedule.router, prefix="/api/schedule", tags=["시간표"])
 app.include_router(content_filter.router, prefix="/api/content-filter", tags=["세특 검열"])
 # /check/setuek 엔드포인트를 위한 별도 라우터 등록 (prefix 없이)
-from app.api.content_filter import router as check_router
+from app.api.content_filter import check_router
 app.include_router(check_router, tags=["세특 검열"])
 
 # 야자 출석 스케줄러 시작

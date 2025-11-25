@@ -38,3 +38,15 @@ COMMENT ON COLUMN location_settings.checkout_time IS '야자 종료 시간 (HH:M
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+

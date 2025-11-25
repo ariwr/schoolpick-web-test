@@ -1,0 +1,704 @@
+[
+  {
+    "pattern": "삼성(\\s*(전자|그룹|물산))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": [
+      "삼전"
+    ]
+  },
+  {
+    "pattern": "\\bLG(\\s*(전자|그룹|화학))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "현대(\\s*(자동차|그룹))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bSK(\\s*(하이닉스|텔레콤|그룹))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "애플(\\s*(사|회사))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": []
+  },
+  {
+    "pattern": "구글(\\s*(사|회사))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": [
+      "구글링"
+    ]
+  },
+  {
+    "pattern": "마이크로소프트",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bMS(\\s*(사|회사))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아마존|Amazon)(\\s*(닷컴|웹서비스|AWS))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(페이스북|Facebook|메타|Meta)(\\s*(플랫폼스))?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(엔비디아|NVIDIA)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(오픈AI|OpenAI)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인텔|Intel)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(AMD|에이엠디)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(IBM|아이비엠)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "네이버\\s*(사|회사)?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "카카오\\s*(사|회사)?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": [
+      "카뱅"
+    ]
+  },
+  {
+    "pattern": "(쿠팡|Coupang)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(배달의민족|배민|우아한형제들)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(토스|Toss|비바리퍼블리카)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(당근마켓|당근|Karrot)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(야놀자|Yanolja)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(무신사|Musinsa)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(기아|Kia)\\s*(자동차|모터스)?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(테슬라|Tesla)\\s*(모터스|Motors)?",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비엠더블유|BMW)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(벤츠|Mercedes-Benz|메르세데스)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아우디|Audi)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(도요타|Toyota)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(화이자|Pfizer)",
+    "label": "특정 제약사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(모더나|Moderna)",
+    "label": "특정 제약사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아스트라제네카|AstraZeneca)",
+    "label": "특정 제약사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(셀트리온|Celltrion)",
+    "label": "특정 제약사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유한양행)",
+    "label": "특정 제약사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스타벅스|Starbucks)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(맥도날드|McDonald's)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코카콜라|Coca-Cola)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(나이키|Nike)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아디다스|Adidas)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국민은행|KB국민은행|KB금융)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신한은행|신한금융)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하나은행|하나금융)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우리은행)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(NH농협|농협은행|농협)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(카카오뱅크|KakaoBank)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": [
+      "카뱅"
+    ]
+  },
+  {
+    "pattern": "(케이뱅크|Kbank)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(토스뱅크)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(넥슨|Nexon)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(엔씨소프트|NC소프트|NCSoft)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(펄어비스|PearlAbyss)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스마일게이트|Smilegate)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(넷마블|Netmarble)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데백화점|롯데쇼핑|롯데마트|롯데온)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신세계|이마트)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(현대백화점)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(AK플라자)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "CJ\\s*(그룹|제일제당)?|CJ제일제당",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(오리온)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(농심)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(빙그레)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(팔도|팔도비빔면)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아모레퍼시픽|AMOREPACIFIC)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에이블리|Ably)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(지그재그)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(P&G|프록터앤갬블)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유니레버|Unilever)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(로레알|L'Oreal)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(Zara|자라)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(H&M|에이치앤엠)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(GUCCI|구찌)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(Louis Vuitton|루이비통|LV)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(Burberry|버버리)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(펩시|Pepsi)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(버거킹|Burger\\s*King)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KFC|켄터키|Kentucky)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(Oracle|오라클)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SAP|에스에이피)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(Salesforce|세일즈포스)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(ByteDance|바이트댄스)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(Sony|소니)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포드|Ford)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쉐보레|Chevrolet)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(폭스바겐|Volkswagen)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포르쉐|Porsche)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(르노|Renault)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하이브|HYBE|빅히트)",
+    "label": "특정 기업",
+    "category": "ENTERTAINMENT",
+    "use_regex": true,
+    "use_kiwi": true,
+    "abbreviations": [
+      "하이브"
+    ]
+  },
+  {
+    "pattern": "SM\\s*엔터테인먼트|SM엔터",
+    "label": "특정 기업",
+    "category": "ENTERTAINMENT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "YG\\s*엔터테인먼트|YG엔터",
+    "label": "특정 기업",
+    "category": "ENTERTAINMENT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "JYP\\s*엔터테인먼트|JYP엔터",
+    "label": "특정 기업",
+    "category": "ENTERTAINMENT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(큐브엔터|Cube Entertainment)",
+    "label": "특정 기업",
+    "category": "ENTERTAINMENT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "FNC\\s*엔터테인먼트",
+    "label": "특정 기업",
+    "category": "ENTERTAINMENT",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(CJ대한통운|대한통운)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한진택배|한진)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(로젠택배)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우체국택배|우정사업본부)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KT|케이티)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SKT|SK텔레콤)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG유플러스|U\\+)",
+    "label": "특정 기업",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]

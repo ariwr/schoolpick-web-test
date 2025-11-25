@@ -1,0 +1,79 @@
+[
+  {
+    "pattern": "의사\\s*(분|님|선생님)?(?!\\s*소통)",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "의사\\s*(분|님|선생님)?\\s+(?!소통)",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "변호사\\s*(분|님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "교수\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "판사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "검사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "변리사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "회계사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "세무사\\s*(님|선생님)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "대기업\\s*(임원|사장|부사장|전무|상무|이사)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "공무원\\s*(고위|고등|고급)?\\b",
+    "label": "특정 직업",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]

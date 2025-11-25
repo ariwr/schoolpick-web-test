@@ -55,3 +55,15 @@ COMMENT ON COLUMN attendance.is_fraud_detected IS '부정행위 의심 기록 �
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+

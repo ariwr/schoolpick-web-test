@@ -1,0 +1,1605 @@
+[
+  {
+    "pattern": "\\b(MIT)\\b",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가야대학교|가야대|KU|\\bKaya\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가천대학교|가천대|GU|\\bGachon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가톨릭관동대학교|가톨릭관동대|CKU|\\bCatholic\\b\\s+\\bKwandong\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가톨릭꽃동네대학교|가톨릭꽃동네대|CKU|\\bCatholic\\b\\s+\\bKkottongnae\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가톨릭대학교|가톨릭대|TCUOK|\\bThe\\b\\s+\\bCatholic\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bKorea\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(감리교신학대학교|감리교신학대|MTU|\\bMethodist\\b\\s+\\bTheological\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남대학교|강남대|KU|\\bKangnam\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강서대학교|강서대|GU|\\bGANGSEO\\b\\s+\\bUNIVERSITY\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강원대학교|강원대|KNU|\\bKangwon\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(건국대학교|건국대|KU|\\bKonkuk\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(건양대학교|건양대|KU|\\bKonyang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(건양사이버대학교|건양사이버대|KCU|\\bKonyang\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경기대학교|경기대|KU|\\bKyonggi\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경남과학기술대학교|경남과학기술대|GNUOSAT|\\bGyeongnam\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bScience\\b\\s+\\bAnd\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경남대학교|경남대|KU|\\bKyungnam\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경동대학교|경동대|KU|\\bKyungdong\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경북대학교|경북대|KNU|\\bKyungpook\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상국립대학교|경상국립대|GNU|\\bGyeongsang\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경성대학교|경성대|KU|\\bKyungsung\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경운대학교|경운대|KU|\\bKyungwoon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경인교육대학교|경인교육대|GNUOE|\\bGyeongin\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경일대학교|경일대|KU|\\bKyungil\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경희대학교|경희대|KHU|\\bKyung\\b\\s+\\bHee\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경희사이버대학교|경희사이버대|KHCU|\\bKyung\\b\\s+\\bHee\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(계명대학교|계명대|KU|\\bKeimyung\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(고려대학교|고려대|KU|\\bKorea\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(고려사이버대학교|고려사이버대|KCU|\\bKOREA\\b\\s+\\bCYBER\\b\\s+\\bUNIVERSITY\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(고신대학교|고신대|KU|\\bKosin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(공주교육대학교|공주교육대|GNUOE|\\bGongju\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광신대학교|광신대|KU|\\bKwangshin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광운대학교|광운대|KU|\\bKwangwoon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주가톨릭대학교|광주가톨릭대|GCU|\\bGwangju\\b\\s+\\bCatholic\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주과학기술원|GIOSAT|\\bGwangju\\b\\s+\\bInstitute\\b\\s+\\bOf\\b\\s+\\bScience\\b\\s+\\bAnd\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주교육대학교|광주교육대|GNUOE|\\bGwangju\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주대학교|광주대|GU|\\bGwangju\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주여자대학교|광주여자대|KWU|\\bKwangju\\b\\s+\\bWomenS\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립강릉원주대학교|국립강릉원주대|GWNU|\\bGangneung\\b\\s+\\bWonju\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립경국대학교|국립경국대|GNU|\\bGyeongguk\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립공주대학교|국립공주대|KNU|\\bKongju\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립군산대학교|국립군산대|KNU|\\bKunsan\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립금오공과대학교|국립금오공과대|KNIOT|\\bKumoh\\b\\s+\\bNational\\b\\s+\\bInstitute\\b\\s+\\bOf\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립목포대학교|국립목포대|MNU|\\bMokpo\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립목포해양대학교|국립목포해양대|MNMU|\\bMokpo\\b\\s+\\bNational\\b\\s+\\bMaritime\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립부경대학교|국립부경대|PNU|\\bPukyong\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립순천대학교|국립순천대|SNU|\\bSunchon\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립창원대학교|국립창원대|CNU|\\bChangwon\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립한국교통대학교|국립한국교통대|KNUOT|\\bKorea\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bTransportation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립한국해양대학교|국립한국해양대|KMOU|\\bKorea\\b\\s+\\bMaritime\\b\\s+\\bOcean\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립한밭대학교|국립한밭대|HNU|\\bHanbat\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국민대학교|국민대|KU|\\bKookmin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국제사이버대학교|국제사이버대|GCU|\\bGukje\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(극동대학교|극동대|FEU|\\bFar\\b\\s+\\bEast\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(글로벌사이버대학교|글로벌사이버대|GCU|\\bGlobal\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(금강대학교|금강대|GU|\\bGeumgang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(김천대학교|김천대|GU|\\bGimcheon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(나사렛대학교|나사렛대|KNU|\\bKorea\\b\\s+\\bNazarene\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(남부대학교|남부대|NU|\\bNambu\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(남서울대학교|남서울대|NU|\\bNamseoul\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(단국대학교|단국대|DU|\\bDankook\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구가톨릭대학교|대구가톨릭대|DCU|\\bDaegu\\b\\s+\\bCatholic\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구경북과학기술원|DGIST)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구교육대학교|대구교육대|DNUOE|\\bDaegu\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구대학교|대구대|DU|\\bDaegu\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구사이버대학교|대구사이버대|DCU|\\bDaegu\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구예술대학교|대구예술대|DAU|\\bDaegu\\b\\s+\\bArts\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구한의대학교|대구한의대|DHU|\\bDaegu\\b\\s+\\bHaany\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대신대학교|대신대|DU|\\bDaeshin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전가톨릭대학교|대전가톨릭대|Daejeoncatholicuniversity)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전대학교|대전대|DU|\\bDaejeon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전신학대학교|대전신학대|DTU|\\bDaejeon\\b\\s+\\bTheological\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대진대학교|대진대|DU|\\bDaejin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(덕성여자대학교|덕성여자대|DWU|\\bDuksung\\b\\s+\\bWomenS\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동국대학교|동국대|DU|\\bDongguk\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동덕여자대학교|동덕여자대|DWU|\\bDongduk\\b\\s+\\bWomens\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동명대학교|동명대|TU|\\bTongmyong\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동서대학교|동서대|DU|\\bDongseo\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동신대학교|동신대|Dongshinuniversity)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동아대학교|동아대|DU|\\bDongA\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동양대학교|동양대|DU|\\bDongyang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동의대학교|동의대|DU|\\bDongEui\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(디지털서울문화예술대학교|디지털서울문화예술대|DSCAU|\\bDigital\\b\\s+\\bSeoul\\b\\s+\\bCulture\\b\\s+\\bArts\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(루터대학교|루터대|LU|\\bLuther\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(명지대학교|명지대|MUNSC|\\bMyongji\\b\\s+\\bUniversity\\b\\s+\\bNatural\\b\\s+\\bScience\\b\\s+\\bCampus\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(목원대학교|목원대|MU|\\bMokwon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(목포가톨릭대학교|목포가톨릭대|MCU|\\bMokpo\\b\\s+\\bCatholic\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(배재대학교|배재대|PCU|\\bPai\\b\\s+\\bChai\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(백석대학교|백석대|BU|\\bBaekseok\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산가톨릭대학교|부산가톨릭대|CUOP|\\bCatholic\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bPusan\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산교육대학교|부산교육대|BNUOE|\\bBusan\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산대학교|부산대|PNU|\\bPusan\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산디지털대학교|부산디지털대|BU|\\bBusandigital\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산외국어대학교|부산외국어대|BUOFS|\\bBusan\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bForeign\\b\\s+\\bStudies\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산장신대학교|부산장신대|BPU|\\bBusan\\b\\s+\\bPresbyterian\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(사이버한국외국어대학교|사이버한국외국어대|CHUOFS|\\bCyber\\b\\s+\\bHankuk\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bForeign\\b\\s+\\bStudies\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼육대학교|삼육대|SU|\\bSahmyook\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(상명대학교|상명대|SUS|\\bSangmyung\\b\\s+\\bUniversity\\b\\s+\\bSeoul\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(상지대학교|상지대|SU|\\bSangji\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서강대학교|서강대|Sogang|SU|\\bSogang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서경대학교|서경대|SU|\\bSeokyeong\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울과학기술대학교|서울과학기술대|SNUOSAT|\\bSeoul\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bScience\\b\\s+\\bAnd\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울교육대학교|서울교육대|SNUOE|\\bSeoul\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울기독대학교|서울기독대|SCU|\\bSeoul\\b\\s+\\bChristian\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울대학교|서울대|SNU|\\bSeoul\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울디지털대학교|서울디지털대|SDU|\\bSeoul\\b\\s+\\bDigital\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울사이버대학교|서울사이버대|SCU|\\bSeoul\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울시립대학교|서울시립대|UOS|\\bUniversity\\b\\s+\\bOf\\b\\s+\\bSeoul\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울신학대학교|서울신학대|STU|\\bSeoul\\b\\s+\\bTheological\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울여자대학교|서울여자대|SWU|\\bSeoul\\b\\s+\\bWomens\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울장신대학교|서울장신대|SJU|\\bSeoul\\b\\s+\\bJangsin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울한영대학교|서울한영대|SHU|\\bSeoul\\b\\s+\\bHanyoung\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서원대학교|서원대|SU|\\bSeowon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(선문대학교|선문대|SMU|\\bSun\\b\\s+\\bMoon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(성결대학교|성결대|SU|\\bSungkyul\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(성공회대학교|성공회대|SU|\\bSungkonghoe\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(성균관대학교|성균관대|SKKU|SU|\\bSungkyunkwan\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(성신여자대학교|성신여자대|SWU|\\bSungshin\\b\\s+\\bWomens\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세명대학교|세명대|SU|\\bSemyung\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세종대학교|세종대|SU|\\bSejong\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세종사이버대학교|세종사이버대|SCU|\\bSejong\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세한대학교|세한대|SU|\\bSehan\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(송원대학교|송원대|SU|\\bSongwon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수원가톨릭대학교|수원가톨릭대|SCU|\\bSuwon\\b\\s+\\bCatholic\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수원대학교|수원대|TUOS|\\bThe\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bSuwon\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(숙명여자대학교|숙명여자대|SWU|\\bSookmyung\\b\\s+\\bWomenS\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(순복음총회신학교|KCC|\\bKorea\\b\\s+\\bChristian\\b\\s+\\bCollege\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(순천향대학교|순천향대|SU|\\bSoonchunhyang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(숭실대학교|숭실대|SU|\\bSoongsil\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(숭실사이버대학교|숭실사이버대|KSCU|\\bKorea\\b\\s+\\bSoongsil\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스탠포드대학교|스탠포드|Stanford|SU|\\bStanford\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신경주대학교|신경주대|SU|\\bSinGyeongju\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신라대학교|신라대|SU|\\bSilla\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신한대학교|신한대|SU|\\bShinhan\\b\\s+\\bUnvirsity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아신대학교|아신대|AU|\\bACTS\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아주대학교|아주대|AJOU|AU|\\bAjou\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(안양대학교|안양대|AU|\\bAnyang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세대학교|연세대|YSU|YU|\\bYonsei\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(영남대학교|영남대|YU|\\bYeungnam\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(영남신학대학교|영남신학대|YTUS|\\bYoungnam\\b\\s+\\bTheological\\b\\s+\\bUniversity\\b\\s+\\bSeminary\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(영산대학교|영산대|YU|\\bYoungsan\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(영산선학대학교|영산선학대|YUOSS|\\bYoungsan\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bSeon\\b\\s+\\bStudies\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(예수대학교|예수대|JU|\\bJesus\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(예원예술대학교|예원예술대|YAU|\\bYewon\\b\\s+\\bArts\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(예일대학교|예일|Yale|YU|\\bYale\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(옥스포드대학교|옥스포드|Oxford|OU|\\bOxford\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(용인대학교|용인대|YIU|\\bYong\\b\\s+\\bIn\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우석대학교|우석대|WU|\\bWoosuk\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우송대학교|우송대|WU|\\bWoosong\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산과학기술원|UNIOSAT|\\bUlsan\\b\\s+\\bNational\\b\\s+\\bInstitute\\b\\s+\\bof\\b\\s+\\bScience\\b\\s+\\band\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산대학교|울산대|UOU|\\bUniversity\\b\\s+\\bOf\\b\\s+\\bUlsan\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(원광대학교|원광대|WU|\\bWonkwang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(원광디지털대학교|원광디지털대|WDU|\\bWonkwang\\b\\s+\\bDigital\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(위덕대학교|위덕대|UU|\\bUiduk\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유원대학교|유원대|UU|U1 University)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(을지대학교|을지대|EU|\\bEulji\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이화여자대학교|이화여자대|이화여대|EWHA|EWU|\\bEwha\\b\\s+\\bWomans\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인제대학교|인제대|IU|\\bInje\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천가톨릭대학교|인천가톨릭대|ICU|\\bIncheon\\b\\s+\\bCatholic\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천대학교|인천대|INU|\\bIncheon\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인하대학교|인하대|INHA|IU|\\bInha\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(장로회신학대학교|장로회신학대|PUTS|\\bPresbyterian\\b\\s+\\bUniversity\\b\\s+\\bTheological\\b\\s+\\bSeminary\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전남대학교|전남대|JNU|CNU|\\bChonnam\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전북대학교|전북대|JBNU|JNU|\\bJeonbuk\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전주교육대학교|전주교육대|JNUOE|\\bJeonju\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전주대학교|전주대|JU|\\bJeonju\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정석대학|정석대|JIOT|\\bJungseok\\b\\s+\\bInstitute\\b\\s+\\bOf\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제주국제대학교|제주국제대|Jejuinternationaluniversity)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제주대학교|제주대|JNU|\\bJeju\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(조선대학교|조선대|CU|\\bChosun\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(중부대학교|중부대|JU|\\bJoongbu\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(중앙대학교|중앙대|CAU|CU|\\bChungAng\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(중앙승가대학교|중앙승가대|JSU|\\bJoongAng\\b\\s+\\bSangha\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(중원대학교|중원대|JU|\\bJungwon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(진주교육대학교|진주교육대|CNUOE|\\bChinju\\b\\s+\\bNational\\b\\s+\\bUinversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(진주산업대학교|진주산업대|JNU|\\bJinju\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차의과학대학교|차의과학대|CU|\\bCHA\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(창신대학교|창신대|CU|\\bChangshin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청운대학교|청운대|CU|\\bChungwoon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청주교육대학교|청주교육대|Chongjunationaluniversityofeducation)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청주대학교|청주대|CU|\\bCheongju\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(초당대학교|초당대|CU|\\bChodang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(총신대학교|총신대|CU|\\bChongshin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(추계예술대학교|추계예술대|CUFTA|\\bChugye\\b\\s+\\bUniversity\\b\\s+\\bFor\\b\\s+\\bThe\\b\\s+\\bArts\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(춘천교육대학교|춘천교육대|CNUOE|\\bChuncheon\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충남대학교|충남대|CNU|\\bChungnam\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충북대학교|충북대|CBNU|CNU|\\bChungbuk\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(칼빈대학교|칼빈대|CU|\\bCalvin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(케임브리지대학교|케임브리지|Cambridge|CU|\\bCambridge\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(태재대학교|태재대|TU|\\bTAEJAE\\b\\s+\\bUNIVERSITY\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(평택대학교|평택대|PU|\\bPyeongtaek\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포항공과대학교|포항공과대|PUOSATP|\\bPohang\\b\\s+\\bUniversity\\b\\s+\\bof\\b\\s+\\bScience\\b\\s+\\band\\b\\s+\\bTechnology\\b\\s+\\bPOSTECH\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하버드대학교|하버드|Harvard|HU|\\bHarvard\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한경국립대학교|한경국립대|HNU|\\bHankyong\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한경대학교|한경대|HNU|\\bHankyong\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국공학대학교|한국공학대|TUOK|\\bTech\\b\\s+\\bUniversity\\b\\s+\\bof\\b\\s+\\bKorea\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국과학기술원|카이스트|\\bKAIST\\b|KAIOSAT|\\bKorea\\b\\s+\\bAdvanced\\b\\s+\\bInstitute\\b\\s+\\bof\\b\\s+\\bScience\\b\\s+\\band\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국교원대학교|한국교원대|KNUOE|\\bKorea\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국기술교육대학교|한국기술교육대|KUOTAE|\\bKorea\\b\\s+\\bUniversity\\b\\s+\\bof\\b\\s+\\bTechnology\\b\\s+\\band\\b\\s+\\bEducation\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국방송통신대학교|한국방송통신대|KNOU|\\bKorea\\b\\s+\\bNational\\b\\s+\\bOpen\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국산업기술대학교|한국산업기술대|KPU|\\bKorea\\b\\s+\\bPolytechnic\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국성서대학교|한국성서대|KBU|\\bKorean\\b\\s+\\bBible\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국에너지공과대학교|한국에너지공과대|KIOET|\\bKorea\\b\\s+\\bInstitute\\b\\s+\\bof\\b\\s+\\bEnergy\\b\\s+\\bTechnology\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국열린사이버대학교|한국열린사이버대|OCUOKO|\\bOpen\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bKorea\\b\\s+\\bOCU\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국예술종합학교|KNUOA|\\bKorea\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bArts\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국외국어대학교|한국외국어대|HUOFS|\\bHankuk\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bForeign\\b\\s+\\bStudies\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국전통문화대학교|한국전통문화대|KNUOH|\\bKorea\\b\\s+\\bNational\\b\\s+\\bUniversity\\b\\s+\\bOf\\b\\s+\\bHeritage\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국체육대학교|한국체육대|KNSU|\\bKorea\\b\\s+\\bNational\\b\\s+\\bSport\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국침례신학대학교|한국침례신학대|KBTU|\\bKorea\\b\\s+\\bBaptist\\b\\s+\\bTheological\\b\\s+\\bUniversitySeminary\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국항공대학교|한국항공대|KAU|\\bKorea\\b\\s+\\bAerospace\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한남대학교|한남대|HU|\\bHannam\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한동대학교|한동대|HGU|\\bHandong\\b\\s+\\bGlobal\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한라대학교|한라대|HU|\\bHalla\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한림대학교|한림대|HU|\\bHallym\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한밭대학교|한밭대|HNU|\\bHanbat\\b\\s+\\bNational\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한서대학교|한서대|HU|\\bHanseo\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한성대학교|한성대|HU|\\bHansung\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한세대학교|한세대|HU|\\bHansei\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한신대학교|한신대|HU|\\bHanshin\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한양대학교|한양대|HYU|HU|\\bHanyang\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한양사이버대학교|한양사이버대|HCU|\\bHanyang\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한일장신대학교|한일장신대|HanilunivPresbTheolSem)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(협성대학교|협성대|Hyupsunguniversity)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호남대학교|호남대|HU|\\bHonam\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호남신학대학교|호남신학대|HTUS|\\bHonam\\b\\s+\\bTheological\\b\\s+\\bUniversity\\b\\s+\\bSeminary\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호서대학교|호서대|HU|\\bHoseo\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호원대학교|호원대|HU|\\bHowon\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍익대학교|홍익대|HU|\\bHongik\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(화성의과학대학교|화성의과학대|HMU|\\bHWASUNG\\b\\s+\\bMEDISCIENCE\\b\\s+\\bUNIVERSITY\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(화신사이버대학교|화신사이버대|HCU|\\bHwashin\\b\\s+\\bCyber\\b\\s+\\bUniversity\\b)",
+    "label": "특정 대학",
+    "category": "UNIVERSITY",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]

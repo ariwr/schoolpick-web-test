@@ -1,0 +1,163 @@
+[
+  {
+    "pattern": "유튜브(\\s*(채널|영상))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bYouTube(\\s*(채널|영상))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "넷플릭스(\\s*(시리즈|영화))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bNetflix(\\s*(시리즈|영화))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "티빙(\\s*(시리즈|영화))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "왓챠(\\s*(시리즈|영화))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "디즈니\\s*플러스",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bTED(\\s*(강연|영상))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "틱톡(\\s*(영상|콘텐츠))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bTikTok(\\s*(영상|콘텐츠))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "인스타그램(\\s*(게시물|포스트))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bInstagram(\\s*(게시물|포스트))?",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(트위터|Twitter|X)",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(CNN|씨엔엔)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(BBC|비비씨)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(뉴욕타임스|NYT|The New York Times)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(디스패치)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KBS|케이비에스)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(MBC|엠비씨)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SBS|에스비에스)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(JTBC|제이티비씨)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\b(YTN)\\b",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(조선일보|중앙일보|동아일보)",
+    "label": "특정 언론사",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
+  }
+]

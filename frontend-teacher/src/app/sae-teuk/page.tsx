@@ -1496,8 +1496,45 @@ export default function SaeTeukPage() {
         id: `error_${Date.now()}_${index}_${error.start_index}_${error.original.substring(0, 10)}`
       }))
       
+      // 중복 제거: 같은 start_index와 original을 가진 오류 제거
+      const uniqueErrors: ErrorDetail[] = []
+      const seenErrors = new Set<string>()
+      
+      errorsWithId.forEach((error) => {
+        const key = `${error.start_index}-${error.original}-${error.type || ''}`
+        
+        // 이미 같은 키가 있으면 건너뛰기
+        if (seenErrors.has(key)) {
+          return
+        }
+        
+        // 겹치는 위치의 오류도 확인
+        const isOverlapping = uniqueErrors.some(existing => {
+          const existingStart = existing.start_index
+          const existingEnd = existing.start_index + existing.original.length
+          const errorStart = error.start_index
+          const errorEnd = error.start_index + error.original.length
+          
+          // 완전히 겹치거나 포함되는 경우
+          if (errorStart >= existingStart && errorEnd <= existingEnd) {
+            return true
+          }
+          if (existingStart >= errorStart && existingEnd <= errorEnd) {
+            return true
+          }
+          
+          // 부분적으로 겹치는 경우도 중복으로 간주
+          return !(errorEnd <= existingStart || errorStart >= existingEnd)
+        })
+        
+        if (!isOverlapping) {
+          seenErrors.add(key)
+          uniqueErrors.push(error)
+        }
+      })
+      
       // errors를 start_index 기준으로 정렬
-      const sortedErrors = [...errorsWithId].sort((a, b) => a.start_index - b.start_index)
+      const sortedErrors = [...uniqueErrors].sort((a, b) => a.start_index - b.start_index)
       setFilterErrors(sortedErrors)
       setSelectedErrorId(null)
     } catch (err) {
