@@ -75,5 +75,159 @@
     "category": "FORBIDDEN",
     "use_regex": true,
     "use_kiwi": false
+  },
+  {
+    "pattern": "모의고사",
+    "label": "모의고사",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "전국연합학력평가",
+    "label": "전국연합학력평가",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "학력평가",
+    "label": "학력평가",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\d+등급",
+    "label": "등급",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "백분위\\s*\\d+%",
+    "label": "백분위",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\d+%\\s*백분위",
+    "label": "백분위",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "성적을\\s*(거둠|유지|향상|개선)",
+    "label": "성적 표현",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "성적이\\s*(우수|좋음|높음|향상)",
+    "label": "성적 표현",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "영재교육원",
+    "label": "영재교육원",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "영재원",
+    "label": "영재원",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "영재교육\\s*과정",
+    "label": "영재교육 과정",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "소논문",
+    "label": "논문",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "논문",
+    "label": "논문",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "학술지",
+    "label": "학술지",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "투고",
+    "label": "논문 투고",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "등재",
+    "label": "논문 등재",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "[가-힣]+학회",
+    "label": "학회명",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "[가-힣]+협회",
+    "label": "협회명",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "어학연수",
+    "label": "해외 어학연수",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "해외\\s*어학연수",
+    "label": "해외 어학연수",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "[가-힣]+\\s*어학연수",
+    "label": "해외 어학연수",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "해외\\s*봉사활동",
+    "label": "해외 봉사활동",
+    "category": "FORBIDDEN",
+    "use_regex": true,
+    "use_kiwi": false
   }
 ]

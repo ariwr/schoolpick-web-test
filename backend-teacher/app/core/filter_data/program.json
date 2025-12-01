@@ -103,5 +103,19 @@
     "category": "PROGRAM",
     "use_regex": true,
     "use_kiwi": false
+  },
+  {
+    "pattern": "응원상",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(응원|장려|우수|최우수|대상|금|은|동|공로|참가|입상|수상)상",
+    "label": "교내 활동",
+    "category": "PROGRAM",
+    "use_regex": true,
+    "use_kiwi": false
   }
 ]

@@ -60,6 +60,6 @@ venv/
 env/
 ENV/
 
-# Fine-tuning (exclude from git)
-backend-teacher/fine-tuning/
+# Debug files
+backend-teacher/debug/
 temp-py-hanspell/

@@ -1,38 +1,67 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useCallback, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { getByteLength } from "@/lib/utils"
+import CustomRuleSidebar from "@/components/content-filter/custom-rule-sidebar"
 import { 
   ShieldCheckIcon, 
-  ExclamationTriangleIcon,
-  CheckCircleIcon,
-  DocumentTextIcon,
   ArrowPathIcon,
   PencilIcon,
   TrashIcon,
-  XMarkIcon,
-  ClipboardDocumentIcon
+  ClipboardDocumentIcon,
+  ExclamationTriangleIcon,
+  XCircleIcon,
+  CheckCircleIcon,
+  DocumentTextIcon
 } from "@heroicons/react/24/outline"
 
+// 1. 데이터 모델 정의 (심각도 severity 추가)
 interface FilterIssue {
-  id?: string // 고유 식별자
-  type: 'delete' | 'modify' | 'spelling'
-  position: number
-  length: number
-  original_text: string
-  suggestion?: string
-  reason: string
+  id: string; // 필수: 고유 ID (백엔드에서 없으면 프론트에서 생성)
+  type: 'delete' | 'modify' | 'spelling';
+  severity: 'critical' | 'warning'; // critical: 빨강(삭제필수), warning: 노랑(검토)
+  position: number;
+  length: number;
+  original_text: string;
+  suggestion?: string;
+  reason: string;
+  source?: 'rule_based' | 'llm'; // 검열 소스 (rule_based: 1차 규칙 기반, llm: 2차 LLM)
+  
+  // 하이라이트와 카드에서 사용할 표시 정보 (객체 기반)
+  displayText?: string;      // 카드에 표시할 텍스트
+  displayStart?: number;      // 하이라이트 시작 위치
+  displayEnd?: number;        // 하이라이트 끝 위치
 }
 
 interface FilterResponse {
-  filtered_content: string
-  issues: FilterIssue[]
-  total_issues: number
-  byte_count: number
-  max_bytes: number
+  filtered_content: string;
+  issues: FilterIssue[];
+  total_issues: number;
+  byte_count: number;
+  max_bytes: number;
+}
+
+// 텍스트 구간을 나타내는 객체 (객체 기반 매핑)
+interface TextSegment {
+  id: string;           // 고유 ID
+  start: number;        // 시작 위치
+  end: number;          // 끝 위치
+  text: string;         // 해당 구간의 텍스트
+  issue?: FilterIssue;  // 연결된 이슈 (호환성 유지용, style.primaryIssue 사용 권장)
+  type: 'normal' | 'issue'; // 구간 타입
+  
+  // 스타일 정보 (객체 기반 - 구간 생성 시 결정)
+  style?: {
+    className: string;        // 완성된 CSS 클래스
+    severity: 'critical' | 'warning' | 'spelling' | 'mixed'; // 혼합 상태
+    hasCritical: boolean;
+    hasWarning: boolean;
+    allIssues: FilterIssue[];  // 해당 구간의 모든 이슈
+    primaryIssue: FilterIssue; // 클릭 시 이동할 이슈 (우선순위 최고)
+  };
 }
 
 export default function ContentFilterPage() {
@@ -44,7 +73,10 @@ export default function ContentFilterPage() {
   const [byteCount, setByteCount] = useState(0)
   const [maxBytes] = useState(2000)
   const [isFiltered, setIsFiltered] = useState(false)
-  const [ruleOnly, setRuleOnly] = useState(false) // 1차 필터만 사용 옵션
+  const [ruleOnly, setRuleOnly] = useState(false)
+  
+  // 로딩 중인 이슈 ID 추적 (UX 개선)
+  const [processingIssueIds, setProcessingIssueIds] = useState<Set<string>>(new Set())
 
   const handleContentChange = (value: string) => {
     setContent(value)
@@ -119,157 +151,44 @@ export default function ContentFilterPage() {
         throw new Error("서버 응답을 파싱할 수 없습니다.")
       }
       
-      // issues의 original_text를 원본 content에서 정확히 찾아서 position 재계산
-      // 단, 텍스트는 백엔드에서 받은 original_text를 그대로 사용 (위치 기반 추출 제거)
-      const validatedIssues = data.issues.map((issue) => {
-        const originalText = issue.original_text || ''
-        if (!originalText) {
-          return issue
-        }
+      // [객체 기반 설정 1] 백엔드 데이터를 있는 그대로 객체화 (위치 재검색 X)
+      // 모든 이슈에 고유 ID가 없다면 여기서 강제로 부여하여 '객체'로서 관리
+      const initializedIssues = data.issues.map((issue, idx) => {
+        // severity 추론 로직 개선
+        let inferredSeverity: 'critical' | 'warning' = 'warning'; // 기본값을 warning으로 변경
         
-        // 원본 content에서 original_text의 위치만 재확인 (텍스트는 백엔드에서 받은 것 사용)
-        const searchResult = findTextInContent(originalText, content, issue.position)
-        if (searchResult.position !== -1) {
-          // 위치만 업데이트하고, 텍스트는 백엔드에서 받은 original_text 그대로 사용
-          return {
-            ...issue,
-            position: searchResult.position,
-            length: originalText.length,  // 백엔드에서 받은 텍스트 길이 사용
-            original_text: originalText  // 백엔드에서 받은 정확한 텍스트 그대로 사용
+        if (issue.severity) {
+          // 백엔드에서 severity가 있으면 그대로 사용
+          inferredSeverity = issue.severity;
+        } else {
+          // severity가 없으면 type과 reason으로 추론
+          if (issue.type === 'delete') {
+            inferredSeverity = 'critical';
+          } else if (issue.type === 'modify') {
+            // modify 타입은 기본적으로 warning (교내 행사 순화 등)
+            inferredSeverity = 'warning';
+          } else if (issue.type === 'spelling') {
+            inferredSeverity = 'critical'; // 맞춤법은 critical
+          } else {
+            inferredSeverity = 'warning'; // 기본값
           }
         }
         
-        // 못 찾으면 원래대로 반환 (텍스트는 백엔드에서 받은 것 그대로 사용)
         return {
           ...issue,
-          length: originalText.length,  // 백엔드에서 받은 텍스트 길이 사용
-          original_text: originalText  // 백엔드에서 받은 정확한 텍스트 그대로 사용
-        }
-      })
+          id: issue.id || `issue-${idx}-${Date.now()}`, // 고유 ID 보장
+          severity: inferredSeverity,
+          source: issue.source || (issue.reason?.includes('규칙 기반 필터') ? 'rule_based' : 'llm') // 검열 소스 설정
+        };
+      }).sort((a, b) => a.position - b.position); // 위치 순 정렬 필수
       
-      // 원본과 filtered_content를 비교하여 issues에 없는 삭제된 항목 찾기
-      const missingIssues: typeof validatedIssues = []
-      const originalContent = content
-      const filteredContent = data.filtered_content
-      
-      // 금지된 단어 패턴 목록
-      const forbiddenPatterns = [
-        /대회/g,
-        /서울대|고려대|하버드|MIT|옥스포드|케임브리지/g,
-        /보건복지부|환경부|통계청|YMCA|OECD|유엔|WHO|식약처|질병관리청|국민연금관리공단/g,
-        /삼성|애플|구글|유튜브|틱톡|TED|인스타그램|넷플릭스/g,
-        /[·]/g, // 가운뎃점
-        /[""]/g, // 큰따옴표
-        /[<>]/g, // < > 괄호
-      ]
-      
-      // 원본에서 각 금지 단어를 찾아서 filtered_content에 없는지 확인
-      let searchIndex = 0
-      while (searchIndex < originalContent.length) {
-        let foundPattern = false
-        let foundText = ''
-        let foundPosition = -1
-        
-        for (const pattern of forbiddenPatterns) {
-          pattern.lastIndex = 0 // 패턴 리셋
-          const match = originalContent.substring(searchIndex).match(pattern)
-          if (match && match.index !== undefined) {
-            const matchText = match[0]
-            const matchPosition = searchIndex + match.index
-            
-            // 이 텍스트가 filtered_content에서 삭제되었는지 확인
-            // 원본의 해당 위치 주변을 filtered_content에서 찾을 수 없으면 삭제된 것으로 간주
-            const contextStart = Math.max(0, matchPosition - 20)
-            const contextEnd = Math.min(originalContent.length, matchPosition + matchText.length + 20)
-            const originalContext = originalContent.substring(contextStart, contextEnd)
-            
-            // filtered_content에서 이 문맥을 찾을 수 없거나 해당 단어가 없으면 삭제된 것으로 간주
-            if (!filteredContent.includes(matchText) || !filteredContent.includes(originalContext.replace(matchText, ''))) {
-              // 이미 issues에 포함되어 있는지 확인
-              const alreadyInIssues = validatedIssues.some(issue => {
-                const issueStart = issue.position
-                const issueEnd = issue.position + issue.length
-                return matchPosition >= issueStart && matchPosition + matchText.length <= issueEnd
-              })
-              
-              if (!alreadyInIssues) {
-                foundPattern = true
-                foundText = matchText
-                foundPosition = matchPosition
-                searchIndex = matchPosition + matchText.length
-                break
-              }
-            }
-          }
-        }
-        
-        if (foundPattern && foundPosition !== -1) {
-          // 삭제된 항목을 issues에 추가
-          missingIssues.push({
-            type: 'delete' as const,
-            position: foundPosition,
-            length: foundText.length,
-            original_text: foundText,
-            suggestion: null,
-            reason: `금지된 용어로 인해 삭제되었습니다.`
-          })
-        } else {
-          searchIndex++
-        }
-      }
-      
-      // validatedIssues와 missingIssues를 합침 (position 기준 정렬)
-      // 각 이슈에 고유 ID 부여
-      const allIssues = [...validatedIssues, ...missingIssues]
-        .map((issue, idx) => ({
-          ...issue,
-          id: issue.id || `issue-${issue.position}-${issue.type}-${issue.original_text.substring(0, 10)}-${idx}`
-        }))
-        .sort((a, b) => a.position - b.position)
-      
-      // 중복 제거: 같은 position과 original_text를 가진 이슈 제거
-      const uniqueIssues: FilterIssue[] = []
-      const seenIssues = new Set<string>()
-      
-      allIssues.forEach((issue) => {
-        // position과 original_text를 조합한 고유 키 생성
-        const key = `${issue.position}-${issue.original_text}-${issue.type}`
-        
-        // 이미 같은 키가 있으면 건너뛰기
-        if (seenIssues.has(key)) {
-          return
-        }
-        
-        // 겹치는 위치의 이슈도 확인 (position이 겹치는 경우)
-        const isOverlapping = uniqueIssues.some(existing => {
-          const existingStart = existing.position
-          const existingEnd = existing.position + existing.length
-          const issueStart = issue.position
-          const issueEnd = issue.position + issue.length
-          
-          // 완전히 겹치거나 포함되는 경우
-          if (issueStart >= existingStart && issueEnd <= existingEnd) {
-            return true // 완전히 포함됨
-          }
-          if (existingStart >= issueStart && existingEnd <= issueEnd) {
-            return true // 기존 것이 완전히 포함됨
-          }
-          
-          // 부분적으로 겹치는 경우도 중복으로 간주
-          return !(issueEnd <= existingStart || issueStart >= existingEnd)
-        })
-        
-        if (!isOverlapping) {
-          seenIssues.add(key)
-          uniqueIssues.push(issue)
-        }
-      })
-      
-      // 다시 position 기준으로 정렬
-      uniqueIssues.sort((a, b) => a.position - b.position)
+      // 모든 이슈가 로드된 후 확장 정보 계산 (하이라이트와 카드에서 동일하게 사용)
+      const expandedIssues = initializedIssues.map(issue => 
+        expandIssueForDisplay(issue, initializedIssues, content)
+      );
       
       setFilteredContent(data.filtered_content)
-      setIssues(uniqueIssues)
+      setIssues(expandedIssues)
       setIsFiltered(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
@@ -278,468 +197,445 @@ export default function ContentFilterPage() {
     }
   }
 
-  // 텍스트 검색 헬퍼 함수 (따옴표 제거, 변형 버전 등으로 검색)
-  const findTextInContent = (searchText: string, content: string, startPos: number): { position: number; length: number; actualText: string } => {
-    if (!searchText) {
-      return { position: -1, length: 0, actualText: '' }
-    }
+  // 디바운스 타이머 ref
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-    // 1. 원본 텍스트 그대로 검색
-    let pos = content.indexOf(searchText, Math.max(0, startPos - 50))
-    if (pos !== -1) {
-      return { position: pos, length: searchText.length, actualText: searchText }
-    }
-
-    // 2. 따옴표 제거한 버전으로 검색
-    const withoutQuotes = searchText.replace(/['"]/g, '').trim()
-    if (withoutQuotes && withoutQuotes !== searchText) {
-      pos = content.indexOf(withoutQuotes, Math.max(0, startPos - 50))
-      if (pos !== -1) {
-        return { position: pos, length: withoutQuotes.length, actualText: withoutQuotes }
+  // 사용자 정의 금지어 변경 시 검열 재실행 (디바운싱 적용)
+  const handleRulesChange = useCallback(() => {
+    if (isFiltered && content.trim()) {
+      // 디바운싱: 500ms 내에 여러 번 호출되면 마지막 호출만 실행
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current)
       }
+      debounceTimerRef.current = setTimeout(() => {
+        // 이미 검열된 상태면 자동으로 재검열
+        handleFilter()
+      }, 500)
+    }
+  }, [isFiltered, content, handleFilter])
+
+  // 모든 수정사항을 자동으로 적용하는 함수
+  const handleApplyAll = () => {
+    if (issues.length === 0) {
+      // 이슈가 없으면 아무 작업도 하지 않음
+      return;
     }
 
-    // 3. 대소문자 구분 없이 검색
-    const lowerSearch = searchText.toLowerCase()
-    const lowerContent = content.toLowerCase()
-    pos = lowerContent.indexOf(lowerSearch, Math.max(0, startPos - 50))
-    if (pos !== -1) {
-      // 실제 대소문자로 매칭된 텍스트 가져오기
-      const actualText = content.substring(pos, pos + searchText.length)
-      return { position: pos, length: actualText.length, actualText }
-    }
-
-    // 4. 따옴표 제거 + 대소문자 구분 없이 검색
-    if (withoutQuotes && withoutQuotes !== searchText) {
-      const lowerWithoutQuotes = withoutQuotes.toLowerCase()
-      pos = lowerContent.indexOf(lowerWithoutQuotes, Math.max(0, startPos - 50))
-      if (pos !== -1) {
-        const actualText = content.substring(pos, pos + withoutQuotes.length)
-        return { position: pos, length: actualText.length, actualText }
+    let finalContent = content;
+    // displayEnd/displayStart 우선, 없으면 position/length로 (뒤에서부터 적용)
+    const sortedIssues = [...issues].sort((a, b) => {
+      const aEnd = (a.displayEnd ?? (a.position + a.length));
+      const bEnd = (b.displayEnd ?? (b.position + b.length));
+      return bEnd - aEnd;
+    });
+    sortedIssues.forEach((issue) => {
+      const issueStart = issue.displayStart ?? issue.position;
+      const issueEnd = issue.displayEnd ?? (issue.position + issue.length);
+      const currentText = finalContent.substring(issueStart, issueEnd);
+      // 공백/따옴표 등 양 끝 문자 무시하고 비교 (이슈에 따라 따옴표 붙는 케이스 대비)
+      const normalizedCurrent = currentText.trim().replace(/^['"]|['"]$/g, '');
+      const normalizedOriginal = (issue.original_text || issue.displayText || '').trim().replace(/^['"]|['"]$/g, '');
+      if (
+        normalizedCurrent !== normalizedOriginal &&
+        currentText !== issue.original_text &&
+        currentText !== issue.displayText // displayText 매칭도 허용
+      ) {
+        return;
       }
-    }
-
-    // 못 찾으면 -1 반환
-    return { position: -1, length: 0, actualText: '' }
-  }
-
-  // 이슈 클릭 시 자동 수정/삭제
-  const handleIssueClick = (issue: FilterIssue, action: 'modify' | 'remove' = 'modify') => {
-    // 고유 ID로 이슈 찾기
-    const issueIndex = issues.findIndex(i => i.id === issue.id)
-    if (issueIndex === -1) return
-    
-    const originalText = issue.original_text || ''
-    
-    // 1차 필터 결과인지 확인 (reason에 "규칙 기반 필터" 포함) - 함수 상단에서 정의
-    const isRuleBasedFilter = issue.reason && issue.reason.includes("규칙 기반 필터")
-    
-    // 현재 컨텐츠에서 original_text 찾기 (여러 변형으로 시도)
-    const searchResult = findTextInContent(originalText, content, issue.position)
-    let foundPosition = searchResult.position
-    const foundText = searchResult.actualText || originalText
-    
-    let newContent = content
-    let newFilteredContent = filteredContent || content
-    let offset = 0
-    
-    if (foundPosition !== -1 && foundText.length > 0) {
-      const foundLength = foundText.length
-      
-      // action이 'remove'이거나 delete 타입이면 X로 치환
-      if (action === 'remove' || issue.type === 'delete' || (!issue.suggestion && issue.type !== 'spelling')) {
-        // 제거 또는 삭제: 글자수만큼 X로 치환
-        const replacement = isRuleBasedFilter || issue.type === 'delete' || action === 'remove'
-          ? 'X'.repeat(foundLength)  // 글자수만큼 X로 치환
-          : ''  // 일반 삭제는 빈 문자열
-        
-        newContent = content.substring(0, foundPosition) + 
-                     replacement + 
-                     content.substring(foundPosition + foundLength)
-        newFilteredContent = newContent
-        offset = replacement.length - foundLength
-      } else if (action === 'modify' && issue.suggestion) {
-        // 수정: suggestion으로 교체
-        newContent = content.substring(0, foundPosition) + 
-                     issue.suggestion + 
-                     content.substring(foundPosition + foundLength)
-        newFilteredContent = newContent
-        offset = issue.suggestion.length - foundLength
+      let replacement = '';
+      if (issue.type === 'modify' && issue.suggestion) {
+        replacement = issue.suggestion;
+      } else if (issue.type === 'delete' || issue.severity === 'critical') {
+        replacement = '';
+      } else if (issue.suggestion) {
+        replacement = issue.suggestion;
       } else {
-        // suggestion이 없으면 삭제
-        newContent = content.substring(0, foundPosition) + 
-                     content.substring(foundPosition + foundLength)
-        newFilteredContent = newContent
-        offset = -foundLength
+        replacement = '';
       }
-    } else {
-      // 찾지 못한 경우 position 기반으로 폴백
-      console.warn('Original text not found, using position-based replacement')
-      
-      if (action === 'remove' || issue.type === 'delete' || (!issue.suggestion && issue.type !== 'spelling')) {
-        const replacement = isRuleBasedFilter || issue.type === 'delete' || action === 'remove'
-          ? 'X'.repeat(issue.length)  // 글자수만큼 X로 치환
-          : ''
-        const before = content.substring(0, issue.position)
-        const after = content.substring(issue.position + issue.length)
-        newContent = before + replacement + after
-        newFilteredContent = newContent
-        offset = replacement.length - issue.length
-      } else if (action === 'modify' && issue.suggestion) {
-        const before = content.substring(0, issue.position)
-        const after = content.substring(issue.position + issue.length)
-        newContent = before + issue.suggestion + after
-        newFilteredContent = newContent
-        offset = issue.suggestion.length - issue.length
-      } else {
-        const before = content.substring(0, issue.position)
-        const after = content.substring(issue.position + issue.length)
-        newContent = before + after
-        newFilteredContent = newContent
-        offset = -issue.length
-      }
-      foundPosition = issue.position
+      finalContent = finalContent.substring(0, issueStart) + replacement + finalContent.substring(issueEnd);
+    });
+    setContent(finalContent);
+    setFilteredContent(finalContent);
+    setByteCount(getByteLength(finalContent));
+    setIssues([]);
+  };
+
+  // [객체 기반 설정 2] 클릭 핸들러 - 인덱스 검색이 아닌 'ID 기반' 처리 + '좌표 이동'
+  const handleIssueClick = async (targetIssue: FilterIssue, action: 'modify' | 'remove' = 'modify') => {
+    if (processingIssueIds.has(targetIssue.id)) return; // 이미 처리 중
+
+    // 1. 현재 상태의 최신 이슈 객체 찾기 (ID로 조회)
+    const currentIssueIndex = issues.findIndex(i => i.id === targetIssue.id);
+    if (currentIssueIndex === -1) return;
+    
+    const currentIssue = issues[currentIssueIndex];
+    
+    // 2. 텍스트 검증: 현재 content의 해당 위치에 그 단어가 실제로 있는지 확인
+    // (사용자가 텍스트를 직접 수정했을 수도 있으므로 안전장치)
+    const textInContent = content.substring(
+        currentIssue.position, 
+        currentIssue.position + currentIssue.length
+    );
+    // 위치가 어긋났다면? -> 이 이슈는 무효화(화면에서 제거)하거나 전체 재검사 유도
+    if (textInContent !== currentIssue.original_text) {
+        alert("문서 내용이 변경되어 해당 이슈의 위치를 찾을 수 없습니다. 다시 검열해주세요.");
+        setIssues(prev => prev.filter(i => i.id !== targetIssue.id)); // 안전하게 제거
+        return;
     }
 
-    // 상태 업데이트
-    setContent(newContent)
-    setFilteredContent(newFilteredContent)
-    const newByteCount = getByteLength(newContent)
-    setByteCount(newByteCount)
-    
-    // 처리된 이슈 제거 및 나머지 이슈의 position 조정
-    // 수정/삭제된 텍스트와 겹치는 이슈도 제거
-    const actualPosition = foundPosition !== -1 ? foundPosition : issue.position
-    const foundLength = foundPosition !== -1 ? foundText.length : issue.length
-    
-    // replacementLength 계산
-    let replacementLength = issue.length
-    if (action === 'modify' && issue.suggestion) {
-      replacementLength = issue.suggestion.length
-    } else if (action === 'remove' || issue.type === 'delete' || (!issue.suggestion && issue.type !== 'spelling')) {
-      replacementLength = (isRuleBasedFilter || issue.type === 'delete' || action === 'remove') 
-        ? 'X'.repeat(foundLength).length 
-        : 0
-    }
-    
-    const updatedIssues = issues
-      .filter(i => {
-        // 클릭한 이슈 제거
-        if (i.id === issue.id) return false
+    // 로딩 상태 시작
+    setProcessingIssueIds(prev => new Set(prev).add(targetIssue.id));
+
+    try {
+        let newTextSegment = "";
+        let needsRefine = false;
         
-        // 수정/삭제된 위치와 겹치는 이슈도 제거
-        const issueStart = i.position
-        const issueEnd = i.position + i.length
-        const modifiedStart = actualPosition
-        const modifiedEnd = actualPosition + replacementLength
-        
-        // 겹치는지 확인
-        if (issueStart < modifiedEnd && issueEnd > modifiedStart) {
-          return false  // 겹치면 제거
+        // [로직 분기] 
+        // A. 1차 검열(Critical) 삭제 시 -> XXX 치환 후 문맥 교정
+        if (!ruleOnly && action === 'remove' && currentIssue.severity === 'critical') {
+            newTextSegment = "XXX";
+            needsRefine = true;
+        } 
+        // B. 수정(Suggestion) 적용 시
+        else if (action === 'modify' && currentIssue.suggestion) {
+            newTextSegment = currentIssue.suggestion;
         }
+        // C. 일반 삭제 (Warning 등) -> 빈 문자열
+        else {
+            newTextSegment = "";
+        }
+
+        // 3. 텍스트 변경 적용 (Slice & Concat)
+        const prefix = content.substring(0, currentIssue.position);
+        const suffix = content.substring(currentIssue.position + currentIssue.length);
+        const tempContent = prefix + newTextSegment + suffix;
+
+        // 4. [핵심] 좌표 이동 (Coordinate Shifting)
+        // 변경된 길이 차이만큼 뒤에 있는 모든 이슈들의 position을 조정해야 함
+        const lengthDiff = newTextSegment.length - currentIssue.length;
         
-        // 수정된 텍스트가 다른 이슈의 original_text와 일치하는지 확인
-        if (action === 'modify' && issue.suggestion) {
-          const modifiedText = issue.suggestion
-          // 수정된 텍스트 위치에 있는 이슈 확인
-          if (i.position >= modifiedStart && i.position < modifiedEnd) {
-            // 수정된 텍스트와 일치하는 이슈 제거
-            if (i.original_text === modifiedText) {
-              return false
+        // 우선 UI에 반영 (낙관적 업데이트)
+        setContent(tempContent);
+        setFilteredContent(tempContent); // 교정 문서도 동기화
+        setByteCount(getByteLength(tempContent));
+
+        // 이슈 목록 업데이트: 처리된 이슈 제거 + 나머지 이슈 좌표 이동 (displayStart/displayEnd 포함)
+        let nextIssues = issues
+          .filter(i => i.id !== targetIssue.id)
+          .map(i => {
+            const issueStart = i.displayStart ?? i.position;
+            const issueEnd = i.displayEnd ?? (i.position + i.length);
+            const currentStart = currentIssue.displayStart ?? currentIssue.position;
+            const currentEnd = currentIssue.displayEnd ?? (currentIssue.position + currentIssue.length);
+            
+            // 겹치는 이슈 처리: 현재 이슈와 겹치면 제거
+            if (issueStart < currentEnd && issueEnd > currentStart) {
+              return null;
             }
-          }
-        }
+            
+            // 좌표 업데이트 (position, displayStart, displayEnd 모두)
+            let updatedPosition = i.position;
+            let updatedDisplayStart = issueStart;
+            let updatedDisplayEnd = issueEnd;
+            
+            if (i.position > currentIssue.position) {
+              updatedPosition += lengthDiff;
+            }
+            if (issueStart > currentIssue.position) {
+              updatedDisplayStart += lengthDiff;
+            }
+            if (issueEnd > currentIssue.position) {
+              updatedDisplayEnd += lengthDiff;
+            }
+            
+            return {
+              ...i,
+              position: updatedPosition,
+              displayStart: updatedDisplayStart,
+              displayEnd: updatedDisplayEnd,
+              displayText: i.original_text, // displayText도 명시적으로 설정
+            };
+          })
+          .filter(i => i !== null) as FilterIssue[];
+
+        setIssues(nextIssues);
         
-        return true
-      })
-      .map(remainingIssue => {
-        // position이 삭제/수정된 텍스트보다 앞이면 그대로
-        if (remainingIssue.position < actualPosition) {
-          return remainingIssue
+        // 하이브리드 방식: 복잡한 경우 자동 재검열 (디바운스)
+        // 문맥 교정이 필요하거나 남은 이슈가 많으면 자동 재검열
+        if (needsRefine || nextIssues.length > 10) {
+          // 디바운스: 500ms 후 재검열 (사용자가 빠르게 여러 번 클릭해도 마지막에만 실행)
+          setTimeout(() => {
+            if (isFiltered && tempContent.trim()) {
+              handleFilter();
+            }
+          }, 500);
         }
-        // position이 삭제/수정된 텍스트보다 뒤면 offset 조정
-        const newPosition = Math.max(0, remainingIssue.position + offset)
-        return {
-          ...remainingIssue,
-          position: newPosition
+
+        // 5. 문맥 교정이 필요한 경우 (비동기 LLM 호출)
+        if (needsRefine) {
+            try {
+                const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+                const refineRes = await fetch(`${API_BASE_URL}/api/content-filter/refine`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ text: tempContent }),
+                });
+
+                if (refineRes.ok) {
+                    const refineData = await refineRes.json();
+                    // 교정된 전체 텍스트로 업데이트
+                    setContent(refineData.refined_text);
+                    setFilteredContent(refineData.refined_text);
+                    setByteCount(getByteLength(refineData.refined_text));
+                    
+                    // 하이브리드 방식: 문맥 교정 후 자동 재검열 (텍스트가 크게 바뀌었으므로)
+                    setTimeout(() => {
+                      if (isFiltered && refineData.refined_text.trim()) {
+                        handleFilter();
+                      }
+                    }, 300);
+                }
+            } catch (e) {
+                console.error("Refine failed", e);
+                // 실패 시 fallback: XXX를 그냥 빈칸으로 변경
+                const fallbackText = prefix + "" + suffix; // 빈 문자열
+                setContent(fallbackText);
+                setFilteredContent(fallbackText);
+                setByteCount(getByteLength(fallbackText));
+                
+                // 좌표 다시 계산 (XXX(3글자) -> ""(0글자) 이므로 -3만큼 추가 이동)
+                const fallbackDiff = -3; 
+                setIssues(prev => prev.map(i => {
+                    if (i.position > currentIssue.position) {
+                        return { ...i, position: i.position + fallbackDiff };
+                    }
+                    return i;
+                }));
+            }
         }
-      })
+    } catch (err) {
+        console.error(err);
+    } finally {
+        setProcessingIssueIds(prev => {
+            const next = new Set(prev);
+            next.delete(targetIssue.id);
+            return next;
+        });
+    }
+  }
+
+  // [구간 분할 방식] 우선순위 점수 계산 헬퍼 함수
+  const getSeverityScore = (severity: string): number => {
+    if (severity === 'critical') return 3;
+    if (severity === 'warning') return 2;
+    return 1; // spelling 등
+  };
+
+  // 이슈 확장 로직을 공통 함수로 분리 (하이라이트와 카드에서 동일하게 사용)
+  const expandIssueForDisplay = useCallback((issue: FilterIssue, allIssues: FilterIssue[], content: string): FilterIssue => {
+    return {
+      ...issue,
+      displayText: issue.original_text,
+      displayStart: issue.position,
+      displayEnd: issue.position + issue.length,
+    };
+  }, []);
+
+  // [객체 기반] 스타일 결정 로직을 별도 함수로 분리 (severity 기반 단순화)
+  const determineSegmentStyle = (
+    activeIssues: FilterIssue[], 
+    segmentStart: number,
+    segmentEnd: number,
+    allIssues: FilterIssue[],
+    content: string
+  ): TextSegment['style'] | undefined => {
+    if (activeIssues.length === 0) {
+      return undefined; // 일반 텍스트
+    }
+
+    // 우선순위: Critical > Warning
+    const sortedActive = [...activeIssues].sort((a, b) => {
+      return getSeverityScore(b.severity) - getSeverityScore(a.severity);
+    });
+    const primaryIssue = sortedActive[0];
+
+    // 가장 높은 severity 기준 색상
+    const highestSeverity = primaryIssue.severity;
+
+    let className = "";
+    let severity: 'critical' | 'warning' | 'spelling' | 'mixed' = 'warning';
+
+    if (highestSeverity === 'critical') {
+      className = "bg-red-100 text-red-900";
+      severity = 'critical';
+    } else {
+      className = "bg-yellow-100 text-yellow-900";
+      severity = 'warning';
+    }
+
+    // 검열 소스 정보 유지 (카드와 동일 정보)
+    const ruleBasedIssues = activeIssues.filter(i => i.source === 'rule_based');
+    const llmIssues = activeIssues.filter(i => i.source === 'llm');
+    const hasRuleBased = ruleBasedIssues.length > 0;
+    const hasLlm = llmIssues.length > 0;
+
+    return {
+      className,
+      severity,
+      hasCritical: hasRuleBased || highestSeverity === 'critical',
+      hasWarning: hasLlm || highestSeverity === 'warning',
+      allIssues: activeIssues,
+      primaryIssue
+    };
+  };
+
+  // [구간 분할 방식] 텍스트를 구간 객체 배열로 변환하는 함수 (겹침 처리 포함)
+  const createTextSegments = useCallback((content: string, issues: FilterIssue[]): TextSegment[] => {
+    const segments: TextSegment[] = [];
     
-    setIssues(updatedIssues)
-  }
-
-  const getIssueColor = (type: string) => {
-    switch (type) {
-      case "delete":
-        return "bg-red-100 text-red-800 border-red-300"
-      case "modify":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300"
-      case "spelling":
-        return "bg-blue-100 text-blue-800 border-blue-300"
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-300"
+    if (issues.length === 0) {
+      // 이슈가 없으면 전체를 일반 텍스트로
+      segments.push({
+        id: 'normal-0-full',
+        start: 0,
+        end: content.length,
+        text: content,
+        type: 'normal'
+      });
+      return segments;
     }
-  }
-
-  const getIssueLabel = (type: string) => {
-    switch (type) {
-      case "delete":
-        return "삭제 필요"
-      case "modify":
-        return "수정 필요"
-      case "spelling":
-        return "맞춤법 오류"
-      default:
-        return "문제 발견"
+    
+    // issues는 이미 displayStart, displayEnd가 설정된 상태 (expandIssueForDisplay에서 계산됨)
+    // 하이라이트는 displayStart/displayEnd를 사용하고, 원본 position/length는 유지
+    
+    // 1. 모든 경계점(Boundary) 수집 (시작점, 끝점) - displayStart/displayEnd 사용
+    const boundaries = new Set<number>([0, content.length]);
+    
+    issues.forEach(issue => {
+      // displayStart, displayEnd가 있으면 사용, 없으면 원본 position 사용
+      const start = issue.displayStart ?? issue.position;
+      const end = issue.displayEnd ?? (issue.position + issue.length);
+      
+      // 범위 검사 (텍스트 길이 내에 있는지)
+      const safeStart = Math.max(0, Math.min(start, content.length));
+      const safeEnd = Math.max(0, Math.min(end, content.length));
+      
+      // 유효한 구간만 추가
+      if (safeStart < safeEnd) {
+        boundaries.add(safeStart);
+        boundaries.add(safeEnd);
+      }
+    });
+    
+    // 2. 경계점 정렬
+    const sortedPoints = Array.from(boundaries).sort((a, b) => a - b);
+    
+    // 3. 각 구간별로 처리
+    for (let i = 0; i < sortedPoints.length - 1; i++) {
+      const start = sortedPoints[i];
+      const end = sortedPoints[i + 1];
+      const segmentText = content.substring(start, end);
+      
+      // 빈 구간은 건너뛰기
+      if (!segmentText) continue;
+      
+      // 현재 구간을 포함하는 모든 이슈 찾기 (displayStart/displayEnd 사용)
+      const activeIssues = issues.filter(issue => {
+        const issueStart = issue.displayStart ?? issue.position;
+        const issueEnd = issue.displayEnd ?? (issue.position + issue.length);
+        
+        // 이슈 구간이 현재 세그먼트와 겹칠 때
+        // (이슈가 세그먼트를 완전히 포함하거나, 세그먼트가 이슈를 포함하거나, 부분적으로 겹치는 경우)
+        return issueStart < end && issueEnd > start;
+      });
+      
+      if (activeIssues.length === 0) {
+        // 이슈 없는 일반 텍스트
+        segments.push({
+          id: `normal-${start}-${end}`,
+          start,
+          end,
+          text: segmentText,
+          type: 'normal'
+        });
+      } else {
+        // [객체 기반] 스타일 결정 (인접 이슈 정보 포함)
+        const style = determineSegmentStyle(activeIssues, start, end, issues, content);
+        
+        if (style) {
+          // 이슈 구간 (스타일 정보 포함)
+          segments.push({
+            id: `issue-${style.primaryIssue.id}-${start}-${end}`,
+            start,
+            end,
+            text: segmentText,
+            issue: style.primaryIssue, // 호환성 유지
+            type: 'issue',
+            style // 스타일 정보 포함
+          });
+        }
+      }
     }
-  }
+    
+    return segments;
+  }, []);
 
-  // 텍스트에 하이라이트 적용 (원본 문서에만 하이라이트 표시)
+  // [구간 분할 방식] 렌더링 - 겹치는 이슈도 정확하게 처리
   const renderHighlightedContent = () => {
     if (!isFiltered || issues.length === 0) {
-      return <div className="whitespace-pre-wrap">{content}</div>
+      return <div className="whitespace-pre-wrap leading-relaxed">{content}</div>
     }
 
-    // position 기준으로 정렬
-    const sortedIssues = [...issues].sort((a, b) => a.position - b.position)
-
-    let result: JSX.Element[] = []
-    let lastIndex = 0
-
-    sortedIssues.forEach((issue) => {
-      // 백엔드에서 받은 original_text를 직접 사용
-      const originalText = issue.original_text || ''
-      
-      // original_text가 없으면 건너뛰기
-      if (!originalText) {
-        return
-      }
-      
-      // 백엔드에서 받은 position을 직접 사용 (재계산하지 않음)
-      let actualPosition = issue.position
-      const actualLength = originalText.length
-      const actualEnd = actualPosition + actualLength
-      const issueId = issue.id || `issue-${actualPosition}`
-
-      // 원본 content에서 해당 위치의 텍스트 확인
-      // 위치가 범위를 벗어나면 조정
-      if (actualPosition < 0) {
-        actualPosition = 0
-      }
-      if (actualPosition + actualLength > content.length) {
-        // 범위를 벗어나면 content 끝까지로 조정
-        const adjustedLength = content.length - actualPosition
-        if (adjustedLength <= 0) {
-          return // 유효하지 않은 위치
-        }
-      }
-      
-      // 원본 content에서 해당 위치의 텍스트 추출
-      const contentAtPosition = content.substring(actualPosition, Math.min(actualPosition + actualLength, content.length))
-      
-      // 텍스트가 일치하지 않아도 하이라이트 표시 (백엔드에서 검출된 것이므로)
-      // 단, 빈 텍스트는 건너뛰기
-      if (contentAtPosition.length === 0) {
-        return
-      }
-
-      // 이슈 전 텍스트 (원본 content에서 직접 추출)
-      if (actualPosition > lastIndex) {
-        result.push(
-          <span key={`text-${issueId}`}>
-            {content.substring(lastIndex, actualPosition)}
+    // 텍스트를 구간 객체 배열로 변환 (겹침 처리 포함)
+    const segments = createTextSegments(content, issues);
+    
+    // 구간 객체들을 JSX로 렌더링
+    return (
+      <div className="whitespace-pre-wrap leading-relaxed text-gray-800">
+        {segments.map((segment) => {
+          if (segment.type === 'normal') {
+            // 일반 텍스트 구간
+            return (
+              <span key={segment.id}>
+                {segment.text}
           </span>
-        )
-      }
-
-      // 이슈 텍스트 (하이라이트) - 원본 content에서 해당 위치의 텍스트 직접 사용
-      const issueText = content.substring(actualPosition, Math.min(actualEnd, content.length))
-      
-      // 1차 필터 결과인지 확인 (reason에 "규칙 기반 필터" 포함)
-      const isRuleBasedFilter = issue.reason && issue.reason.includes("규칙 기반 필터")
-        
-      const colorClass = isRuleBasedFilter || issue.type === "delete" 
-        ? "bg-red-200 text-red-900 underline decoration-red-500"  // 1차 필터는 빨간색
-        : issue.type === "modify"
-        ? "bg-yellow-200 text-yellow-900 underline decoration-yellow-500"
-        : "bg-blue-200 text-blue-900 underline decoration-blue-500"
-
-      // 중복 방지: lastIndex보다 앞에 있으면 겹치는 부분만 하이라이트
-      if (actualPosition < lastIndex) {
-        // 겹치는 경우: 이전 이슈가 끝나는 지점부터 시작
-        if (actualEnd > lastIndex) {
-          // 겹치는 부분만 하이라이트
-          const overlapStart = lastIndex
-          const overlapText = content.substring(overlapStart, Math.min(actualEnd, content.length))
-          if (overlapText.length > 0) {
-            result.push(
-              <span
-                key={`issue-${issueId}`}
-                className={`${colorClass} cursor-help`}
-                title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
-              >
-                {overlapText}
-              </span>
-            )
-          }
-          lastIndex = Math.max(lastIndex, actualEnd)
-        }
-        // 완전히 포함된 경우도 하이라이트 표시 (모든 이슈를 표시하기 위해)
-        else if (actualEnd <= lastIndex) {
-          // 완전히 포함된 경우도 하이라이트 추가 (중복 표시되지만 모든 이슈를 보여주기 위해)
-          result.push(
-            <span
-              key={`issue-overlap-${issueId}`}
-              className={`${colorClass} cursor-help opacity-70`}
-              title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
-            >
-              {issueText}
-            </span>
-          )
-        }
-      } else {
-        // 정상적인 경우: 하이라이트 추가 (원본 content에서 직접 추출한 텍스트 사용)
-        result.push(
+            );
+          } else {
+            // [객체 기반] 구간 객체의 스타일 정보만 사용
+            const style = segment.style!;
+            const isProcessing = processingIssueIds.has(style.primaryIssue.id);
+            
+            // 모든 관련 이슈의 reason 결합
+            const reasons = style.allIssues.map((i: FilterIssue) => i.reason).join(' | ');
+            
+            return (
           <span
-            key={`issue-${issueId}`}
-            className={`${colorClass} cursor-help`}
-            title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
-          >
-            {issueText}
-          </span>
-        )
-        lastIndex = Math.max(lastIndex, actualEnd)
-      }
-    })
-
-    // 마지막 이슈 이후 텍스트 (원본 content에서 직접 추출)
-    if (lastIndex < content.length) {
-      result.push(
-        <span key="text-end">
-          {content.substring(lastIndex)}
-        </span>
-      )
-    }
-
-    return <div className="whitespace-pre-wrap">{result}</div>
-  }
-
-  // 검열된 텍스트에 하이라이트 적용 (검열 후 화면용)
-  const renderFilteredContent = () => {
-    if (!isFiltered || !filteredContent) {
-      return <div className="whitespace-pre-wrap text-gray-700">{content}</div>
-    }
-
-    // issues가 있으면 하이라이트 적용
-    if (issues.length === 0) {
-      return <div className="whitespace-pre-wrap text-gray-700">{filteredContent}</div>
-    }
-
-    const sortedIssues = [...issues].sort((a, b) => a.position - b.position)
-    let result: JSX.Element[] = []
-    let lastIndex = 0
-
-    sortedIssues.forEach((issue) => {
-      // 백엔드에서 받은 original_text를 직접 사용 (위치 기반 추출 제거)
-      const originalText = issue.original_text || ''
-      
-      // original_text가 없으면 건너뛰기
-      if (!originalText) {
-        return
-      }
-      
-      // 위치는 하이라이트 위치 확인용으로만 사용
-      const searchResult = findTextInContent(originalText, content, issue.position)
-      let actualPosition = searchResult.position !== -1 ? searchResult.position : issue.position
-      const actualText = originalText  // 백엔드에서 받은 정확한 텍스트 사용
-      const actualLength = originalText.length
-
-      // filteredContent에서 해당 텍스트 찾기 (더 넓은 범위에서 검색)
-      let filteredPosition = filteredContent.indexOf(actualText, Math.max(0, lastIndex - 100))
-      
-      // 찾지 못한 경우, 삭제된 텍스트일 수 있으므로 건너뛰기
-      if (filteredPosition === -1) {
-        // 삭제된 항목은 표시하지 않음
-        return
-      }
-
-      const actualEnd = filteredPosition + actualLength
-
-      // 이슈 전 텍스트
-      if (filteredPosition > lastIndex) {
-        result.push(
-          <span key={`text-${issue.id || actualPosition}`}>
-            {filteredContent.substring(lastIndex, filteredPosition)}
-          </span>
-        )
-      }
-
-      // 이슈 텍스트 (하이라이트) - 백엔드에서 받은 original_text 직접 사용
-      const colorClass = issue.type === "delete" 
-        ? "bg-red-200 text-red-900 underline decoration-red-500"
-        : issue.type === "modify"
-        ? "bg-yellow-200 text-yellow-900 underline decoration-yellow-500"
-        : "bg-blue-200 text-blue-900 underline decoration-blue-500"
-
-      if (filteredPosition >= lastIndex) {
-        const issueText = actualText  // 위치 기반 추출 대신 original_text 직접 사용
-        const issueId = issue.id || `issue-${actualPosition}`
-        
-        result.push(
-          <span
-            key={`issue-wrapper-${issueId}`}
-            className="relative inline-block"
-          >
-            {/* 인라인 수정/삭제 버튼 - 텍스트 위에 표시 */}
-            <span className="absolute -top-6 left-0 flex space-x-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
-              {issue.suggestion && (
-                <button
+                key={segment.id}
+                className={`${style.className} cursor-pointer transition-all px-0.5 rounded mx-0.5 ${
+                  isProcessing ? 'opacity-50 animate-pulse' : 'hover:opacity-80'
+                }`}
+                title={`${reasons} (클릭 시 카드 이동)`}
                   onClick={(e) => {
-                    e.stopPropagation()
-                    handleIssueClick(issue, 'modify')
-                  }}
-                  className="bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg hover:bg-gray-700 whitespace-nowrap"
-                  title={`수정: ${issue.suggestion}`}
-                >
-                  <PencilIcon className="w-3 h-3 inline mr-1" />
-                  수정
-                </button>
-              )}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleIssueClick(issue, 'remove')
+                  e.stopPropagation();
+                  // 해당 이슈 카드로 스크롤 이동
+                  const card = document.getElementById(`card-${style.primaryIssue.id}`);
+                  if (card) {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // 카드 깜빡임 효과
+                    card.classList.add('ring-2', 'ring-offset-2', 'ring-blue-500');
+                    setTimeout(() => {
+                      card.classList.remove('ring-2', 'ring-offset-2', 'ring-blue-500');
+                    }, 1500);
+                  }
                 }}
-                className="bg-red-600 text-white text-xs px-2 py-1 rounded shadow-lg hover:bg-red-700 whitespace-nowrap"
-                title="제거"
               >
-                <TrashIcon className="w-3 h-3 inline mr-1" />
-                {issue.type === 'delete' ? '삭제' : '제거'}
-              </button>
+                {segment.text}
             </span>
-            <span
-              key={`issue-${issueId}`}
-              className={`${colorClass} cursor-help relative group inline-block`}
-              title={`${getIssueLabel(issue.type)}: ${issue.reason}${issue.suggestion ? ` → ${issue.suggestion}` : ""}`}
-            >
-              {issueText}
-            </span>
-          </span>
-        )
-        lastIndex = Math.max(lastIndex, actualEnd)
-      }
-    })
-
-    // 마지막 이슈 이후 텍스트
-    if (lastIndex < filteredContent.length) {
-      result.push(
-        <span key="text-end">
-          {filteredContent.substring(lastIndex)}
-        </span>
-      )
-    }
-
-    return <div className="whitespace-pre-wrap text-gray-700">{result}</div>
+            );
+          }
+        })}
+      </div>
+    );
   }
 
   return (
@@ -759,6 +655,17 @@ export default function ContentFilterPage() {
           </div>
         </div>
 
+        {/* 레이아웃: 사이드바 + 메인 컨텐츠 */}
+        <div className="flex gap-6">
+          {/* 좌측 사이드바 (PC에서만 표시, 검열 전에만 표시) */}
+          {!isFiltered && (
+            <div className="hidden md:block w-80 shrink-0">
+              <CustomRuleSidebar onRulesChange={handleRulesChange} />
+            </div>
+          )}
+
+          {/* 우측 메인 컨텐츠 */}
+          <div className="flex-1 min-w-0">
         {!isFiltered ? (
           /* 검열 전: 입력 화면만 표시 */
           <div className="max-w-3xl mx-auto">
@@ -891,14 +798,11 @@ export default function ContentFilterPage() {
                     새글쓰기
                   </Button>
                   <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsFiltered(false)
-                    }}
-                    className="flex-1"
+                    onClick={handleApplyAll}
+                    className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
                   >
-                    <ArrowPathIcon className="w-4 h-4 mr-2" />
-                    돌아가기
+                    <CheckCircleIcon className="w-4 h-4 mr-2" />
+                    적용하기
                   </Button>
                   <Button
                     onClick={() => {
@@ -927,25 +831,32 @@ export default function ContentFilterPage() {
                 {issues.length > 0 ? (
                   <div className="space-y-3 max-h-[700px] overflow-y-auto pr-2">
                     {issues.map((issue) => {
-                      // 백엔드에서 받은 original_text를 직접 사용 (위치 기반 추출 제거)
-                      const displayText = issue.original_text || ''
+                      // 검출된 단어만 표시 (확장된 텍스트 대신 original_text 사용)
+                      const displayText = issue.original_text;
                       
-                      // original_text가 없으면 건너뛰기
                       if (!displayText) {
                         return null
                       }
                       
-                      const issueId = issue.id || `issue-${issue.position}-${issue.type}`
+                      const isProcessing = processingIssueIds.has(issue.id);
                       
                       return (
                         <div
-                          key={issueId}
-                          className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                          id={`card-${issue.id}`} // 스크롤 이동을 위한 ID
+                          key={issue.id} // 객체 ID 사용
+                          className={`bg-white border rounded-lg p-4 transition-all shadow-sm
+                            ${issue.severity === 'critical' ? 'border-red-200 bg-red-50/30' : 
+                              issue.severity === 'warning' ? 'border-yellow-200 bg-yellow-50/30' : 'border-gray-200'}
+                            ${isProcessing ? 'opacity-50 pointer-events-none' : 'hover:shadow-md'}
+                          `}
                         >
                           {/* 입력 내용 */}
                           <div className="mb-3">
                             <div className="flex items-center space-x-2 mb-1">
-                              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                              <div className={`w-2 h-2 rounded-full ${
+                                issue.severity === 'critical' ? 'bg-red-500' : 
+                                issue.severity === 'warning' ? 'bg-yellow-500' : 'bg-blue-500'
+                              }`}></div>
                               <span className="text-xs font-medium text-gray-600">입력 내용</span>
                             </div>
                             <div className="text-sm font-medium text-gray-800 pl-4">
@@ -975,26 +886,39 @@ export default function ContentFilterPage() {
                           </div>
 
                           {/* 액션 버튼 */}
-                          <div className="flex space-x-2 pt-3 border-t border-gray-100">
+                          <div className="flex space-x-2 pt-3 border-t border-gray-100/50 mt-3">
+                            {/* 수정 버튼 */}
                             {issue.suggestion && (
                               <Button
                                 variant="outline"
                                 size="sm"
                                 onClick={() => handleIssueClick(issue, 'modify')}
-                                className="flex-1 text-xs"
+                                disabled={isProcessing}
+                                className="flex-1 text-xs h-8"
                               >
-                                <PencilIcon className="w-3 h-3 mr-1" />
+                                <PencilIcon className="w-3 h-3 mr-1.5" />
                                 수정
                               </Button>
                             )}
+                            
+                            {/* 삭제 버튼 */}
                             <Button
                               variant="outline"
                               size="sm"
                               onClick={() => handleIssueClick(issue, 'remove')}
-                              className="flex-1 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-300"
+                              disabled={isProcessing}
+                              className={`flex-1 text-xs h-8 ${
+                                issue.severity === 'critical' 
+                                ? 'text-red-600 border-red-200 hover:bg-red-50' 
+                                : 'text-gray-600 hover:bg-gray-50'
+                              }`}
                             >
-                              <TrashIcon className="w-3 h-3 mr-1" />
-                              {issue.type === 'delete' ? '삭제' : '제거'}
+                              {isProcessing ? (
+                                <ArrowPathIcon className="w-3 h-3 mr-1.5 animate-spin" />
+                              ) : (
+                                <TrashIcon className="w-3 h-3 mr-1.5" />
+                              )}
+                              {isProcessing ? '처리 중...' : '삭제'}
                             </Button>
                           </div>
 
@@ -1020,8 +944,9 @@ export default function ContentFilterPage() {
             </Card>
           </div>
         )}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
-

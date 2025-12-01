@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.config import settings
-from app.api import auth, users, students, attendance, schedule, content_filter, admin
+from app.api import auth, users, students, attendance, schedule, content_filter, admin, custom_filter
 from app.database import engine, SessionLocal
 from app.models.existing_db import Base
 from sqlalchemy import text
@@ -217,6 +217,7 @@ app.include_router(attendance.router, prefix="/api/attendance", tags=["출석"])
 app.include_router(admin.router, prefix="/api/admin", tags=["관리자"])
 app.include_router(schedule.router, prefix="/api/schedule", tags=["시간표"])
 app.include_router(content_filter.router, prefix="/api/content-filter", tags=["세특 검열"])
+app.include_router(custom_filter.router, prefix="/api", tags=["사용자 정의 금지어"])
 # /check/setuek 엔드포인트를 위한 별도 라우터 등록 (prefix 없이)
 from app.api.content_filter import check_router
 app.include_router(check_router, tags=["세특 검열"])

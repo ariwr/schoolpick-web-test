@@ -700,5 +700,19 @@
     "category": "COMPANY",
     "use_regex": true,
     "use_kiwi": false
+  },
+  {
+    "pattern": "(알바천국)",
+    "label": "특정 상호명",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(알바몬)",
+    "label": "특정 상호명",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
   }
 ]

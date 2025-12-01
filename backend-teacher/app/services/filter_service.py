@@ -10,6 +10,20 @@ from app.core.filter_loader import load_filters, load_kiwi_abbreviations, Filter
 
 logger = logging.getLogger(__name__)
 
+# 교내 행사 대체어 사전 (순화 대상)
+EVENT_REPLACEMENTS = {
+    "체육대회": "체육행사",
+    "체육 대회": "체육행사",
+    "운동회": "체육한마당",
+    "합창대회": "합창제",
+    "합창 대회": "합창제",
+    "축구대회": "축구 경기",
+    "농구대회": "농구 경기",
+    "토론대회": "토론회",
+    # 경시대회는 교외 대회로 간주하여 삭제 대상이지만, 혹시 모를 경우를 대비해 추가
+    "경시대회": "경시 행사는 기재 불가(참가 사실 자체 기재 금지일 수 있음)"
+}
+
 # Kiwi 인스턴스는 전역으로 한 번만 초기화 (성능 최적화)
 _kiwi_instance: Optional[Kiwi] = None
 
@@ -60,6 +74,14 @@ class RuleBasedFilterService:
             for abbrev, full_form in self.abbreviations.items()
         ]
         logger.info(f"규칙 기반 필터 서비스 초기화 완료 (패턴 수: {len(self.patterns)}, 축약형: {len(self.abbreviations)}개)")
+    
+    def reload_patterns(self):
+        """
+        패턴을 다시 로드합니다 (사용자 정의 금지어 추가/삭제 후 호출).
+        custom_rules.json이 변경되었을 때 실시간으로 반영하기 위해 사용됩니다.
+        """
+        self.patterns = load_filters()
+        logger.info(f"패턴 리로드 완료: {len(self.patterns)}개 패턴")
     
     def _normalize_text_with_abbreviations(self, text: str) -> str:
         """
@@ -210,12 +232,26 @@ class RuleBasedFilterService:
         """
         matches = []
         
+        # 1. 교내 행사 순화 대상 검출 (기존 금지어 검출 이전에 처리)
+        for event_term, replacement in EVENT_REPLACEMENTS.items():
+            # 정확한 매칭을 위해 단어 경계를 고려한 정규식 사용
+            pattern = re.compile(re.escape(event_term))
+            for match in pattern.finditer(text):
+                start_pos = match.start()
+                end_pos = match.end()
+                matched_text = match.group(0)
+                
+                # 유효성 검증
+                if self._is_valid_match(matched_text, "EVENT"):
+                    matches.append((start_pos, end_pos, matched_text, replacement, "교내행사순화"))
+        
         # 오탐 방지: 특정 패턴 제외
         exclusion_patterns = [
             r'의사소통',  # '의사'를 잡지 않도록
             r'의사\s*소통',  # '의사 소통'도 제외
         ]
         
+        # 모든 패턴에 대해 매칭 검색 (정적 패턴 + 사용자 정의 금지어는 필터 로더가 자동으로 포함)
         for pattern_obj in self.patterns:
             try:
                 # use_kiwi가 True인 경우 형태소 분석 사용

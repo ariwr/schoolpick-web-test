@@ -26,53 +26,34 @@ OPENAI_API_KEY = settings.OPENAI_API_KEY
 import logging
 logger = logging.getLogger(__name__)
 
-# 파인튜닝된 모델 ID 설정 (환경변수 또는 기본값)
-FINE_TUNED_MODEL_ID = os.getenv("FINE_TUNED_MODEL_ID", None)
-
-# 파인튜닝 모델 ID를 파일에서 읽기 시도
-if not FINE_TUNED_MODEL_ID:
-    fine_tuned_model_file = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-        "fine-tuning",
-        "fine_tuned_model.json"
-    )
-    if os.path.exists(fine_tuned_model_file):
-        try:
-            with open(fine_tuned_model_file, 'r', encoding='utf-8') as f:
-                model_info = json.load(f)
-                FINE_TUNED_MODEL_ID = model_info.get("model_id")
-                if FINE_TUNED_MODEL_ID:
-                    logger.info(f"파인튜닝된 모델 ID를 파일에서 로드했습니다: {FINE_TUNED_MODEL_ID[:20]}...")
-        except Exception as e:
-            logger.debug(f"파인튜닝 모델 파일 읽기 실패 (무시): {e}")
-
-# 기본 모델 (파인튜닝된 모델이 없을 경우)
-DEFAULT_MODEL = "gpt-3.5-turbo"
-
-# 사용할 모델 결정
-OPENAI_MODEL = FINE_TUNED_MODEL_ID if FINE_TUNED_MODEL_ID else DEFAULT_MODEL
+# 기본 모델 설정
+DEFAULT_MODEL = "gpt-4o-mini"
+OPENAI_MODEL = DEFAULT_MODEL
 
 # 모델 정보 로깅
-if FINE_TUNED_MODEL_ID:
-    logger.info(f"파인튜닝된 모델이 설정되어 있습니다: {FINE_TUNED_MODEL_ID[:20]}...")
-else:
-    logger.info(f"기본 모델을 사용합니다: {DEFAULT_MODEL}")
+logger.info(f"기본 모델을 사용합니다: {DEFAULT_MODEL}")
 
 # 키가 있는지 확인 (빈 문자열도 체크)
-if OPENAI_API_KEY:
+if OPENAI_API_KEY and OPENAI_API_KEY.strip():
     # 키의 앞 10자만 로깅 (보안)
     key_preview = OPENAI_API_KEY[:10] + "..." if len(OPENAI_API_KEY) > 10 else "***"
     logger.info(f"OpenAI API 키가 로드되었습니다. (길이: {len(OPENAI_API_KEY)}, 미리보기: {key_preview})")
     
     # 키가 유효한 형식인지 확인 (sk- 또는 sk-proj-로 시작하는지)
     if not (OPENAI_API_KEY.startswith("sk-") or OPENAI_API_KEY.startswith("sk-proj-")):
-        logger.warning(f"OpenAI API 키 형식이 올바르지 않을 수 있습니다. (sk- 또는 sk-proj-로 시작하지 않음)")
+        logger.error(f"⚠️ OpenAI API 키 형식이 올바르지 않습니다! (sk- 또는 sk-proj-로 시작해야 함)")
+        logger.error(f"현재 키 시작 부분: '{OPENAI_API_KEY[:15]}...'")
+        logger.error("올바른 형식의 API 키를 설정해주세요.")
     else:
-        logger.info(f"OpenAI API 키 형식이 올바릅니다.")
+        logger.info(f"✅ OpenAI API 키 형식이 올바릅니다.")
     
     openai.api_key = OPENAI_API_KEY
 else:
-    logger.warning("Warning: OPENAI_API_KEY가 설정되지 않았습니다. 세특 검열 기능을 사용하려면 환경변수를 설정하세요.")
+    logger.error("❌ OPENAI_API_KEY가 설정되지 않았습니다!")
+    logger.error("세특 검열 기능을 사용하려면 다음 중 하나를 수행하세요:")
+    logger.error("1. backend-teacher 폴더에 .env 파일을 생성하고 OPENAI_API_KEY=your_key 추가")
+    logger.error("2. 환경변수 OPENAI_API_KEY를 설정")
+    logger.error("3. AWS Secrets Manager에 키 저장")
     OPENAI_API_KEY = None  # 명시적으로 None으로 설정
 
 
@@ -86,11 +67,13 @@ class ContentFilterRequest(BaseModel):
 class FilterIssue(BaseModel):
     """검열 발견 이슈 모델"""
     type: str = Field(..., description="이슈 유형 (delete, modify, spelling)")
+    severity: str = Field(default="critical", description="심각도 (critical: 금지어/삭제필수, warning: 유의사항/확인필요)")
     position: int = Field(..., description="문제가 발견된 위치 (문자 인덱스)")
     length: int = Field(..., description="문제가 있는 텍스트 길이")
     original_text: str = Field(..., description="원본 텍스트")
     suggestion: Optional[str] = Field(None, description="수정 제안")
     reason: str = Field(..., description="문제 사유")
+    source: str = Field(default="llm", description="검열 소스 (rule_based: 1차 규칙 기반, llm: 2차 LLM)")
 
 
 class ContentFilterResponse(BaseModel):
@@ -299,11 +282,23 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
         logger.addHandler(handler)
     
     # skip_chatgpt가 False일 때만 API 키 확인
-    if not skip_chatgpt and not OPENAI_API_KEY:
-        raise HTTPException(
-            status_code=500,
-            detail="OpenAI API 키가 설정되지 않았습니다. 환경변수 OPENAI_API_KEY를 설정하세요."
-        )
+    if not skip_chatgpt:
+        if not OPENAI_API_KEY or not OPENAI_API_KEY.strip():
+            logger.error("OpenAI API 키가 설정되지 않았습니다.")
+            raise HTTPException(
+                status_code=500,
+                detail="OpenAI API 키가 설정되지 않았습니다. 환경변수 OPENAI_API_KEY를 설정하세요."
+            )
+        
+        # 키 형식 검증
+        if not (OPENAI_API_KEY.startswith("sk-") or OPENAI_API_KEY.startswith("sk-proj-")):
+            logger.error(f"OpenAI API 키 형식이 올바르지 않습니다. (현재 시작: '{OPENAI_API_KEY[:15]}...')")
+            raise HTTPException(
+                status_code=500,
+                detail="OpenAI API 키 형식이 올바르지 않습니다. 키는 sk- 또는 sk-proj-로 시작해야 합니다."
+            )
+        
+        logger.debug(f"OpenAI API 키 검증 완료 (길이: {len(OPENAI_API_KEY)})")
     
     # 바이트 수 확인
     byte_count = len(content.encode('utf-8'))
@@ -333,7 +328,9 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
     
     # 중복 단어 제거 (예: 1차 필터가 '대회'를 3번 리턴해도 단어는 '대회' 하나로 취급)
     # 단어별 메타데이터(대체어, 카테고리 등)를 저장
-    detected_words_map = {d.get("word"): d for d in raw_detections if d.get("word")}
+    # 순서 고정: 같은 단어가 여러 번 나와도 일관된 순서 보장
+    detected_words_sorted = sorted(raw_detections, key=lambda x: (x.get("word", ""), x.get("position", 0)))
+    detected_words_map = {d.get("word"): d for d in detected_words_sorted if d.get("word")}
     
     # [디버깅용] 1차 필터가 감지한 단어 로그 출력
     logger.info(f"1차 필터 감지 단어 목록: {list(detected_words_map.keys())}")
@@ -401,20 +398,45 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
     content_to_check = pre_filtered_content
     # [수정된 로직 끝] ==============================================================
     
-    # 1차 필터만 사용하는 경우 (LLM 건너뛰기)
+        # 1차 필터만 사용하는 경우 (LLM 건너뛰기)
     if skip_chatgpt:
         logger.debug(f"1차 규칙 기반 필터만 사용합니다: {len(rule_detections)}개 검출")
         
         issues = []
         for rule_det in rule_detections:
-            issue = FilterIssue(
-                type="delete",  # 1차 필터는 기본적으로 삭제/금지어
-                position=rule_det['position'],
-                length=len(rule_det['word']),
-                original_text=rule_det['word'],
-                suggestion=None,
-                reason=f"규칙 기반 필터: {rule_det['category']} 관련 금지어입니다."
-            )
+            rule_category = rule_det.get('category', '')
+            rule_word = rule_det.get('word', '')
+            rule_replacement = rule_det.get('replacement', '')
+            
+            # 교내 행사 순화는 modify 타입으로 처리
+            if rule_category == "교내행사순화":
+                issue = FilterIssue(
+                    type="modify",
+                    severity="warning",
+                    position=rule_det['position'],
+                    length=len(rule_word),
+                    original_text=rule_word,
+                    suggestion=rule_replacement,
+                    reason=f"교내 행사 명칭 순화 필요: '{rule_word}'를 '{rule_replacement}'로 수정 권장",
+                    source="rule_based"  # 1차 검열
+                )
+            else:
+                # USER_DEFINED 카테고리는 "사용자 기반 금지어"로 표시
+                if rule_category == "USER_DEFINED":
+                    reason_text = "사용자 기반 금지어"
+                else:
+                    reason_text = f"규칙 기반 필터: {rule_category} 관련 금지어입니다."
+                
+                issue = FilterIssue(
+                    type="delete",  # 1차 필터는 기본적으로 삭제/금지어
+                    severity="critical",  # 규칙 기반 필터는 모두 critical
+                    position=rule_det['position'],
+                    length=len(rule_word),
+                    original_text=rule_word,
+                    suggestion=None,
+                    reason=reason_text,
+                    source="rule_based"  # 1차 검열
+                )
             issues.append(issue)
         
         # 위치 순서대로 정렬
@@ -429,153 +451,254 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
         )
     
     # ChatGPT에 전달할 프롬프트 작성 (2025 기재요령 PDF 기준 보강)
-    system_prompt = """당신은 한국어 세특(세부능력 및 특기사항) 검열 전문가입니다.
+    system_prompt = """당신은 2025학년도 학교생활기록부 기재요령 전문가입니다.
+
 학교생활기록부 기재요령(교육부훈령)에 따라 다음 내용을 엄격하게 검열해야 합니다.
 
-【금지 용어 및 표현】
+**단, 맞춤법이나 띄어쓰기 오류는 검사하지 마십시오. 오직 기재 금지 위반 사항만 찾아내십시오.**
 
-1. 대회, 수상, 성적 관련 (기재 불가)[cite: 365, 366]:
-   - "대회"라는 단어 (예: 체육대회, 과학경진대회). (단, '수상경력' 항목 제외) [cite: 365, 1157]
-   - 교외 기관·단체(장) 수상 실적 (표창장, 감사장, 공로상 등)
-   - 모의고사·전국연합학력평가 성적 (원점수, 석차, 등급, 백분위 등)
+【분석 기준 및 심각도 분류】
 
-2. 어학시험 및 인증 (기재 불가)[cite: 363, 364, 366]:
-   - 각종 공인어학시험명 및 성적 (TOEIC, TOEFL, TEPS, HSK, JPT, JLPT, DELF, DSH, DELE 등) [cite: 364]
-   - 각종 한자시험 (한자능력검정, 실용한자, YBM 상무한검 등) [cite: 364]
-   - 교내·외 인증시험 참여 사실
-   - 자격증 명칭 (단, '자격증 취득' 항목란 제외) [cite: 392]
+1. CRITICAL (삭제 필수 - 빨간색 경고):
+   - [대회/수상] 교내·외 대회 명칭, 우승/수상 실적, 입상 내역 일체.
+   - [인증/자격] 공인어학시험, 각종 사설 인증시험 및 자격증 명칭.
+   - [기관/상호/브랜드] 구체적인 기업명(삼성, 나이키 등), 특정 앱/사이트명(유튜브, 인바디 등), 사설 학원명.
+   - [논문/도서] 논문 투고, 논문 발표(학술지/학회에서의 논문 발표만 해당, 일반 수업 발표는 허용), 도서 출간, 지식재산권 출원.
+   - [신상/기부] 부모의 사회·경제적 지위 암시, 해외 어학연수, 기부(금품) 관련 내용.
+   - [사교육] 사설 강사명, 사교육 의존 내용.
 
-3. 대학, 기관, 상호명 (기재 불가)[cite: 383]:
-   - 구체적인 특정 대학명 (서울대, 고려대, 하버드, MIT, 옥스포드 등) [cite: 383]
-   - 기관명 (보건복지부, 통계청, YMCA, 유엔, OECD, WHO 등) [cite: 383]
-     (단, 교육부 및 그 소속기관, 시도교육청 및 직속기관 등 교육관련기관은 허용) [cite: 384, 385]
-   - 상호명 및 회사명 (삼성, 애플, 구글, 유튜브, 틱톡, TED, 넷플릭스 등) [cite: 383]
+2. MODIFY (수정 권장 - 노란색 경고):
+   - [교내 행사] '대회'라는 용어는 사용할 수 없으므로, 교내 행사의 경우 '행사', '축제', '발표회' 등으로 순화 제안.
+   - [단순 나열] 구체적 변화 없이 활동 실적만 나열한 경우.
 
-4. 연구, 저작물, 지식재산권 (기재 불가)[cite: 367, 368]:
-   - 논문 (학회지 투고, 등재, 발표 포함)
-   - 도서출간 사실
-   - 지식재산권 (특허, 실용신안, 상표, 디자인 등) 출원 또는 등록 사실
-   - 협회, 학회명 (~협회, ~학회)
+【분석 절차 (Chain-of-Thought)】
+1단계: 원본 텍스트를 처음부터 끝까지 순차적으로 읽으면서 금지어를 찾습니다.
+2단계: 찾은 각 금지어에 대해:
+   - 정확한 위치(position) 계산
+   - 정확한 길이(length) 계산
+   - 원본 텍스트에서 추출하여 original_text 확인
+   - 타입 결정 (delete 또는 modify)
+3단계: 모든 이슈를 position 순서로 정렬
+4단계: 중복 제거 및 검증
 
-5. 개인 신상 및 기타 (기재 불가)[cite: 368, 369]:
-   - 부모(친인척 포함)의 사회·경제적 지위 암시 내용 (직종명, 직업명, 직장명, 직위명 등)
-   - 해외 활동 실적 (어학연수, 해외 봉사활동 등)
-   - 장학생, 장학금 관련 내용
-   - 특정 강사명
-   - 기부 내용
+【위치 정보 계산 방법 - 매우 중요】
+1. 원본 텍스트를 처음부터 끝까지 순차적으로 읽으세요.
+2. 각 문자에 대해 0부터 시작하는 인덱스를 부여하세요.
+3. 찾은 텍스트의 첫 번째 문자의 인덱스가 position입니다.
+4. 찾은 텍스트의 문자 수가 length입니다.
+5. **중요: 작은따옴표(')나 큰따옴표(")가 포함된 경우, 따옴표도 포함하여 계산하세요.**
+6. 예: "안녕하세요"에서 "하세요"를 찾으면
+   - position: 2 (안=0, 녕=1, 하=2)
+   - length: 3 ("하세요"의 문자 수)
+   - original_text: "하세요"
+7. 예: "생명과학 실험에 흥미를 느껴 **'KAIST'** 영재교육원"에서 'KAIST'를 찾으면
+   - position: 작은따옴표(')의 위치부터 시작
+   - length: 작은따옴표 포함 7자 ('KAIST')
+   - original_text: "'KAIST'"
+8. **검증: 계산한 position과 length로 원본 텍스트에서 추출한 텍스트가 original_text와 정확히 일치해야 합니다.**
 
-6. 특수기호 (수정):
-   - 큰따옴표 (" ")
-   - 가운뎃점 (·)
-   - < > 괄호
-   - 모든 특수기호는 일반 텍스트로 수정
+【검증 규칙】
+- position + length가 원본 텍스트 길이를 초과하면 안 됩니다.
+- original_text는 원본 텍스트[position:position+length]와 정확히 일치해야 합니다.
+- 같은 위치의 중복 이슈는 제거하세요.
 
-7. 맞춤법 오류 (수정 필수):
-   - "이끔" → "이끌며"
-   - "뿐" → 올바른 형태로 수정
-   - "만듬" → "만듦" 또는 "만들었음"
-   - "을/를" 조사 오류
-   - "균형 있게" → "균형있게" 또는 "균형 있게" (맥락에 맞게)
-   - "게 되" → "게 되었다" 또는 적절한 형태
-   - "지 않" → "지 않았다" 또는 적절한 형태
-   - "값" → "가치" 또는 문맥에 맞는 표현
+【응답 형식】
 
-8. 띄어쓰기 오류:
-   - 가운뎃점 사용 금지, 띄어쓰기로 수정
-
-9. 부적절한 표현:
-   - 욕설, 비속어, 혐오 표현 등
-
-【응답 형식 - 매우 중요】
-반드시 다음 JSON 형식으로 응답해야 합니다. position과 length는 원본 텍스트에서의 정확한 위치를 나타냅니다:
+반드시 JSON 형식으로 응답해야 합니다. 다음 JSON 구조를 따라주세요:
 
 {
-  "filtered_content": "검열된 내용 (금지 용어는 삭제하거나 수정, 맞춤법은 교정)",
+  "filtered_content": "금지어가 삭제되거나 순화된 텍스트 (맞춤법 수정 없음)",
   "issues": [
     {
-      "type": "delete|modify|spelling",
-      "position": 정확한_문자_인덱스_0부터_시작,
-      "length": 원본_텍스트에서의_정확한_길이,
-      "original_text": "원본 텍스트에서 발견된 정확한 텍스트",
-      "suggestion": "수정 제안 텍스트 (modify나 spelling 타입일 경우 필수, delete일 경우 null)",
-      "reason": "문제 사유 설명 (예: '대회'라는 단어는 학교생활기록부에 기재할 수 없습니다)"
+      "type": "delete|modify", 
+      "severity": "critical|warning",
+      "position": 0,
+      "length": 0,
+      "original_text": "원본 텍스트",
+      "suggestion": "수정 제안 (delete일 경우 null)",
+      "reason": "구체적인 위반 사유"
     }
   ]
 }
 
-【위치 정보 정확성 요구사항 - 매우 중요】
-1. position: 원본 텍스트에서 해당 텍스트가 시작되는 정확한 문자 인덱스 (0부터 시작)
-2. length: original_text의 정확한 문자 길이 (바이트가 아닌 문자 수)
-3. original_text: 원본 텍스트에서 발견된 정확한 텍스트 (공백, 특수문자 포함 정확히 일치해야 함)
-4. suggestion: 수정할 텍스트 (modify나 spelling 타입일 경우 필수, delete일 경우 null 또는 빈 문자열)
+【학습 예시 (Few-Shot Examples)】
 
-예시:
-원본 텍스트: "체육대회에서 우승했다."
-- position: 0 (첫 번째 문자부터)
-- length: 4 ("체육대회"의 문자 수)
-- original_text: "체육대회"
-- type: "delete"
-- suggestion: null 또는 빈 문자열
+[예시 1: 체육/건강 분야 (브랜드, 앱, 대회)]
+입력: "교내 '축구 대회'에 학급 대표로 출전하여 주장으로서 팀을 이끌고 결승전에서 '우승'하는 데 기여했으며, '최우수 선수상'을 받음. 체력 증진을 위해 '나이키 런 클럽' 어플리케이션을 활용하고, 교외 '아디다스 마이런 마라톤'에 참여함. '유튜브' 헬스 채널을 구독하고 '인바디' 검사 결과를 분석함."
+출력:
+{
+  "filtered_content": "교내 축구 경기에 학급 대표로 출전하여 주장으로서 팀을 이끌고 좋은 결과를 얻는 데 기여함. 체력 증진을 위해 달리기 기록 측정 어플리케이션을 활용하고, 교외 마라톤 행사에 참여함. 운동 관련 영상 채널을 구독하고 체성분 검사 결과를 분석함.",
+  "issues": [
+    { "type": "modify", "severity": "warning", "position": 4, "length": 5, "original_text": "'축구 대회'", "suggestion": "축구 경기", "reason": "교내 행사 명칭에 '대회'는 사용할 수 없으므로 순화해야 합니다." },
+    { "type": "delete", "severity": "critical", "position": 39, "length": 4, "original_text": "'우승'", "reason": "대회 승패 및 수상 결과는 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 60, "length": 9, "original_text": "'최우수 선수상'", "reason": "수상 실적은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 87, "length": 10, "original_text": "'나이키 런 클럽'", "reason": "특정 사설 앱/브랜드 명칭은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 113, "length": 13, "original_text": "'아디다스 마이런 마라톤'", "reason": "특정 브랜드가 포함된 교외 행사명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 135, "length": 5, "original_text": "'유튜브'", "reason": "특정 미디어 플랫폼 명칭은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 154, "length": 5, "original_text": "'인바디'", "reason": "특정 상호명/제품명은 기재할 수 없습니다." }
+  ]
+}
 
-원본 텍스트: "이끔 팀을 이끌었다."
-- position: 0
-- length: 2 ("이끔"의 문자 수)
-- original_text: "이끔"
-- type: "spelling"
-- suggestion: "이끌며"
+[예시 2: 음악/예술 분야 (플랫폼, 사교육, 수상)]
+입력: "자작곡을 '사운드클라우드'에 업로드하고, '큐베이스'와 '로직 프로'를 활용하여 미디 음원을 제작함. 교내 '합창 경연 대회'에서 지휘를 맡아 '금상'을 수상함. '멜론' 차트를 분석하고 방과 후에는 '실용음악학원'에서 보컬 트레이닝을 받음."
+출력:
+{
+  "filtered_content": "자작곡을 음원 공유 플랫폼에 업로드하고, 작곡 프로그램을 활용하여 미디 음원을 제작함. 교내 합창제에서 지휘를 맡아 조화로운 화음을 이끌어냄. 대중음악 차트를 분석하고 방과 후에는 보컬 연습을 꾸준히 함.",
+  "issues": [
+    { "type": "delete", "severity": "critical", "position": 6, "length": 9, "original_text": "'사운드클라우드'", "reason": "특정 플랫폼 명칭은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 22, "length": 6, "original_text": "'큐베이스'", "reason": "특정 소프트웨어/상호명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 31, "length": 7, "original_text": "'로직 프로'", "reason": "특정 소프트웨어/상호명은 기재할 수 없습니다." },
+    { "type": "modify", "severity": "warning", "position": 62, "length": 9, "original_text": "'합창 경연 대회'", "suggestion": "합창제", "reason": "교내 행사 명칭에 '대회'는 사용할 수 없으므로 순화해야 합니다." },
+    { "type": "delete", "severity": "critical", "position": 83, "length": 4, "original_text": "'금상'", "reason": "수상 실적은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 95, "length": 4, "original_text": "'멜론'", "reason": "특정 서비스/상호명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 113, "length": 8, "original_text": "'실용음악학원'", "reason": "사교육 의존 내용을 암시하는 기관명은 기재할 수 없습니다." }
+  ]
+}
 
-type 설명:
-- "delete": 삭제해야 할 금지 용어 (대회, 수상 실적, 성적, 어학시험, 한자시험, 인증시험, 자격증, 대학명, 기관명, 상호명, 논문, 도서출간, 지식재산권, 협회, 학회, 부모 신상 정보, 해외 활동, 장학금, 강사명, 기부 등). suggestion은 null이어야 함.
-- "modify": 수정이 필요한 내용 (특수기호를 일반 텍스트로 변경 등). suggestion 필수.
-- "spelling": 맞춤법 오류. suggestion 필수.
+[예시 3: 미술/디자인 분야 (제품명, 대학명, 특정인물)]
+입력: "수업 시간에 '아이패드'와 '프로크리에이트' 앱을 활용함. '홍익대학교' 진학을 목표로 하며, 교내 '사생 대회'에서 '대상'을 받음. 주말에 '리움미술관'을 방문하고 유명 웹툰 작가 '기안84'의 작품 세계를 탐구함."
+출력:
+{
+  "filtered_content": "수업 시간에 태블릿PC와 드로잉 앱을 활용함. 미대 진학을 목표로 하며, 교내 사생 행사에 참가하여 우수한 실력을 보임. 주말에 미술관을 방문하고 유명 작가의 작품 세계를 탐구함.",
+  "issues": [
+    { "type": "delete", "severity": "critical", "position": 8, "length": 6, "original_text": "'아이패드'", "reason": "특정 제품명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 17, "length": 9, "original_text": "'프로크리에이트'", "reason": "특정 앱/소프트웨어 명칭은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 34, "length": 7, "original_text": "'홍익대학교'", "reason": "특정 대학명은 기재할 수 없습니다." },
+    { "type": "modify", "severity": "warning", "position": 56, "length": 7, "original_text": "'사생 대회'", "suggestion": "사생 행사", "reason": "교내 행사 명칭에 '대회'는 사용할 수 없으므로 순화해야 합니다." },
+    { "type": "delete", "severity": "critical", "position": 67, "length": 4, "original_text": "'대상'", "reason": "수상 실적은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 82, "length": 7, "original_text": "'리움미술관'", "reason": "사설 기관/미술관 명칭은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 106, "length": 6, "original_text": "'기안84'", "reason": "특정 연예인/유명인 언급은 교육적 맥락 외에는 지양해야 합니다." }
+  ]
+}
 
-중요 사항:
-1. 원본 텍스트를 정확히 분석하여 각 문제의 위치를 정확히 찾아야 합니다.
-2. position과 length는 원본 텍스트 기준이며, issues 배열의 순서는 position 순서대로 정렬해야 합니다.
-3. 같은 위치에 여러 문제가 겹치면 각각을 별도의 issue로 추가하되, position은 정확히 일치해야 합니다.
-4. filtered_content는 모든 수정이 적용된 최종 텍스트입니다."""
+[예시 4: 학교생활/봉사 (상호명, 기부, 외부대회, 연예인)]
+입력: "축제 때 '당근마켓'을 모티브로 장터를 기획하고 수익금을 '월드비전'에 '기부'함. '다이소'에서 물품을 구매함. 교내 'e-스포츠 대회'를 주최하여 '리그 오브 레전드' 경기를 진행하고 학급이 '종합 우승'을 차지함. 장기자랑에서 '뉴진스'의 안무를 소화함."
+출력:
+{
+  "filtered_content": "축제 때 중고 거래 플랫폼을 모티브로 장터를 기획하고 수익금으로 나눔을 실천함. 인근 상점에서 물품을 구매함. 교내 e-스포츠 행사를 주최하여 게임 경기를 진행하고 학급의 단합을 도모함. 장기자랑에서 최신 가요 안무를 소화함.",
+  "issues": [
+    { "type": "delete", "severity": "critical", "position": 6, "length": 6, "original_text": "'당근마켓'", "reason": "특정 서비스/플랫폼 명칭은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 31, "length": 6, "original_text": "'월드비전'", "reason": "특정 단체명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 40, "length": 4, "original_text": "'기부'", "reason": "기부/모금 관련 활동은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 49, "length": 5, "original_text": "'다이소'", "reason": "특정 상호명은 기재할 수 없습니다." },
+    { "type": "modify", "severity": "warning", "position": 67, "length": 10, "original_text": "'e-스포츠 대회'", "suggestion": "e-스포츠 행사", "reason": "교내 행사 명칭에 '대회'는 사용할 수 없으므로 순화해야 합니다." },
+    { "type": "delete", "severity": "critical", "position": 89, "length": 10, "original_text": "'리그 오브 레전드'", "reason": "특정 게임/상호명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 115, "length": 7, "original_text": "'종합 우승'", "reason": "수상 실적 및 승패 결과는 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 136, "length": 5, "original_text": "'뉴진스'", "reason": "특정 연예인/그룹명 언급은 지양해야 합니다." }
+  ]
+}
+
+[예시 5: 과학 분야 (특수기호, 상호명)]
+입력: "생명과학 실험에 흥미를 느껴 심화 탐구를 수행함. 유전자 가위 기술인 CRISPR-Cas9을 주제로 탐구 활동을 진행함. 실험 과정에서 '써모피셔사이언티픽'사의 정밀 현미경을 사용하여 세포 분열 과정을 관찰하고 사진으로 기록함. 평소 '네이처(Nature)'나 '사이언스(Science)' 같은 해외 저널의 기사를 스크랩하여 읽으며 최신 과학 트렌드를 파악함."
+출력:
+{
+  "filtered_content": "생명과학 실험에 흥미를 느껴 심화 탐구를 수행함. 유전자 가위 기술인 CRISPR-Cas9을 주제로 탐구 활동을 진행함. 실험 과정에서 정밀 현미경을 사용하여 세포 분열 과정을 관찰하고 사진으로 기록함. 평소 해외 저널의 기사를 스크랩하여 읽으며 최신 과학 트렌드를 파악함.",
+  "issues": [
+    { "type": "delete", "severity": "critical", "position": 45, "length": 11, "original_text": "'써모피셔사이언티픽'", "reason": "특정 상호명/제품명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 72, "length": 9, "original_text": "'네이처(Nature)'", "reason": "특정 저널명은 기재할 수 없습니다." },
+    { "type": "delete", "severity": "critical", "position": 84, "length": 9, "original_text": "'사이언스(Science)'", "reason": "특정 저널명은 기재할 수 없습니다." }
+  ]
+}
+"""
 
     user_prompt = f"""다음 세특 내용을 검열해주세요 (최대 {max_bytes}바이트):
 
 {content_to_check}
 
-【검열 작업 지침】
-위 내용을 문자 단위로 정확히 분석하여 다음 항목들을 확인하세요:
+【검열 작업 지침 - 우선순위 순】
 
-1. "대회"라는 단어가 포함되어 있는가? (있으면 삭제, position과 length 정확히 지정)
-   - 주의: "대전"이라는 단어는 "대회"가 아니므로 검출하지 마세요.
-   - 주의: "국제 청소년 과학 창의 대전"과 같은 대회명에서 "국제"만 단독으로 검출하지 마세요. 전체 대회명을 검출하거나 검출하지 마세요.
-   - "대회"라는 단어가 정확히 포함된 경우만 검출하세요 (예: "체육대회", "과학경진대회").
-2. 교외 기관·단체(장) 수상 실적이 언급되어 있는가? (표창장, 감사장, 공로상 등 - 모두 삭제)
-3. 모의고사·전국연합학력평가 성적이 언급되어 있는가? (원점수, 석차, 등급, 백분위 등 - 모두 삭제)
-4. 공인어학시험명 및 성적이 언급되어 있는가? (TOEIC, TOEFL, TEPS, HSK, JPT, JLPT, DELF, DSH, DELE 등 - 모두 삭제)
-5. 한자시험이 언급되어 있는가? (한자능력검정, 실용한자, YBM 상무한검 등 - 모두 삭제)
-6. 교내·외 인증시험 참여 사실이 언급되어 있는가? (있으면 삭제)
-7. 자격증 명칭이 있는가? (있으면 삭제, 단 '자격증 취득' 항목란 제외)
-8. 대학명이 언급되어 있는가? (서울대, 고려대, 하버드, MIT, 옥스포드 등 - 모두 삭제)
-9. 기관명이 언급되어 있는가? (보건복지부, 통계청, YMCA, 유엔, OECD, WHO 등 - 모두 삭제, 단 교육관련기관은 허용)
-   - 주의: "국제"라는 단어만 단독으로 검출하지 마세요. "국제통화기금"처럼 완전한 기관명만 검출하세요.
+**1순위: 성적 및 시험 관련 (절대 금지)**
+1. 모의고사·전국연합학력평가 성적이 언급되어 있는가? (모두 삭제 - 매우 중요)
+   - **"모의고사", "전국연합학력평가", "학력평가" 단어 자체도 삭제 대상입니다.**
+   - 원점수, 석차, 등급(1등급, 2등급, 3등급 등), 백분위(99%, 95%, 90% 등) 모두 삭제
+   - 성적 관련 표현 패턴:
+     * "성적을 [거둠/유지/향상/개선]"
+     * "성적이 [우수/좋음/높음/향상]"
+     * "[우수한/좋은/높은] 성적"
+     * "성적 [유지/향상]"
+     * "성적 [1등급/2등급/상위]"
+   - 등급 표현 패턴:
+     * "[숫자]등급" (예: "1등급", "2등급")
+     * "등급 [숫자]" (예: "등급 1", "등급 2")
+   - 백분위 표현 패턴:
+     * "백분위 [숫자]%" (예: "백분위 99%")
+     * "[숫자]% 백분위" (예: "99% 백분위")
+   - 예시: "모의고사에서도 항상 1등급을 유지하며 백분위 99%의 우수한 성적을 거둠"
+     → "모의고사", "1등급", "백분위 99%", "성적을 거둠" 모두 삭제 (delete, critical)
+   - 예시: "전국연합학력평가에서 2등급을 받았다" → "전국연합학력평가", "2등급" 모두 삭제
+
+2. 공인어학시험명 및 성적이 언급되어 있는가? (TOEIC, TOEFL, TEPS, HSK, JPT, JLPT, DELF, DSH, DELE 등 - 모두 삭제)
+3. 한자시험이 언급되어 있는가? (한자능력검정, 실용한자, YBM 상무한검 등 - 모두 삭제)
+4. 교내·외 인증시험 참여 사실이 언급되어 있는가? (있으면 삭제)
+5. 자격증 명칭이 있는가? (있으면 삭제, 단 '자격증 취득' 항목란 제외)
+
+**2순위: 대회 및 수상 관련**
+6. 교내·외 대회 명칭 및 수상 실적이 언급되어 있는가?
+   - 교내 행사: "대회" → "행사"/"축제"로 순화 (modify, warning)
+     * 예: "체육대회" → "체육행사" 또는 "체육한마당"
+     * 예: "합창대회" → "합창제"
+   - 교외 대회나 경시대회: 삭제 (delete, critical)
+     - 우승, 수상, 입상 등 모든 수상 실적: 삭제 (delete, critical)
+     - **'~상' 패턴의 모든 수상 명칭: 삭제 (delete, critical)**
+       * 예: '응원상', '장려상', '우수상', '최우수상', '대상', '금상', '은상', '동상', '공로상', '참가상' 등
+       * **중요: '~상'으로 끝나는 모든 수상 관련 표현을 반드시 검출하세요.**
+       * 예: '응원상을 받음' → '응원상' 삭제
+       * 예: '장려상을 수상함' → '장려상' 삭제
+       * 예: '우수상을 받았음' → '우수상' 삭제
+     - 교외 기관·단체(장) 수상 실적: 표창장, 감사장, 공로상 등 모두 삭제
+     - 주의: "대전"이라는 단어는 "대회"가 아니므로 검출하지 마세요.
    - 주의: "국제 청소년 과학 창의 대전"과 같은 대회명에서 "국제"만 단독으로 검출하지 마세요.
-10. 상호명/회사명이 언급되어 있는가? (삼성, 애플, 구글, 유튜브, 틱톡, TED, 넷플릭스 등 - 모두 삭제)
-11. 논문 관련 내용이 있는가? (학회지 투고, 등재, 발표 포함 - 모두 삭제)
-12. 도서출간 사실이 언급되어 있는가? (있으면 삭제)
-13. 지식재산권 관련 내용이 있는가? (특허, 실용신안, 상표, 디자인 등 출원 또는 등록 사실 - 모두 삭제)
-14. "~협회", "~학회" 표현이 있는가? (있으면 삭제)
-15. 부모(친인척 포함)의 사회·경제적 지위 암시 내용이 있는가? (직종명, 직업명, 직장명, 직위명 등 - 모두 삭제)
-16. 해외 활동 실적이 언급되어 있는가? (어학연수, 해외 봉사활동 등 - 모두 삭제)
-17. 장학생, 장학금 관련 내용이 있는가? (있으면 삭제)
-18. 특정 강사명이 언급되어 있는가? (있으면 삭제)
-19. 기부 관련 내용이 있는가? (있으면 삭제)
-20. 특수기호가 있는가? (큰따옴표, 가운뎃점, < > 등 - 일반 텍스트로 수정, suggestion 필수)
-21. 맞춤법 오류가 있는가? (이끔, 만듬, 을/를, 게 되, 지 않 등 - 수정, suggestion 필수)
-22. 띄어쓰기 오류가 있는가? (수정, suggestion 필수)
+
+**3순위: 기관 및 브랜드 관련**
+7. 상호명/회사명이 언급되어 있는가? (삼성, 애플, 구글, 유튜브, 틱톡, TED, 넷플릭스 등 - 모두 삭제)
+8. 특정 앱/사이트명이 언급되어 있는가? (인바디, 멜론, 당근마켓, 사운드클라우드 등 - 모두 삭제)
+
+**4순위: 기타 금지 사항**
+9. 논문 발표 관련 내용이 있는가? (학술지/학회에서의 논문 발표만 해당 - 모두 삭제)
+   - **중요: "발표"라는 단어 자체는 검열하지 마세요.**
+   - ✅ 검열해야 함: "논문을 발표함", "학술지에 발표", "학회에서 발표", "논문을 학회에서 발표함"
+   - ❌ 검열하지 말 것: "영어 에세이를 작성해서 발표함", "수업 시간에 발표", "프로젝트 발표", "발표회", "수업 발표", "과제 발표"
+   - 문맥을 정확히 파악하여 논문/학술 맥락에서의 발표만 검열하세요.
+10. 특수기호가 있는가? (작은따옴표, 큰따옴표 등 - 모두 삭제)
+   - 작은따옴표(''), 큰따옴표("), 가운뎃점(·) 등 특수기호 삭제
+   - 예: "'KAIST'" → "'" (작은따옴표) 삭제
+   - 예: "네이처(Nature)" → "(" 삭제
+   - 주의: 특수기호만 단독으로 검출하지 말고, 특수기호가 포함된 전체 표현을 검출하세요
+11. 도서출간 사실이 언급되어 있는가? (있으면 삭제)
+12. 지식재산권 관련 내용이 있는가? (특허, 실용신안, 상표, 디자인 등 출원 또는 등록 사실 - 모두 삭제)
+13. 부모(친인척 포함)의 사회·경제적 지위 암시 내용이 있는가? (직종명, 직업명, 직장명, 직위명 등 - 모두 삭제)
+14. 해외 활동 실적이 언급되어 있는가? (어학연수, 해외 봉사활동 등 - 모두 삭제)
+    - **매우 중요: 반드시 검출해야 합니다. "어학연수"라는 단어가 있으면 무조건 검출하세요.**
+    - **중요: 전체 구문을 잡아내세요. 단어만 잡지 마세요.**
+    - "필리핀 어학연수", "미국 어학연수", "해외 어학연수" 등 모든 어학연수 관련 표현을 검출하세요.
+    - "필리핀"이라는 단어가 "어학연수"와 함께 나오면, "필리핀 어학연수" 전체를 잡으세요.
+    - ✅ 올바른 예: 
+      * "필리핀 어학연수" → 전체를 잡으세요.
+      * "미국 어학연수" → 전체를 잡으세요.
+      * "해외 어학연수" → 전체를 잡으세요.
+      * "필리핀에서 어학연수" → 전체를 잡으세요.
+      * "필리핀 어학연수를 다녀옴" → 전체를 잡으세요.
+      * "여름방학 동안 '필리핀' 어학연수를 다녀온 경험" → "'필리핀' 어학연수" 또는 "'필리핀 어학연수'" 전체를 잡으세요.
+    - ❌ 잘못된 예: "필리핀"만 잡기 (어학연수와 함께 나오지 않은 경우는 제외)
+    - 패턴: "[국가명] 어학연수", "[국가명]에서 어학연수", "해외 어학연수", "[국가명] 봉사활동" 등 전체 구문을 잡으세요.
+15. 장학생, 장학금 관련 내용이 있는가? (있으면 삭제)
+16. 특정 강사명이 언급되어 있는가? (있으면 삭제)
+17. 기부 관련 내용이 있는가? (있으면 삭제)
+18. 사교육 의존 내용이 있는가? (사설 학원명, 사교육 관련 표현 등 - 모두 삭제)
+
+**주의사항**
+- 대학명, 기관명, 영재교육원, 논문 관련(소논문, 학술지, 투고, 등재), 학회명/협회명, 어학연수는 1차 규칙 기반 필터에서 이미 검출되므로 LLM에서는 검출하지 않아도 됩니다.
+- 논문 발표는 문맥 판단이 필요하므로 LLM에서 검출해야 합니다 (일반 발표는 허용, 논문/학술 맥락의 발표만 검열).
+- 해외 활동 실적(어학연수, 해외 봉사활동)은 1차 규칙 기반 필터에서 기본 검출되지만, LLM은 더 긴 구문이나 복합적인 표현을 찾아야 합니다 (예: "필리핀 어학연수를 다녀온 경험" 전체).
+- LLM은 1차 규칙 기반 필터에서 놓친 복합적인 맥락이나 문맥적 위반 사항을 찾는 데 집중하세요.
 
 【주의사항】
 - 원본 텍스트를 문자 단위로 정확히 분석하여 position과 length를 정확히 계산하세요.
 - original_text는 원본 텍스트에서 발견된 정확한 텍스트여야 합니다 (공백 포함).
-- suggestion은 modify나 spelling 타입일 경우 반드시 제공해야 합니다.
+- suggestion은 modify 타입일 경우 반드시 제공해야 합니다 (delete일 경우 null).
 - issues 배열은 position 순서대로 정렬해야 합니다.
-- 각 문제마다 정확한 위치 정보를 제공해야 합니다."""
+- 각 문제마다 정확한 위치 정보를 제공해야 합니다.
+- **맞춤법이나 띄어쓰기 오류는 검사하지 마십시오. 오직 기재 금지 위반 사항만 찾아내십시오.**"""
 
     try:
         # OpenAI API 호출 (chat completions 사용)
@@ -594,7 +717,10 @@ type 설명:
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_prompt}
             ],
-            temperature=0.3,
+            temperature=0,
+            top_p=0.1,  # 높은 확률 토큰만 선택하여 일관성 향상
+            presence_penalty=0.1,  # 반복 방지
+            frequency_penalty=0.1,  # 중복 방지
             response_format={"type": "json_object"}
         )
         
@@ -625,28 +751,8 @@ type 설명:
         filtered_content = result.get("filtered_content", content_to_check)
         issues_data = result.get("issues", [])
         
-        issues = []
-        # skip_chatgpt가 True일 때는 ChatGPT 결과를 완전히 제외 (금지어만 검열)
-        if not skip_chatgpt:
-            # ChatGPT 결과 처리 (skip_chatgpt=False일 때만)
-            for issue_data in issues_data:
-                # reason 필드가 None이거나 빈 문자열일 경우 기본값 사용
-                reason_value = issue_data.get("reason")
-                if not reason_value or reason_value is None:
-                    reason_value = "문제 발견"
-                
-                issue = FilterIssue(
-                    type=issue_data.get("type", "modify"),
-                    position=issue_data.get("position", 0),
-                    length=issue_data.get("length", 0),
-                    original_text=issue_data.get("original_text", ""),
-                    suggestion=issue_data.get("suggestion"),
-                    reason=reason_value
-                )
-                issues.append(issue)
-        
-        # 1차 필터 결과를 issue로 추가 (위에서 재스캔한 rule_detections 사용)
-        # (LLM이 놓친 부분을 보완)
+        # [수정된 로직] 1차(규칙 기반) 결과를 우선하여 먼저 추가
+        rule_based_issues = []
         logger.debug(f"규칙 기반 필터 결과 {len(rule_detections)}개를 issues로 변환 중...")
         
         for rule_det in rule_detections:
@@ -667,52 +773,236 @@ type 설명:
                 logger.warning(f"위치 불일치: 위치 {rule_position}에서 예상 '{rule_word}' 실제 '{extracted_text}'")
                 continue
             
-            # LLM이 찾은 결과와 중복되는지 확인
-            is_already_detected = False
-            if not skip_chatgpt:
-                for existing_issue in issues:
-                    # 위치와 길이가 겹치거나 포함되는지 확인
-                    existing_start = existing_issue.position
-                    existing_end = existing_issue.position + existing_issue.length
-                    rule_start = rule_position
-                    rule_end = rule_position + len(rule_word)
-                    
-                    # 완전히 같은 위치거나 포함 관계인 경우 중복 처리
-                    # 같은 위치에서 정확히 같은 텍스트가 매칭된 경우
-                    if (existing_start == rule_start and existing_end == rule_end and 
-                        existing_issue.original_text == rule_word):
-                        is_already_detected = True
-                        logger.debug(f"중복 제거: 위치 {rule_position}의 '{rule_word}'는 이미 ChatGPT 결과에 포함됨")
-                        break
-                    # 포함 관계 체크: 기존 이슈가 이 단어를 포함하거나, 이 단어가 기존 이슈를 포함하는 경우
-                    elif (existing_start <= rule_start and existing_end >= rule_end) or \
-                         (rule_start <= existing_start and rule_end >= existing_end):
-                        # 완전히 포함되는 경우에만 중복으로 처리
-                        is_already_detected = True
-                        logger.debug(f"중복 제거: 위치 {rule_position}의 '{rule_word}'는 기존 이슈에 포함됨")
-                        break
+            # 1차 필터 결과를 issue로 추가
+            rule_replacement = rule_det.get("replacement", "")
             
-            if not is_already_detected:
-                # 1차 필터 결과를 issue로 추가
+            # 교내 행사 순화는 modify 타입으로 처리
+            if rule_category == "교내행사순화":
+                issue = FilterIssue(
+                    type="modify",
+                    severity="warning",
+                    position=rule_position,
+                    length=len(rule_word),
+                    original_text=rule_word,
+                    suggestion=rule_replacement,
+                    reason=f"교내 행사 명칭 순화 필요: '{rule_word}'를 '{rule_replacement}'로 수정 권장",
+                    source="rule_based"  # 1차 검열
+                )
+            else:
+                # USER_DEFINED 카테고리는 "사용자 기반 금지어"로 표시
+                if rule_category == "USER_DEFINED":
+                    reason_text = "사용자 기반 금지어"
+                else:
+                    reason_text = f"규칙 기반 필터: {rule_category} 카테고리의 금지어"
+                
                 issue = FilterIssue(
                     type="delete",  # 1차 필터는 삭제 타입으로 (X로 치환하기 위해)
+                    severity="critical",  # 규칙 기반 필터는 모두 critical
                     position=rule_position,
                     length=len(rule_word),
                     original_text=rule_word,
                     suggestion=None,  # suggestion 제거 (X로 치환할 것이므로)
-                    reason=f"규칙 기반 필터: {rule_category} 카테고리의 금지어"
+                    reason=reason_text,
+                    source="rule_based"  # 1차 검열
                 )
-                issues.append(issue)
-                logger.debug(f"규칙 기반 필터 결과 추가: '{rule_word}' 위치 {rule_position}")
+            rule_based_issues.append(issue)
+            logger.debug(f"규칙 기반 필터 결과 추가: '{rule_word}' 위치 {rule_position} (타입: {issue.type}, 심각도: {issue.severity})")
+        
+        # [수정된 로직] 1차 결과를 final_issues에 먼저 추가
+        final_issues = rule_based_issues.copy()
+        
+        # [수정된 로직] 2차(LLM) 결과 처리: 더 넓은 범위나 다른 타입이면 포함
+        if not skip_chatgpt:
+            logger.debug(f"LLM 결과 {len(issues_data)}개를 처리 중... (더 넓은 범위나 다른 타입이면 포함)")
+            
+            # LLM 결과를 먼저 모두 파싱
+            llm_issues_parsed = []
+            for issue_data in issues_data:
+                # reason 필드가 None이거나 빈 문자열일 경우 기본값 사용
+                reason_value = issue_data.get("reason")
+                if not reason_value or reason_value is None:
+                    reason_value = "문제 발견"
+                
+                # severity 필드 파싱 (기본값: critical)
+                severity_value = issue_data.get("severity", "critical")
+                if severity_value not in ["critical", "warning"]:
+                    # type에 따라 기본 severity 설정
+                    if issue_data.get("type") == "delete":
+                        severity_value = "critical"
+                    elif issue_data.get("type") == "spelling":
+                        severity_value = "critical"
+                    else:
+                        severity_value = "warning"
+                
+                # [검증 로직] Position 및 Length 검증
+                issue_position = issue_data.get("position", 0)
+                issue_length = issue_data.get("length", 0)
+                issue_original_text = issue_data.get("original_text", "")
+                
+                # Position 범위 체크
+                if issue_position < 0 or issue_position >= len(content):
+                    logger.warning(f"LLM 이슈 검증 실패: Invalid position {issue_position} (텍스트 길이: {len(content)})")
+                    continue
+                
+                # Length 체크
+                if issue_length <= 0 or issue_position + issue_length > len(content):
+                    logger.warning(f"LLM 이슈 검증 실패: Invalid length {issue_length} (position: {issue_position}, 텍스트 길이: {len(content)})")
+                    continue
+                
+                # Original_text 일치 확인 및 자동 수정
+                extracted_text = content[issue_position:issue_position + issue_length]
+                if extracted_text != issue_original_text:
+                    logger.warning(f"LLM 이슈 텍스트 불일치: 예상 '{issue_original_text}', 실제 '{extracted_text}'")
+                    
+                    # 원본 텍스트에서 실제 단어를 찾아서 재검색
+                    original_text_cleaned = issue_original_text.strip().strip("'\"")  # 따옴표 제거
+                    found_positions = []
+                    
+                    # 원본 텍스트에서 실제 단어 찾기
+                    start_idx = 0
+                    while True:
+                        pos = content.find(original_text_cleaned, start_idx)
+                        if pos == -1:
+                            break
+                        found_positions.append(pos)
+                        start_idx = pos + 1
+                    
+                    if found_positions:
+                        # 가장 가까운 위치 선택 (원래 position과 가장 가까운 위치)
+                        closest_pos = min(found_positions, key=lambda x: abs(x - issue_position))
+                        extracted_text = content[closest_pos:closest_pos + len(original_text_cleaned)]
+                        if extracted_text == original_text_cleaned:
+                            logger.info(f"텍스트 재검색 성공: '{original_text_cleaned}' 위치 {closest_pos}로 수정")
+                            issue_position = closest_pos
+                            issue_length = len(original_text_cleaned)
+                            issue_original_text = extracted_text
+                        else:
+                            logger.warning(f"텍스트 재검색 실패: '{original_text_cleaned}' 위치 {closest_pos}에서 불일치 - 이슈 제외")
+                            continue
+                    else:
+                        # 따옴표 포함 버전도 시도
+                        if issue_original_text.startswith("'") and issue_original_text.endswith("'"):
+                            quoted_text = issue_original_text
+                            start_idx = 0
+                            while True:
+                                pos = content.find(quoted_text, start_idx)
+                                if pos == -1:
+                                    break
+                                found_positions.append(pos)
+                                start_idx = pos + 1
+                            
+                            if found_positions:
+                                closest_pos = min(found_positions, key=lambda x: abs(x - issue_position))
+                                extracted_text = content[closest_pos:closest_pos + len(quoted_text)]
+                                if extracted_text == quoted_text:
+                                    logger.info(f"텍스트 재검색 성공 (따옴표 포함): '{quoted_text}' 위치 {closest_pos}로 수정")
+                                    issue_position = closest_pos
+                                    issue_length = len(quoted_text)
+                                    issue_original_text = extracted_text
+                                else:
+                                    logger.warning(f"텍스트 재검색 실패: '{quoted_text}' - 이슈 제외")
+                                    continue
+                            else:
+                                logger.warning(f"원본 텍스트에서 '{issue_original_text}' 또는 '{original_text_cleaned}'를 찾을 수 없음 - 이슈 제외")
+                                continue
+                        else:
+                            logger.warning(f"원본 텍스트에서 '{original_text_cleaned}'를 찾을 수 없음 - 이슈 제외")
+                            continue
+                
+                llm_issue = FilterIssue(
+                    type=issue_data.get("type", "modify"),
+                    severity=severity_value,
+                    position=issue_position,
+                    length=issue_length,
+                    original_text=issue_original_text,
+                    suggestion=issue_data.get("suggestion"),
+                    reason=reason_value,
+                    source="llm"  # 2차 검열
+                )
+                llm_issues_parsed.append(llm_issue)
+                logger.debug(f"LLM 이슈 검증 통과: '{issue_original_text}' 위치 {issue_position} (길이: {issue_length})")
+            
+            # LLM 결과를 처리하면서 1차 결과와 비교
+            for llm_issue in llm_issues_parsed:
+                llm_start = llm_issue.position
+                llm_end = llm_issue.position + llm_issue.length
+                
+                # 1차 결과와 겹치는지 확인
+                overlapping_rules = []
+                for rule_issue in rule_based_issues:
+                    rule_start = rule_issue.position
+                    rule_end = rule_issue.position + rule_issue.length
+                    
+                    # 겹침 체크: 두 구간이 겹치거나 포함 관계인지 확인
+                    if llm_start < rule_end and llm_end > rule_start:
+                        overlapping_rules.append(rule_issue)
+                
+                if overlapping_rules:
+                    # 겹치는 경우: LLM이 더 넓은 범위를 잡았거나 다른 타입이면 포함
+                    should_include_llm = False
+                    should_remove_rules = []
+                    
+                    # overlapping_rules를 position 순으로 정렬하여 결정적 순서 보장
+                    overlapping_rules_sorted = sorted(overlapping_rules, key=lambda x: (x.position, x.length))
+                    
+                    for rule_issue in overlapping_rules_sorted:
+                        rule_start = rule_issue.position
+                        rule_end = rule_issue.position + rule_issue.length
+                        
+                        # 케이스 1: LLM이 spelling이나 modify 타입이면 항상 포함 (1차는 delete만)
+                        if llm_issue.type in ['spelling', 'modify']:
+                            should_include_llm = True
+                            logger.debug(f"LLM 이슈 포함: 타입 {llm_issue.type}이므로 1차 결과와 겹쳐도 포함")
+                            break  # 이미 결정되었으므로 중단
+                        
+                        # 케이스 2: LLM이 더 넓은 범위를 잡은 경우 (1차 결과를 포함)
+                        if llm_start <= rule_start and llm_end >= rule_end:
+                            should_include_llm = True
+                            should_remove_rules.append(rule_issue)
+                            logger.debug(f"LLM 이슈 포함: 더 넓은 범위 (LLM: {llm_start}-{llm_end}, 1차: {rule_start}-{rule_end})")
+                            continue  # 다음 rule_issue 확인
+                        
+                        # 케이스 3: 1차 결과가 LLM 결과를 완전히 포함하는 경우만 제외
+                        elif rule_start <= llm_start and rule_end >= llm_end:
+                            # 같은 delete 타입이고 1차가 완전히 포함하면 제외
+                            if llm_issue.type == 'delete':
+                                logger.debug(f"LLM 이슈 제외: 1차 결과가 완전히 포함함 (1차: {rule_start}-{rule_end}, LLM: {llm_start}-{llm_end})")
+                                should_include_llm = False  # 명시적으로 False 설정
+                                break  # 이미 결정되었으므로 중단
+                            else:
+                                # 다른 타입이면 포함
+                                should_include_llm = True
+                                logger.debug(f"LLM 이슈 포함: 타입이 다름 (LLM: {llm_issue.type})")
+                                break  # 이미 결정되었으므로 중단
+                        
+                        # 케이스 4: 부분적으로만 겹치는 경우 (LLM 포함)
+                        else:
+                            should_include_llm = True
+                            logger.debug(f"LLM 이슈 포함: 부분 겹침 (LLM: {llm_start}-{llm_end}, 1차: {rule_start}-{rule_end})")
+                            # break하지 않고 계속 확인 (다른 rule_issue도 확인 필요)
+                    
+                    # LLM 결과 포함
+                    if should_include_llm:
+                        final_issues.append(llm_issue)
+                        # 겹치는 1차 결과 제거 (LLM이 더 넓은 범위를 잡은 경우)
+                        # should_remove_rules를 역순으로 제거하여 인덱스 문제 방지
+                        for rule_to_remove in reversed(should_remove_rules):
+                            if rule_to_remove in final_issues:
+                                final_issues.remove(rule_to_remove)
+                                logger.debug(f"1차 결과 제거: LLM이 더 넓은 범위를 잡음 - '{rule_to_remove.original_text}'")
+                else:
+                    # 겹치지 않으면 추가
+                    final_issues.append(llm_issue)
+                    logger.debug(f"LLM 이슈 추가: 위치 {llm_start}-{llm_end}의 '{llm_issue.original_text}' (1차 결과와 겹치지 않음)")
         
         # 위치 순서대로 정렬
-        issues.sort(key=lambda x: x.position)
+        final_issues.sort(key=lambda x: x.position)
         
         # 중복 제거: 같은 위치에서 같은 단어가 여러 번 나온 경우만 제거
         # [중요] 위치(position)가 다르면 같은 단어라도 허용해야 함 (예: "서울대"가 두 번 나오면 두 번 다 검출)
         seen_issues = set()
         unique_issues = []
-        for issue in issues:
+        for issue in final_issues:
             # 위치 + 단어 + 길이 조합으로 중복 확인 (위치가 다르면 다른 이슈로 처리)
             issue_key = (issue.position, issue.original_text, issue.length)
             if issue_key not in seen_issues:
@@ -722,8 +1012,8 @@ type 설명:
                 logger.debug(f"중복 제거: 위치 {issue.position}의 '{issue.original_text}' (길이 {issue.length}) - 같은 위치의 중복만 제거")
         
         # 중복 제거 전후 개수 비교
-        if len(issues) != len(unique_issues):
-            logger.info(f"중복 제거: {len(issues)}개 → {len(unique_issues)}개 (제거된 중복: {len(issues) - len(unique_issues)}개)")
+        if len(final_issues) != len(unique_issues):
+            logger.info(f"중복 제거: {len(final_issues)}개 → {len(unique_issues)}개 (제거된 중복: {len(final_issues) - len(unique_issues)}개)")
         
         issues = unique_issues
         
@@ -760,24 +1050,32 @@ type 설명:
         )
         
     except Exception as e:
-        error_msg = f"ChatGPT API 호출 오류: {str(e)}"
-        logger.error(error_msg)
-        logger.error(f"에러 타입: {type(e).__name__}")
-        logger.error(f"에러 상세: {traceback.format_exc()}")
+        error_str = str(e).lower()
+        error_msg = str(e)
+        
+        # JSON 형식 관련 오류인지 확인
+        if "json" in error_str and "response_format" in error_str:
+            logger.warning(f"JSON 형식 요구사항 오류: {error_msg}")
+            raise HTTPException(
+                status_code=500,
+                detail="프롬프트 형식 오류가 발생했습니다. 관리자에게 문의하세요."
+            )
         
         # API 키 관련 오류인지 확인
-        error_str = str(e).lower()
-        if "api key" in error_str or "authentication" in error_str or "invalid" in error_str:
+        if "api key" in error_str or "authentication" in error_str or ("invalid" in error_str and "key" in error_str):
             logger.error("OpenAI API 키가 유효하지 않거나 인증에 실패했습니다.")
-            logger.error(f"현재 설정된 키 미리보기: {OPENAI_API_KEY[:10] + '...' if OPENAI_API_KEY and len(OPENAI_API_KEY) > 10 else 'N/A'}")
+            logger.error(f"에러 메시지: {error_msg[:200]}")
             raise HTTPException(
                 status_code=500,
                 detail="OpenAI API 키가 유효하지 않습니다. 환경변수 OPENAI_API_KEY를 확인하세요."
             )
         
+        # 기타 오류
+        logger.error(f"ChatGPT API 호출 오류: {error_msg[:200]}")
+        logger.debug(f"에러 상세: {traceback.format_exc()}")
         raise HTTPException(
             status_code=500,
-            detail=error_msg
+            detail=f"검열 중 오류가 발생했습니다: {error_msg[:100]}"
         )
 
 
@@ -802,6 +1100,16 @@ class CheckResponse(BaseModel):
     errors: List[ErrorDetail] = Field(default_factory=list, description="오류 목록")
 
 
+class RefineRequest(BaseModel):
+    """문맥 교정 요청 모델"""
+    text: str = Field(..., description="XXX 처리가 포함된 텍스트")
+
+
+class RefineResponse(BaseModel):
+    """문맥 교정 응답 모델"""
+    refined_text: str = Field(..., description="문맥이 교정된 텍스트")
+
+
 @router.get("/check/api-key-status")
 async def check_api_key_status():
     """
@@ -823,9 +1131,7 @@ async def check_api_key_status():
     # 모델 정보 추가
     model_info = {
         "default_model": DEFAULT_MODEL,
-        "fine_tuned_model_id": FINE_TUNED_MODEL_ID,
-        "current_model": OPENAI_MODEL,
-        "is_fine_tuned": bool(FINE_TUNED_MODEL_ID)
+        "current_model": OPENAI_MODEL
     }
     
     # 환경변수에서 확인
@@ -988,4 +1294,51 @@ async def filter_content(request: ContentFilterRequest):
             status_code=500,
             detail=f"검열 중 오류가 발생했습니다: {str(e)}"
         )
+
+
+@router.post("/refine", response_model=RefineResponse)
+async def refine_context(request: RefineRequest):
+    """
+    XXX로 마스킹된 부분이 포함된 텍스트를 받아, 
+    해당 단어를 삭제하고 문맥에 맞게 조사와 서술어를 자연스럽게 다듬어 반환합니다.
+    """
+    if not OPENAI_API_KEY:
+        raise HTTPException(status_code=500, detail="API Key Missing")
+    
+    system_prompt = """당신은 문장 교정 전문가입니다. 
+사용자가 입력한 텍스트에는 금지어가 삭제되어 'XXX'로 표시된 부분들이 있습니다.
+당신의 임무는 다음 규칙에 따라 문장을 매끄럽게 수정하는 것입니다.
+
+1. 'XXX' 표시는 완전히 제거하세요.
+
+2. 'XXX'가 제거됨에 따라 어색해진 조사(이/가, 을/를 등)나 서술어를 문맥에 맞게 수정하세요.
+
+3. 문장의 원래 의미를 최대한 유지하되, 금지된 활동(XXX)을 하지 않았더라도 문장이 성립되도록 일반적인 표현으로 변경하세요.
+   예시: "교내 과학경시대회(XXX)에 참가하여 금상을 수상함" -> "평소 과학 분야에 깊은 관심을 가지고 탐구 활동에 적극적으로 참여함"
+   예시: "XXX를 통해 문제해결력을 기름" -> "다양한 활동을 통해 문제해결력을 기름"
+
+4. 결과는 오직 수정된 텍스트만 반환하세요.
+"""
+    
+    try:
+        from openai import OpenAI
+        client = OpenAI(api_key=OPENAI_API_KEY)
+        
+        response = client.chat.completions.create(
+            model="gpt-4o-mini",  # 빠른 응답을 위해 3.5 또는 4o-mini 권장
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": request.text}
+            ],
+            temperature=0,
+            top_p=0.1,  # 높은 확률 토큰만 선택하여 일관성 향상
+            presence_penalty=0.1,  # 반복 방지
+            frequency_penalty=0.1  # 중복 방지
+        )
+        
+        refined_text = response.choices[0].message.content.strip()
+        return RefineResponse(refined_text=refined_text)
+    except Exception as e:
+        logger.error(f"Refine error: {e}")
+        raise HTTPException(status_code=500, detail="문맥 교정 중 오류 발생")
 

@@ -37,6 +37,7 @@ FILE_TO_CATEGORY = {
     "forbidden_words.json": "FORBIDDEN",
     "family_job.json": "FAMILY_JOB",
     "family_env.json": "FAMILY_ENV",
+    "custom_rules.json": "USER_DEFINED",
 }
 
 
