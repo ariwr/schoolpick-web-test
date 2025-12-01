@@ -72,6 +72,24 @@ class FilterPattern:
         return (self.pattern, self.label, self.category)
 
 
+def create_korean_word_boundary_pattern(word: str) -> str:
+    """
+    한글 단어 경계를 제대로 처리하는 정규식 패턴을 생성합니다.
+    앞뒤에 한글이 오지 않도록 확인하여 "상"이 "영상", "동상"에서 매칭되지 않도록 합니다.
+    
+    Args:
+        word: 검색할 단어
+        
+    Returns:
+        str: 한글 단어 경계를 고려한 정규식 패턴
+    """
+    escaped_word = re.escape(word)
+    # 앞에 한글이 오지 않고, 뒤에도 한글이 오지 않도록
+    # (?<![가-힣]) : Negative Lookbehind - 앞에 한글이 오지 않음
+    # (?![가-힣]) : Negative Lookahead - 뒤에 한글이 오지 않음
+    return f"(?<![가-힣]){escaped_word}(?![가-힣])"
+
+
 def load_json_filters(file_path: Path) -> List[FilterPattern]:
     """
     JSON 파일에서 필터 패턴을 로드합니다.
@@ -97,7 +115,8 @@ def load_json_filters(file_path: Path) -> List[FilterPattern]:
             if len(data) > 0 and isinstance(data[0], str):
                 # 단순 문자열 리스트 (대학명 등)
                 for item in data:
-                    pattern_str = f"\\b{re.escape(item)}\\b"
+                    # 한글 단어 경계를 제대로 처리
+                    pattern_str = create_korean_word_boundary_pattern(item)
                     patterns.append(FilterPattern(
                         pattern=pattern_str,
                         label="특정 대학",
@@ -122,8 +141,10 @@ def load_json_filters(file_path: Path) -> List[FilterPattern]:
         elif isinstance(data, dict):
             # 축약형 사전 형태
             for abbrev, full_form in data.items():
+                # 한글 단어 경계를 제대로 처리
+                pattern_str = create_korean_word_boundary_pattern(abbrev)
                 patterns.append(FilterPattern(
-                    pattern=f"\\b{re.escape(abbrev)}\\b",
+                    pattern=pattern_str,
                     label=full_form,
                     category="ABBREVIATION",
                     use_regex=True,

@@ -159,5 +159,12 @@
     "category": "MEDIA",
     "use_regex": true,
     "use_kiwi": false
+  },
+  {
+    "pattern": "(깃허브|\\bGitHub\\b|깃허브\\s*\\(\\s*GitHub\\s*\\)|깃허브\\s+GitHub)",
+    "label": "특정 매체",
+    "category": "MEDIA",
+    "use_regex": true,
+    "use_kiwi": false
   }
 ]
