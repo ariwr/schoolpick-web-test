@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useCallback, useRef } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -29,7 +29,7 @@ interface FilterIssue {
   original_text: string;
   suggestion?: string;
   reason: string;
-  source?: 'rule_based' | 'llm'; // 검열 소스 (rule_based: 1차 규칙 기반, llm: 2차 LLM)
+  source?: 'rule_based' | 'llm'; // 점검 소스 (rule_based: 1차 규칙 기반, llm: 2차 LLM)
   
   // 하이라이트와 카드에서 사용할 표시 정보 (객체 기반)
   displayText?: string;      // 카드에 표시할 텍스트
@@ -91,7 +91,7 @@ function ContentFilterPageContent() {
 
   const handleFilter = async () => {
     if (!content.trim()) {
-      setError("검열할 내용을 입력해주세요.")
+      setError("점검할 내용을 입력해주세요.")
       return
     }
 
@@ -134,7 +134,7 @@ function ContentFilterPageContent() {
       }
 
       if (!response.ok) {
-        let errorMessage = "검열 중 오류가 발생했습니다."
+        let errorMessage = "점검 중 오류가 발생했습니다."
         try {
           const errorData = await response.json()
           errorMessage = errorData.detail || errorData.message || errorMessage
@@ -179,7 +179,7 @@ function ContentFilterPageContent() {
           ...issue,
           id: issue.id || `issue-${idx}-${Date.now()}`, // 고유 ID 보장
           severity: inferredSeverity,
-          source: issue.source || (issue.reason?.includes('규칙 기반 필터') ? 'rule_based' : 'llm') // 검열 소스 설정
+          source: issue.source || (issue.reason?.includes('규칙 기반 필터') ? 'rule_based' : 'llm') // 점검 소스 설정
         };
       }).sort((a, b) => a.position - b.position); // 위치 순 정렬 필수
       
@@ -192,7 +192,7 @@ function ContentFilterPageContent() {
       setIssues(expandedIssues)
       setIsFiltered(true)
     } catch (err) {
-      setError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
+      setError(err instanceof Error ? err.message : "점검 중 오류가 발생했습니다.")
     } finally {
       setIsLoading(false)
     }
@@ -201,7 +201,7 @@ function ContentFilterPageContent() {
   // 디바운스 타이머 ref
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
-  // 사용자 정의 금지어 변경 시 검열 재실행 (디바운싱 적용)
+  // 사용자 정의 금지어 변경 시 점검 재실행 (디바운싱 적용)
   const handleRulesChange = useCallback(() => {
     if (isFiltered && content.trim()) {
       // 디바운싱: 500ms 내에 여러 번 호출되면 마지막 호출만 실행
@@ -209,7 +209,7 @@ function ContentFilterPageContent() {
         clearTimeout(debounceTimerRef.current)
       }
       debounceTimerRef.current = setTimeout(() => {
-        // 이미 검열된 상태면 자동으로 재검열
+        // 이미 점검된 상태면 자동으로 재점검
         handleFilter()
       }, 500)
     }
@@ -279,7 +279,7 @@ function ContentFilterPageContent() {
     );
     // 위치가 어긋났다면? -> 이 이슈는 무효화(화면에서 제거)하거나 전체 재검사 유도
     if (textInContent !== currentIssue.original_text) {
-        alert("문서 내용이 변경되어 해당 이슈의 위치를 찾을 수 없습니다. 다시 검열해주세요.");
+        alert("문서 내용이 변경되어 해당 이슈의 위치를 찾을 수 없습니다. 다시 점검해주세요.");
         setIssues(prev => prev.filter(i => i.id !== targetIssue.id)); // 안전하게 제거
         return;
     }
@@ -292,7 +292,7 @@ function ContentFilterPageContent() {
         let needsRefine = false;
         
         // [로직 분기] 
-        // A. 1차 검열(Critical) 삭제 시 -> XXX 치환 후 문맥 교정
+        // A. 1차 점검(Critical) 삭제 시 -> XXX 치환 후 문맥 교정
         if (!ruleOnly && action === 'remove' && currentIssue.severity === 'critical') {
             newTextSegment = "XXX";
             needsRefine = true;
@@ -361,10 +361,10 @@ function ContentFilterPageContent() {
 
         setIssues(nextIssues);
         
-        // 하이브리드 방식: 복잡한 경우 자동 재검열 (디바운스)
-        // 문맥 교정이 필요하거나 남은 이슈가 많으면 자동 재검열
+        // 하이브리드 방식: 복잡한 경우 자동 재점검 (디바운스)
+        // 문맥 교정이 필요하거나 남은 이슈가 많으면 자동 재점검
         if (needsRefine || nextIssues.length > 10) {
-          // 디바운스: 500ms 후 재검열 (사용자가 빠르게 여러 번 클릭해도 마지막에만 실행)
+          // 디바운스: 500ms 후 재점검 (사용자가 빠르게 여러 번 클릭해도 마지막에만 실행)
           setTimeout(() => {
             if (isFiltered && tempContent.trim()) {
               handleFilter();
@@ -389,7 +389,7 @@ function ContentFilterPageContent() {
                     setFilteredContent(refineData.refined_text);
                     setByteCount(getByteLength(refineData.refined_text));
                     
-                    // 하이브리드 방식: 문맥 교정 후 자동 재검열 (텍스트가 크게 바뀌었으므로)
+                    // 하이브리드 방식: 문맥 교정 후 자동 재점검 (텍스트가 크게 바뀌었으므로)
                     setTimeout(() => {
                       if (isFiltered && refineData.refined_text.trim()) {
                         handleFilter();
@@ -474,7 +474,7 @@ function ContentFilterPageContent() {
       severity = 'warning';
     }
 
-    // 검열 소스 정보 유지 (카드와 동일 정보)
+    // 점검 소스 정보 유지 (카드와 동일 정보)
     const ruleBasedIssues = activeIssues.filter(i => i.source === 'rule_based');
     const llmIssues = activeIssues.filter(i => i.source === 'llm');
     const hasRuleBased = ruleBasedIssues.length > 0;
@@ -648,9 +648,9 @@ function ContentFilterPageContent() {
               <ShieldCheckIcon className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-godding-text-primary">세특 검열</h1>
+              <h1 className="text-4xl font-bold text-godding-text-primary">세특 점검</h1>
               <p className="text-lg text-godding-text-secondary mt-2">
-                ChatGPT를 활용한 세특 내용 검열 시스템 (최대 {maxBytes}바이트)
+                ChatGPT를 활용한 세특 내용 점검 시스템 (최대 {maxBytes}바이트)
               </p>
             </div>
           </div>
@@ -658,7 +658,7 @@ function ContentFilterPageContent() {
 
         {/* 레이아웃: 사이드바 + 메인 컨텐츠 */}
         <div className="flex gap-6">
-          {/* 좌측 사이드바 (PC에서만 표시, 검열 전에만 표시) */}
+          {/* 좌측 사이드바 (PC에서만 표시, 점검 전에만 표시) */}
           {!isFiltered && (
             <div className="hidden md:block w-80 shrink-0">
               <CustomRuleSidebar onRulesChange={handleRulesChange} />
@@ -668,7 +668,7 @@ function ContentFilterPageContent() {
           {/* 우측 메인 컨텐츠 */}
           <div className="flex-1 min-w-0">
         {!isFiltered ? (
-          /* 검열 전: 입력 화면만 표시 */
+          /* 점검 전: 입력 화면만 표시 */
           <div className="max-w-3xl mx-auto">
             <Card className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border">
               <CardHeader>
@@ -677,7 +677,7 @@ function ContentFilterPageContent() {
                   <span>원문</span>
                 </CardTitle>
                 <CardDescription className="text-godding-text-secondary">
-                  검열할 세특 내용을 입력하세요
+                  점검할 세특 내용을 입력하세요
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -735,12 +735,12 @@ function ContentFilterPageContent() {
                   {isLoading ? (
                     <>
                       <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                      검열 중...
+                      점검 중...
                     </>
                   ) : (
                     <>
                       <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                      세특검열하기
+                      세특점검하기
                     </>
                   )}
                 </Button>
@@ -754,7 +754,7 @@ function ContentFilterPageContent() {
             </Card>
           </div>
         ) : (
-          /* 검열 후: 좌우 분할 화면 */
+          /* 점검 후: 좌우 분할 화면 */
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* 왼쪽: 교정 문서 */}
             <Card className="bg-white backdrop-blur-sm border-gray-200">
@@ -959,3 +959,4 @@ export default function ContentFilterPage() {
     </ProtectedRoute>
   )
 }
+

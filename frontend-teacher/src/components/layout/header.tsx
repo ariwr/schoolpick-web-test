@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
@@ -20,7 +20,7 @@ const navigation = [
   { name: "과목 수요 조사", href: "/subject-survey", icon: ChartBarIcon },
   { name: "정독실", href: "/study-room", icon: BookOpenIcon },
   { name: "야자 출첵", href: "/night-study", icon: MoonIcon },
-  { name: "세특 검열", href: "/content-filter", icon: ShieldCheckIcon },
+  { name: "세특 점검", href: "/content-filter", icon: ShieldCheckIcon },
 ]
 
 export default function Header() {
@@ -169,3 +169,4 @@ export default function Header() {
     </header>
   )
 }
+

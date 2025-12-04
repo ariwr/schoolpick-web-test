@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import React, { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -985,10 +985,10 @@ function SaeTeukPageContent() {
     setSelectedErrorId(null)
     
     try {
-      // 수정된 텍스트로 다시 검열 API 호출
+      // 수정된 텍스트로 다시 점검 API 호출
       await handleInlineFilter(newText)
     } catch (err) {
-      setFilterError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
+      setFilterError(err instanceof Error ? err.message : "점검 중 오류가 발생했습니다.")
     } finally {
       setIsFiltering(false)
     }
@@ -1204,13 +1204,13 @@ function SaeTeukPageContent() {
       setFilterErrors([])
       setSelectedErrorId(null)
 
-      // 수정된 텍스트로 다시 검열 실행
+      // 수정된 텍스트로 다시 점검 실행
       if (newText.trim()) {
         try {
           await handleInlineFilter(newText)
         } catch (err) {
-          // 검열 실패 시 에러 메시지 표시 (이미 handleInlineFilter에서 처리됨)
-          console.error('재검열 중 오류:', err)
+          // 점검 실패 시 에러 메시지 표시 (이미 handleInlineFilter에서 처리됨)
+          console.error('재점검 중 오류:', err)
         }
       }
     }
@@ -1295,7 +1295,7 @@ function SaeTeukPageContent() {
                       variant="outline"
                       onClick={async () => {
                         if (!currentText.trim()) {
-                          alert('검열할 내용이 없습니다. 세특을 먼저 작성해주세요.')
+                          alert('점검할 내용이 없습니다. 세특을 먼저 작성해주세요.')
                           return
                         }
                         await handleInlineFilter(currentText)
@@ -1306,12 +1306,12 @@ function SaeTeukPageContent() {
                       {isFiltering ? (
                         <>
                           <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                          검열 중...
+                          점검 중...
                         </>
                       ) : (
                         <>
                           <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                          세특 검열
+                          세특 점검
                         </>
                       )}
                     </Button>
@@ -1344,7 +1344,7 @@ function SaeTeukPageContent() {
                       수정 제안 {filterErrors.length > 0 && `(총 ${filterErrors.length}개)`}
                     </CardTitle>
                     <CardDescription className="text-godding-text-secondary mt-1">
-                      검열 결과를 확인하고 수정하세요
+                      점검 결과를 확인하고 수정하세요
                     </CardDescription>
                   </div>
                   {filterErrors.length > 0 && (
@@ -1362,7 +1362,7 @@ function SaeTeukPageContent() {
                 {filterErrors.length === 0 ? (
                   <div className="text-center py-12 text-godding-text-secondary">
                     <ShieldCheckIcon className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                    <p className="text-sm">검열 버튼을 클릭하여 검열을 시작하세요.</p>
+                    <p className="text-sm">점검 버튼을 클릭하여 점검을 시작하세요.</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-[600px] overflow-y-auto">
@@ -1441,10 +1441,10 @@ function SaeTeukPageContent() {
     )
   }
 
-  // 인라인 검열 함수 (새로운 API 구조 사용)
+  // 인라인 점검 함수 (새로운 API 구조 사용)
   const handleInlineFilter = async (content: string) => {
     if (!content.trim()) {
-      setFilterError('검열할 내용이 없습니다.')
+      setFilterError('점검할 내용이 없습니다.')
       return
     }
 
@@ -1490,7 +1490,7 @@ function SaeTeukPageContent() {
       } catch (fetchError) {
         // 타임아웃 오류 처리
         if (fetchError instanceof Error && fetchError.name === 'AbortError') {
-          throw new Error('검열 요청이 시간 초과되었습니다. 서버 응답이 너무 오래 걸리고 있습니다. 잠시 후 다시 시도해주세요.')
+          throw new Error('점검 요청이 시간 초과되었습니다. 서버 응답이 너무 오래 걸리고 있습니다. 잠시 후 다시 시도해주세요.')
         }
         // 네트워크 오류 처리 (CORS 오류 포함)
         if (fetchError instanceof TypeError) {
@@ -1502,7 +1502,7 @@ function SaeTeukPageContent() {
       }
 
       if (!response.ok) {
-        let errorMessage = "검열 중 오류가 발생했습니다."
+        let errorMessage = "점검 중 오류가 발생했습니다."
         try {
           const errorData = await response.json()
           errorMessage = errorData.detail || errorData.message || errorMessage
@@ -1562,7 +1562,7 @@ function SaeTeukPageContent() {
       setFilterErrors(sortedErrors)
       setSelectedErrorId(null)
     } catch (err) {
-      setFilterError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
+      setFilterError(err instanceof Error ? err.message : "점검 중 오류가 발생했습니다.")
     } finally {
       setIsFiltering(false)
     }
@@ -1570,10 +1570,10 @@ function SaeTeukPageContent() {
 
 
 
-  // 검열 함수 (기존 모달용)
+  // 점검 함수 (기존 모달용)
   const handleFilterContent = async () => {
     if (!filteringContent.trim()) {
-      setFilterError('검열할 내용이 없습니다.')
+      setFilterError('점검할 내용이 없습니다.')
       return
     }
 
@@ -1618,7 +1618,7 @@ function SaeTeukPageContent() {
       }
 
       if (!response.ok) {
-        let errorMessage = "검열 중 오류가 발생했습니다."
+        let errorMessage = "점검 중 오류가 발생했습니다."
         try {
           const errorData = await response.json()
           errorMessage = errorData.detail || errorData.message || errorMessage
@@ -1645,13 +1645,13 @@ function SaeTeukPageContent() {
       // filterErrors에 설정 (기존 코드와 호환)
       setFilterErrors(errorsWithId)
     } catch (err) {
-      setFilterError(err instanceof Error ? err.message : "검열 중 오류가 발생했습니다.")
+      setFilterError(err instanceof Error ? err.message : "점검 중 오류가 발생했습니다.")
     } finally {
       setIsFiltering(false)
     }
   }
 
-  // 검열 결과를 원본에 적용 (모달용 - 현재는 사용하지 않음)
+  // 점검 결과를 원본에 적용 (모달용 - 현재는 사용하지 않음)
   const applyFilteredContent = () => {
     const studentKey = `${selectedRequest?.id}_${selectedStudent?.studentId}`
     setStudentFinalTexts(prev => ({
@@ -2086,8 +2086,8 @@ function SaeTeukPageContent() {
                 <ShieldCheckIcon className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold">세특 검열 결과</h2>
-                <p className="text-blue-100 text-sm mt-1">작성한 세특을 검열하고 수정 제안을 받아보세요</p>
+                <h2 className="text-2xl font-bold">세특 점검 결과</h2>
+                <p className="text-blue-100 text-sm mt-1">작성한 세특을 점검하고 수정 제안을 받아보세요</p>
               </div>
             </div>
             <button
@@ -2102,17 +2102,17 @@ function SaeTeukPageContent() {
             </button>
           </div>
 
-          {/* 내용 영역 - 최종 검열 결과 중심 */}
+          {/* 내용 영역 - 최종 점검 결과 중심 */}
           <div className="flex-1 overflow-y-auto p-6 bg-gradient-to-br from-gray-50 to-white">
             <div className="max-w-5xl mx-auto space-y-6">
-              {/* 최종 검열 결과 (메인 영역) */}
+              {/* 최종 점검 결과 (메인 영역) */}
               {(!isFiltering && filterErrors.length === 0 && filteringContent) ? (
                 <Card className="bg-white border-2 border-blue-300 shadow-xl">
                   <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-white flex items-center space-x-2">
                         <CheckCircleIcon className="w-6 h-6" />
-                        <span className="text-xl font-bold">검열된 최종 내용</span>
+                        <span className="text-xl font-bold">점검된 최종 내용</span>
                       </CardTitle>
                       <div className="flex items-center space-x-4 text-sm">
                         <span className="px-3 py-1 bg-white/20 text-white rounded-full font-medium">
@@ -2257,12 +2257,12 @@ function SaeTeukPageContent() {
                 </div>
               )}
 
-              {/* 검열 결과 없음 */}
+              {/* 점검 결과 없음 */}
               {!isFiltering && filterErrors.length === 0 && filteringContent && (
                 <Card className="bg-green-50 border-2 border-green-200">
                   <CardContent className="p-6 text-center">
                     <CheckCircleIcon className="w-12 h-12 text-green-600 mx-auto mb-3" />
-                    <p className="text-green-800 font-medium">검열 버튼을 클릭하여 검열을 시작하세요</p>
+                    <p className="text-green-800 font-medium">점검 버튼을 클릭하여 점검을 시작하세요</p>
                   </CardContent>
                 </Card>
               )}
@@ -2280,12 +2280,12 @@ function SaeTeukPageContent() {
                 {isFiltering ? (
                   <>
                     <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                    검열 중...
+                    점검 중...
                   </>
                 ) : (
                   <>
                     <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                    검열하기
+                    점검하기
                   </>
                 )}
               </Button>
@@ -2440,3 +2440,4 @@ export default function SaeTeukPage() {
     </ProtectedRoute>
   )
 }
+

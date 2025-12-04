@@ -1,4 +1,4 @@
-export default function Footer() {
+﻿export default function Footer() {
   return (
     <footer className="bg-godding-primary-dark">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -26,7 +26,7 @@ export default function Footer() {
               <li className="hover:text-white transition-colors cursor-pointer">과목 수요 조사</li>
               <li className="hover:text-white transition-colors cursor-pointer">정독실 관리</li>
               <li className="hover:text-white transition-colors cursor-pointer">야자 출석 체크</li>
-              <li className="hover:text-white transition-colors cursor-pointer">세특 검열 시스템</li>
+              <li className="hover:text-white transition-colors cursor-pointer">세특 점검 시스템</li>
             </ul>
           </div>
           
@@ -44,3 +44,4 @@ export default function Footer() {
     </footer>
   )
 }
+

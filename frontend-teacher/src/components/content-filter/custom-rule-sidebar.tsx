@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -214,7 +214,7 @@ export default function CustomRuleSidebar({ onRulesChange }: CustomRuleSidebarPr
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold">사용자 정의 금지어</CardTitle>
         <CardDescription className="text-xs">
-          직접 금지어를 등록하여 검열에 사용할 수 있습니다.
+          직접 금지어를 등록하여 점검에 사용할 수 있습니다.
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 flex flex-col gap-4 overflow-hidden">
@@ -283,4 +283,5 @@ export default function CustomRuleSidebar({ onRulesChange }: CustomRuleSidebarPr
     </Card>
   )
 }
+
 

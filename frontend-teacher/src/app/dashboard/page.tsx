@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
@@ -84,8 +84,8 @@ function DashboardContent({ user }: { user: User | null }) {
       color: "bg-orange-500",
     },
     {
-      name: "세특 검열",
-      description: "학생 세특 내용의 부적절한 단어 검열 시스템",
+      name: "세특 점검",
+      description: "학생 세특 내용의 부적절한 단어 점검 시스템",
       icon: ShieldCheckIcon,
       href: "/content-filter",
       color: "bg-red-500",
@@ -156,3 +156,4 @@ function DashboardContent({ user }: { user: User | null }) {
     </div>
   );
 }
+
