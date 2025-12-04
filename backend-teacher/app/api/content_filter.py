@@ -61,7 +61,6 @@ class ContentFilterRequest(BaseModel):
     """세특 검열 요청 모델"""
     content: str = Field(..., description="검열할 세특 내용", max_length=2000)
     max_bytes: int = Field(default=2000, description="최대 바이트 수", ge=1, le=2000)
-    rule_only: bool = Field(default=False, description="1차 규칙 기반 필터만 사용 (ChatGPT 건너뛰기)")
 
 
 class FilterIssue(BaseModel):
@@ -255,7 +254,7 @@ def _parse_json_with_recovery(response_text: str, fallback_content: str) -> Dict
     }
 
 
-async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_chatgpt: bool = False) -> ContentFilterResponse:
+async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> ContentFilterResponse:
     """
     ChatGPT API를 호출하여 세특 내용을 검열합니다.
     LLM 호출 전에 1차 규칙 기반 필터를 적용합니다.
@@ -263,7 +262,6 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
     Args:
         content: 검열할 세특 내용
         max_bytes: 최대 바이트 수
-        skip_chatgpt: True이면 ChatGPT 호출을 건너뛰고 1차 필터 결과만 반환
         
     Returns:
         ContentFilterResponse: 검열 결과
@@ -281,24 +279,23 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
         handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
         logger.addHandler(handler)
     
-    # skip_chatgpt가 False일 때만 API 키 확인
-    if not skip_chatgpt:
-        if not OPENAI_API_KEY or not OPENAI_API_KEY.strip():
-            logger.error("OpenAI API 키가 설정되지 않았습니다.")
-            raise HTTPException(
-                status_code=500,
-                detail="OpenAI API 키가 설정되지 않았습니다. 환경변수 OPENAI_API_KEY를 설정하세요."
-            )
-        
-        # 키 형식 검증
-        if not (OPENAI_API_KEY.startswith("sk-") or OPENAI_API_KEY.startswith("sk-proj-")):
-            logger.error(f"OpenAI API 키 형식이 올바르지 않습니다. (현재 시작: '{OPENAI_API_KEY[:15]}...')")
-            raise HTTPException(
-                status_code=500,
-                detail="OpenAI API 키 형식이 올바르지 않습니다. 키는 sk- 또는 sk-proj-로 시작해야 합니다."
-            )
-        
-        logger.debug(f"OpenAI API 키 검증 완료 (길이: {len(OPENAI_API_KEY)})")
+    # OpenAI API 키 확인
+    if not OPENAI_API_KEY or not OPENAI_API_KEY.strip():
+        logger.error("OpenAI API 키가 설정되지 않았습니다.")
+        raise HTTPException(
+            status_code=500,
+            detail="OpenAI API 키가 설정되지 않았습니다. 환경변수 OPENAI_API_KEY를 설정하세요."
+        )
+    
+    # 키 형식 검증
+    if not (OPENAI_API_KEY.startswith("sk-") or OPENAI_API_KEY.startswith("sk-proj-")):
+        logger.error(f"OpenAI API 키 형식이 올바르지 않습니다. (현재 시작: '{OPENAI_API_KEY[:15]}...')")
+        raise HTTPException(
+            status_code=500,
+            detail="OpenAI API 키 형식이 올바르지 않습니다. 키는 sk- 또는 sk-proj-로 시작해야 합니다."
+        )
+    
+    logger.debug(f"OpenAI API 키 검증 완료 (길이: {len(OPENAI_API_KEY)})")
     
     # 바이트 수 확인
     byte_count = len(content.encode('utf-8'))
@@ -397,58 +394,6 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
     # 1차 필터링된 텍스트를 LLM에 전달
     content_to_check = pre_filtered_content
     # [수정된 로직 끝] ==============================================================
-    
-        # 1차 필터만 사용하는 경우 (LLM 건너뛰기)
-    if skip_chatgpt:
-        logger.debug(f"1차 규칙 기반 필터만 사용합니다: {len(rule_detections)}개 검출")
-        
-        issues = []
-        for rule_det in rule_detections:
-            rule_category = rule_det.get('category', '')
-            rule_word = rule_det.get('word', '')
-            rule_replacement = rule_det.get('replacement', '')
-            
-            # 교내 행사 순화는 modify 타입으로 처리
-            if rule_category == "교내행사순화":
-                issue = FilterIssue(
-                    type="modify",
-                    severity="warning",
-                    position=rule_det['position'],
-                    length=len(rule_word),
-                    original_text=rule_word,
-                    suggestion=rule_replacement,
-                    reason=f"교내 행사 명칭 순화 필요: '{rule_word}'를 '{rule_replacement}'로 수정 권장",
-                    source="rule_based"  # 1차 검열
-                )
-            else:
-                # USER_DEFINED 카테고리는 "사용자 기반 금지어"로 표시
-                if rule_category == "USER_DEFINED":
-                    reason_text = "사용자 기반 금지어"
-                else:
-                    reason_text = f"규칙 기반 필터: {rule_category} 관련 금지어입니다."
-                
-                issue = FilterIssue(
-                    type="delete",  # 1차 필터는 기본적으로 삭제/금지어
-                    severity="critical",  # 규칙 기반 필터는 모두 critical
-                    position=rule_det['position'],
-                    length=len(rule_word),
-                    original_text=rule_word,
-                    suggestion=None,
-                    reason=reason_text,
-                    source="rule_based"  # 1차 검열
-                )
-            issues.append(issue)
-        
-        # 위치 순서대로 정렬
-        issues.sort(key=lambda x: x.position)
-        
-        return ContentFilterResponse(
-            filtered_content=content,  # 원본 반환 (프론트에서 처리)
-            issues=issues,
-            total_issues=len(issues),
-            byte_count=byte_count,
-            max_bytes=max_bytes
-        )
     
     # ChatGPT에 전달할 프롬프트 작성 (2025 기재요령 PDF 기준 보강)
     system_prompt = """당신은 2025학년도 학교생활기록부 기재요령 전문가입니다.
@@ -812,56 +757,90 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
         final_issues = rule_based_issues.copy()
         
         # [수정된 로직] 2차(LLM) 결과 처리: 더 넓은 범위나 다른 타입이면 포함
-        if not skip_chatgpt:
-            logger.debug(f"LLM 결과 {len(issues_data)}개를 처리 중... (더 넓은 범위나 다른 타입이면 포함)")
+        logger.debug(f"LLM 결과 {len(issues_data)}개를 처리 중... (더 넓은 범위나 다른 타입이면 포함)")
+        
+        # LLM 결과를 먼저 모두 파싱
+        llm_issues_parsed = []
+        for issue_data in issues_data:
+            # reason 필드가 None이거나 빈 문자열일 경우 기본값 사용
+            reason_value = issue_data.get("reason")
+            if not reason_value or reason_value is None:
+                reason_value = "문제 발견"
             
-            # LLM 결과를 먼저 모두 파싱
-            llm_issues_parsed = []
-            for issue_data in issues_data:
-                # reason 필드가 None이거나 빈 문자열일 경우 기본값 사용
-                reason_value = issue_data.get("reason")
-                if not reason_value or reason_value is None:
-                    reason_value = "문제 발견"
+            # severity 필드 파싱 (기본값: critical)
+            severity_value = issue_data.get("severity", "critical")
+            if severity_value not in ["critical", "warning"]:
+                # type에 따라 기본 severity 설정
+                if issue_data.get("type") == "delete":
+                    severity_value = "critical"
+                elif issue_data.get("type") == "spelling":
+                    severity_value = "critical"
+                else:
+                    severity_value = "warning"
                 
-                # severity 필드 파싱 (기본값: critical)
-                severity_value = issue_data.get("severity", "critical")
-                if severity_value not in ["critical", "warning"]:
-                    # type에 따라 기본 severity 설정
-                    if issue_data.get("type") == "delete":
-                        severity_value = "critical"
-                    elif issue_data.get("type") == "spelling":
-                        severity_value = "critical"
-                    else:
-                        severity_value = "warning"
+            # [검증 로직] Position 및 Length 검증
+            issue_position = issue_data.get("position", 0)
+            issue_length = issue_data.get("length", 0)
+            issue_original_text = issue_data.get("original_text", "")
                 
-                # [검증 로직] Position 및 Length 검증
-                issue_position = issue_data.get("position", 0)
-                issue_length = issue_data.get("length", 0)
-                issue_original_text = issue_data.get("original_text", "")
+            # Position 범위 체크
+            if issue_position < 0 or issue_position >= len(content):
+                logger.warning(f"LLM 이슈 검증 실패: Invalid position {issue_position} (텍스트 길이: {len(content)})")
+                continue
+            
+            # Length 체크
+            if issue_length <= 0 or issue_position + issue_length > len(content):
+                logger.warning(f"LLM 이슈 검증 실패: Invalid length {issue_length} (position: {issue_position}, 텍스트 길이: {len(content)})")
+                continue
                 
-                # Position 범위 체크
-                if issue_position < 0 or issue_position >= len(content):
-                    logger.warning(f"LLM 이슈 검증 실패: Invalid position {issue_position} (텍스트 길이: {len(content)})")
-                    continue
+            # Original_text 일치 확인 및 자동 수정
+            # LLM이 반환한 original_text를 우선적으로 신뢰하고, position을 재계산
+            extracted_text = content[issue_position:issue_position + issue_length] if issue_position + issue_length <= len(content) else ""
                 
-                # Length 체크
-                if issue_length <= 0 or issue_position + issue_length > len(content):
-                    logger.warning(f"LLM 이슈 검증 실패: Invalid length {issue_length} (position: {issue_position}, 텍스트 길이: {len(content)})")
-                    continue
+            # original_text를 정규화 (앞뒤 공백 제거, 따옴표는 유지)
+            original_text_normalized = issue_original_text.strip()
                 
-                # Original_text 일치 확인 및 자동 수정
-                extracted_text = content[issue_position:issue_position + issue_length]
-                if extracted_text != issue_original_text:
-                    logger.warning(f"LLM 이슈 텍스트 불일치: 예상 '{issue_original_text}', 실제 '{extracted_text}'")
+            # 1차: 정확히 일치하는지 확인
+            if extracted_text == original_text_normalized:
+                # 정확히 일치하면 그대로 사용
+                issue_original_text = extracted_text
+            else:
+                # 불일치 시 재검색 로직
+                logger.warning(f"LLM 이슈 텍스트 불일치: 예상 '{original_text_normalized}', 실제 '{extracted_text[:50] if len(extracted_text) > 50 else extracted_text}'")
+                
+                # 재검색을 위한 후보 텍스트 목록 (우선순위 순)
+                search_candidates = []
+                
+                # 1순위: 원본 그대로 (따옴표 포함)
+                search_candidates.append(original_text_normalized)
+                
+                # 2순위: 따옴표 제거 버전
+                original_text_no_quotes = original_text_normalized.strip("'\"")
+                if original_text_no_quotes != original_text_normalized:
+                    search_candidates.append(original_text_no_quotes)
+                
+                # 3순위: 앞뒤 공백 제거 버전
+                original_text_trimmed = original_text_normalized.strip()
+                if original_text_trimmed != original_text_normalized:
+                    search_candidates.append(original_text_trimmed)
+                
+                # 4순위: 따옴표 제거 + 공백 제거
+                original_text_cleaned = original_text_no_quotes.strip()
+                if original_text_cleaned not in search_candidates:
+                    search_candidates.append(original_text_cleaned)
+                
+                # 각 후보에 대해 검색
+                found_match = False
+                for candidate_text in search_candidates:
+                    if not candidate_text:  # 빈 문자열은 건너뛰기
+                        continue
                     
-                    # 원본 텍스트에서 실제 단어를 찾아서 재검색
-                    original_text_cleaned = issue_original_text.strip().strip("'\"")  # 따옴표 제거
                     found_positions = []
-                    
-                    # 원본 텍스트에서 실제 단어 찾기
                     start_idx = 0
+                    
+                    # 원본 텍스트에서 모든 위치 찾기
                     while True:
-                        pos = content.find(original_text_cleaned, start_idx)
+                        pos = content.find(candidate_text, start_idx)
                         if pos == -1:
                             break
                         found_positions.append(pos)
@@ -870,130 +849,135 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000, skip_c
                     if found_positions:
                         # 가장 가까운 위치 선택 (원래 position과 가장 가까운 위치)
                         closest_pos = min(found_positions, key=lambda x: abs(x - issue_position))
-                        extracted_text = content[closest_pos:closest_pos + len(original_text_cleaned)]
-                        if extracted_text == original_text_cleaned:
-                            logger.info(f"텍스트 재검색 성공: '{original_text_cleaned}' 위치 {closest_pos}로 수정")
+                        extracted_candidate = content[closest_pos:closest_pos + len(candidate_text)]
+                        
+                        if extracted_candidate == candidate_text:
+                            logger.info(f"텍스트 재검색 성공: '{candidate_text}' 위치 {closest_pos}로 수정 (원래 위치: {issue_position})")
                             issue_position = closest_pos
-                            issue_length = len(original_text_cleaned)
-                            issue_original_text = extracted_text
-                        else:
-                            logger.warning(f"텍스트 재검색 실패: '{original_text_cleaned}' 위치 {closest_pos}에서 불일치 - 이슈 제외")
-                            continue
-                    else:
-                        # 따옴표 포함 버전도 시도
-                        if issue_original_text.startswith("'") and issue_original_text.endswith("'"):
-                            quoted_text = issue_original_text
-                            start_idx = 0
-                            while True:
-                                pos = content.find(quoted_text, start_idx)
-                                if pos == -1:
-                                    break
-                                found_positions.append(pos)
-                                start_idx = pos + 1
-                            
-                            if found_positions:
-                                closest_pos = min(found_positions, key=lambda x: abs(x - issue_position))
-                                extracted_text = content[closest_pos:closest_pos + len(quoted_text)]
-                                if extracted_text == quoted_text:
-                                    logger.info(f"텍스트 재검색 성공 (따옴표 포함): '{quoted_text}' 위치 {closest_pos}로 수정")
-                                    issue_position = closest_pos
-                                    issue_length = len(quoted_text)
-                                    issue_original_text = extracted_text
-                                else:
-                                    logger.warning(f"텍스트 재검색 실패: '{quoted_text}' - 이슈 제외")
-                                    continue
-                            else:
-                                logger.warning(f"원본 텍스트에서 '{issue_original_text}' 또는 '{original_text_cleaned}'를 찾을 수 없음 - 이슈 제외")
-                                continue
-                        else:
-                            logger.warning(f"원본 텍스트에서 '{original_text_cleaned}'를 찾을 수 없음 - 이슈 제외")
-                            continue
+                            issue_length = len(candidate_text)
+                            issue_original_text = extracted_candidate
+                            found_match = True
+                            break
                 
-                llm_issue = FilterIssue(
-                    type=issue_data.get("type", "modify"),
-                    severity=severity_value,
-                    position=issue_position,
-                    length=issue_length,
-                    original_text=issue_original_text,
-                    suggestion=issue_data.get("suggestion"),
-                    reason=reason_value,
-                    source="llm"  # 2차 검열
-                )
-                llm_issues_parsed.append(llm_issue)
-                logger.debug(f"LLM 이슈 검증 통과: '{issue_original_text}' 위치 {issue_position} (길이: {issue_length})")
+                # 모든 후보를 시도했지만 찾지 못한 경우
+                if not found_match:
+                    # 부분 일치 시도: original_text의 핵심 단어만 추출하여 검색
+                    # 예: "서울특별시 환경정책과"를 찾지 못하면 "서울특별시"만 찾기
+                    words = original_text_cleaned.split()
+                    if len(words) > 1:
+                        # 가장 긴 단어부터 시도
+                        words_sorted = sorted(words, key=len, reverse=True)
+                        for word in words_sorted:
+                            if len(word) >= 2:  # 최소 2글자 이상
+                                word_positions = []
+                                start_idx = 0
+                                while True:
+                                    pos = content.find(word, start_idx)
+                                    if pos == -1:
+                                        break
+                                    word_positions.append(pos)
+                                    start_idx = pos + 1
+                                
+                                if word_positions:
+                                    closest_pos = min(word_positions, key=lambda x: abs(x - issue_position))
+                                    extracted_word = content[closest_pos:closest_pos + len(word)]
+                                    if extracted_word == word:
+                                        logger.warning(f"부분 일치로 재검색: '{word}' 위치 {closest_pos}로 수정 (원본 '{original_text_normalized}'는 찾지 못함)")
+                                        issue_position = closest_pos
+                                        issue_length = len(word)
+                                        issue_original_text = extracted_word
+                                        found_match = True
+                                        break
+                    
+                    if not found_match:
+                        logger.warning(f"원본 텍스트에서 '{original_text_normalized}'를 찾을 수 없음 - 이슈 제외")
+                        continue
             
-            # LLM 결과를 처리하면서 1차 결과와 비교
-            for llm_issue in llm_issues_parsed:
-                llm_start = llm_issue.position
-                llm_end = llm_issue.position + llm_issue.length
+            llm_issue = FilterIssue(
+                type=issue_data.get("type", "modify"),
+                severity=severity_value,
+                position=issue_position,
+                length=issue_length,
+                original_text=issue_original_text,
+                suggestion=issue_data.get("suggestion"),
+                reason=reason_value,
+                source="llm"  # 2차 검열
+            )
+            llm_issues_parsed.append(llm_issue)
+            logger.debug(f"LLM 이슈 검증 통과: '{issue_original_text}' 위치 {issue_position} (길이: {issue_length})")
+        
+        # LLM 결과를 처리하면서 1차 결과와 비교
+        for llm_issue in llm_issues_parsed:
+            llm_start = llm_issue.position
+            llm_end = llm_issue.position + llm_issue.length
+            
+            # 1차 결과와 겹치는지 확인
+            overlapping_rules = []
+            for rule_issue in rule_based_issues:
+                rule_start = rule_issue.position
+                rule_end = rule_issue.position + rule_issue.length
                 
-                # 1차 결과와 겹치는지 확인
-                overlapping_rules = []
-                for rule_issue in rule_based_issues:
+                # 겹침 체크: 두 구간이 겹치거나 포함 관계인지 확인
+                if llm_start < rule_end and llm_end > rule_start:
+                    overlapping_rules.append(rule_issue)
+            
+            if overlapping_rules:
+                # 겹치는 경우: LLM이 더 넓은 범위를 잡았거나 다른 타입이면 포함
+                should_include_llm = False
+                should_remove_rules = []
+                
+                # overlapping_rules를 position 순으로 정렬하여 결정적 순서 보장
+                overlapping_rules_sorted = sorted(overlapping_rules, key=lambda x: (x.position, x.length))
+                
+                for rule_issue in overlapping_rules_sorted:
                     rule_start = rule_issue.position
                     rule_end = rule_issue.position + rule_issue.length
                     
-                    # 겹침 체크: 두 구간이 겹치거나 포함 관계인지 확인
-                    if llm_start < rule_end and llm_end > rule_start:
-                        overlapping_rules.append(rule_issue)
-                
-                if overlapping_rules:
-                    # 겹치는 경우: LLM이 더 넓은 범위를 잡았거나 다른 타입이면 포함
-                    should_include_llm = False
-                    should_remove_rules = []
+                    # 케이스 1: LLM이 spelling이나 modify 타입이면 항상 포함 (1차는 delete만)
+                    if llm_issue.type in ['spelling', 'modify']:
+                        should_include_llm = True
+                        logger.debug(f"LLM 이슈 포함: 타입 {llm_issue.type}이므로 1차 결과와 겹쳐도 포함")
+                        break  # 이미 결정되었으므로 중단
                     
-                    # overlapping_rules를 position 순으로 정렬하여 결정적 순서 보장
-                    overlapping_rules_sorted = sorted(overlapping_rules, key=lambda x: (x.position, x.length))
+                    # 케이스 2: LLM이 더 넓은 범위를 잡은 경우 (1차 결과를 포함)
+                    if llm_start <= rule_start and llm_end >= rule_end:
+                        should_include_llm = True
+                        should_remove_rules.append(rule_issue)
+                        logger.debug(f"LLM 이슈 포함: 더 넓은 범위 (LLM: {llm_start}-{llm_end}, 1차: {rule_start}-{rule_end})")
+                        continue  # 다음 rule_issue 확인
                     
-                    for rule_issue in overlapping_rules_sorted:
-                        rule_start = rule_issue.position
-                        rule_end = rule_issue.position + rule_issue.length
-                        
-                        # 케이스 1: LLM이 spelling이나 modify 타입이면 항상 포함 (1차는 delete만)
-                        if llm_issue.type in ['spelling', 'modify']:
-                            should_include_llm = True
-                            logger.debug(f"LLM 이슈 포함: 타입 {llm_issue.type}이므로 1차 결과와 겹쳐도 포함")
+                    # 케이스 3: 1차 결과가 LLM 결과를 완전히 포함하는 경우만 제외
+                    elif rule_start <= llm_start and rule_end >= llm_end:
+                        # 같은 delete 타입이고 1차가 완전히 포함하면 제외
+                        if llm_issue.type == 'delete':
+                            logger.debug(f"LLM 이슈 제외: 1차 결과가 완전히 포함함 (1차: {rule_start}-{rule_end}, LLM: {llm_start}-{llm_end})")
+                            should_include_llm = False  # 명시적으로 False 설정
                             break  # 이미 결정되었으므로 중단
-                        
-                        # 케이스 2: LLM이 더 넓은 범위를 잡은 경우 (1차 결과를 포함)
-                        if llm_start <= rule_start and llm_end >= rule_end:
-                            should_include_llm = True
-                            should_remove_rules.append(rule_issue)
-                            logger.debug(f"LLM 이슈 포함: 더 넓은 범위 (LLM: {llm_start}-{llm_end}, 1차: {rule_start}-{rule_end})")
-                            continue  # 다음 rule_issue 확인
-                        
-                        # 케이스 3: 1차 결과가 LLM 결과를 완전히 포함하는 경우만 제외
-                        elif rule_start <= llm_start and rule_end >= llm_end:
-                            # 같은 delete 타입이고 1차가 완전히 포함하면 제외
-                            if llm_issue.type == 'delete':
-                                logger.debug(f"LLM 이슈 제외: 1차 결과가 완전히 포함함 (1차: {rule_start}-{rule_end}, LLM: {llm_start}-{llm_end})")
-                                should_include_llm = False  # 명시적으로 False 설정
-                                break  # 이미 결정되었으므로 중단
-                            else:
-                                # 다른 타입이면 포함
-                                should_include_llm = True
-                                logger.debug(f"LLM 이슈 포함: 타입이 다름 (LLM: {llm_issue.type})")
-                                break  # 이미 결정되었으므로 중단
-                        
-                        # 케이스 4: 부분적으로만 겹치는 경우 (LLM 포함)
                         else:
+                            # 다른 타입이면 포함
                             should_include_llm = True
-                            logger.debug(f"LLM 이슈 포함: 부분 겹침 (LLM: {llm_start}-{llm_end}, 1차: {rule_start}-{rule_end})")
-                            # break하지 않고 계속 확인 (다른 rule_issue도 확인 필요)
+                            logger.debug(f"LLM 이슈 포함: 타입이 다름 (LLM: {llm_issue.type})")
+                            break  # 이미 결정되었으므로 중단
                     
-                    # LLM 결과 포함
-                    if should_include_llm:
-                        final_issues.append(llm_issue)
-                        # 겹치는 1차 결과 제거 (LLM이 더 넓은 범위를 잡은 경우)
-                        # should_remove_rules를 역순으로 제거하여 인덱스 문제 방지
-                        for rule_to_remove in reversed(should_remove_rules):
-                            if rule_to_remove in final_issues:
-                                final_issues.remove(rule_to_remove)
-                                logger.debug(f"1차 결과 제거: LLM이 더 넓은 범위를 잡음 - '{rule_to_remove.original_text}'")
-                else:
-                    # 겹치지 않으면 추가
+                    # 케이스 4: 부분적으로만 겹치는 경우 (LLM 포함)
+                    else:
+                        should_include_llm = True
+                        logger.debug(f"LLM 이슈 포함: 부분 겹침 (LLM: {llm_start}-{llm_end}, 1차: {rule_start}-{rule_end})")
+                        # break하지 않고 계속 확인 (다른 rule_issue도 확인 필요)
+                
+                # LLM 결과 포함
+                if should_include_llm:
                     final_issues.append(llm_issue)
-                    logger.debug(f"LLM 이슈 추가: 위치 {llm_start}-{llm_end}의 '{llm_issue.original_text}' (1차 결과와 겹치지 않음)")
+                    # 겹치는 1차 결과 제거 (LLM이 더 넓은 범위를 잡은 경우)
+                    # should_remove_rules를 역순으로 제거하여 인덱스 문제 방지
+                    for rule_to_remove in reversed(should_remove_rules):
+                        if rule_to_remove in final_issues:
+                            final_issues.remove(rule_to_remove)
+                            logger.debug(f"1차 결과 제거: LLM이 더 넓은 범위를 잡음 - '{rule_to_remove.original_text}'")
+            else:
+                # 겹치지 않으면 추가
+                final_issues.append(llm_issue)
+                logger.debug(f"LLM 이슈 추가: 위치 {llm_start}-{llm_end}의 '{llm_issue.original_text}' (1차 결과와 겹치지 않음)")
         
         # 위치 순서대로 정렬
         final_issues.sort(key=lambda x: x.position)
@@ -1274,9 +1258,9 @@ async def filter_content(request: ContentFilterRequest):
     
     try:
         # 요청 로깅
-        logger.info(f"세특 검열 요청 수신: 내용 길이={len(request.content)}자, 최대 바이트={request.max_bytes}, 규칙만 사용={request.rule_only}")
+        logger.info(f"세특 검열 요청 수신: 내용 길이={len(request.content)}자, 최대 바이트={request.max_bytes}")
         
-        result = await call_chatgpt_for_filtering(request.content, request.max_bytes, skip_chatgpt=request.rule_only)
+        result = await call_chatgpt_for_filtering(request.content, request.max_bytes)
         
         logger.info(f"세특 검열 완료: 이슈 개수={result.total_issues}")
         return result

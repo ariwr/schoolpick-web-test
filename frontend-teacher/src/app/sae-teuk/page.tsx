@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 // Popover 컴포넌트가 없으므로 커스텀 Popover 구현
 import { getByteLength } from "@/lib/utils"
+import ProtectedRoute from "@/components/auth/ProtectedRoute"
 import { 
   ClipboardDocumentListIcon, 
   PlusIcon,
@@ -121,7 +122,7 @@ const FORM_TEMPLATES = {
   }
 }
 
-export default function SaeTeukPage() {
+function SaeTeukPageContent() {
   const [currentView, setCurrentView] = useState<'list' | 'create' | 'dashboard' | 'workspace'>('list')
   const [selectedRequest, setSelectedRequest] = useState<ActivityRequest | null>(null)
   const [selectedStudent, setSelectedStudent] = useState<StudentResponse | null>(null)
@@ -1180,7 +1181,7 @@ export default function SaeTeukPage() {
     }
 
     // 모두 적용 핸들러
-    const handleApplyAll = () => {
+    const handleApplyAll = async () => {
       let newText = currentText
       const sortedErrors = [...filterErrors].sort((a, b) => b.start_index - a.start_index) // 역순 정렬
 
@@ -1193,13 +1194,25 @@ export default function SaeTeukPage() {
         }
       })
 
+      // 수정된 텍스트로 업데이트
       setStudentFinalTexts(prev => ({
         ...prev,
         [studentKey]: { ...prev[studentKey], main: newText }
       }))
 
+      // 기존 오류 목록 초기화
       setFilterErrors([])
       setSelectedErrorId(null)
+
+      // 수정된 텍스트로 다시 검열 실행
+      if (newText.trim()) {
+        try {
+          await handleInlineFilter(newText)
+        } catch (err) {
+          // 검열 실패 시 에러 메시지 표시 (이미 handleInlineFilter에서 처리됨)
+          console.error('재검열 중 오류:', err)
+        }
+      }
     }
 
     return (
@@ -1457,6 +1470,10 @@ export default function SaeTeukPage() {
 
       let response
       try {
+        // 타임아웃을 위한 AbortController (LLM API 호출은 시간이 오래 걸릴 수 있으므로 120초로 설정)
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 120000) // 120초 타임아웃
+        
         // 새로운 API 엔드포인트 사용
         response = await fetch(`${API_BASE_URL}/check/setuek`, {
           method: "POST",
@@ -1466,8 +1483,15 @@ export default function SaeTeukPage() {
           body: JSON.stringify({
             text: content,
           }),
+          signal: controller.signal
         })
+        
+        clearTimeout(timeoutId) // 성공 시 타임아웃 제거
       } catch (fetchError) {
+        // 타임아웃 오류 처리
+        if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+          throw new Error('검열 요청이 시간 초과되었습니다. 서버 응답이 너무 오래 걸리고 있습니다. 잠시 후 다시 시도해주세요.')
+        }
         // 네트워크 오류 처리 (CORS 오류 포함)
         if (fetchError instanceof TypeError) {
           if (fetchError.message.includes('fetch') || fetchError.message.includes('Failed to fetch')) {
@@ -2406,5 +2430,13 @@ export default function SaeTeukPage() {
       </div>
     </div>
     </>
+  )
+}
+
+export default function SaeTeukPage() {
+  return (
+    <ProtectedRoute>
+      <SaeTeukPageContent />
+    </ProtectedRoute>
   )
 }

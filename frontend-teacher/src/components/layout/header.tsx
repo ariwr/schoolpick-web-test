@@ -28,8 +28,12 @@ export default function Header() {
   const router = useRouter()
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userName, setUserName] = useState<string | null>(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    // 클라이언트에서만 실행되도록 마운트 상태 설정
+    setMounted(true)
+    
     // 로그인 상태 확인
     const checkAuth = () => {
       if (typeof window === 'undefined') return
@@ -71,7 +75,7 @@ export default function Header() {
 
   // pathname이 변경될 때마다 인증 상태 다시 확인 (페이지 이동 시)
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || !mounted) return
     
     const token = localStorage.getItem('token')
     const userInfo = localStorage.getItem('userInfo')
@@ -87,16 +91,15 @@ export default function Header() {
     } else {
       setUserName(null)
     }
-  }, [pathname])
+  }, [pathname, mounted])
 
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    localStorage.removeItem('userInfo')
+  const handleLogout = async () => {
+    // 로그아웃 함수 사용
+    const { logout } = await import('@/lib/auth')
+    await logout()
+    
     setIsAuthenticated(false)
     setUserName(null)
-    
-    // 다른 컴포넌트에 인증 상태 변경 알림
-    window.dispatchEvent(new Event('authStateChange'))
     
     router.push('/login')
   }
@@ -106,7 +109,7 @@ export default function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center space-x-3">
+            <Link href="/">
               <div>
                 <span className="text-xl font-bold text-white">스쿨픽 교사용</span>
                 <p className="text-xs text-white/80">교사들을 위한 통합 관리 플랫폼</p>
@@ -136,7 +139,7 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center space-x-3">
-            {isAuthenticated ? (
+            {mounted && isAuthenticated ? (
               <>
                 {userName && (
                   <span className="text-white/90 text-sm hidden sm:inline">

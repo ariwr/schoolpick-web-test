@@ -79,9 +79,17 @@ class RuleBasedFilterService:
         """
         패턴을 다시 로드합니다 (사용자 정의 금지어 추가/삭제 후 호출).
         custom_rules.json이 변경되었을 때 실시간으로 반영하기 위해 사용됩니다.
+        organization.json 등 다른 필터 파일이 변경되었을 때도 사용할 수 있습니다.
         """
+        old_count = len(self.patterns)
         self.patterns = load_filters()
-        logger.info(f"패턴 리로드 완료: {len(self.patterns)}개 패턴")
+        new_count = len(self.patterns)
+        
+        # 환경부 패턴 확인
+        env_patterns = [p for p in self.patterns if '환경부' in p.pattern]
+        logger.info(f"패턴 리로드 완료: {old_count}개 → {new_count}개 패턴 (환경부 패턴: {len(env_patterns)}개)")
+        if env_patterns:
+            logger.info(f"환경부 패턴: {env_patterns[0].pattern}")
     
     def _normalize_text_with_abbreviations(self, text: str) -> str:
         """
@@ -541,15 +549,18 @@ class RuleBasedFilterService:
 _filter_service_instance: Optional[RuleBasedFilterService] = None
 
 
-def get_filter_service() -> RuleBasedFilterService:
+def get_filter_service(force_reload: bool = False) -> RuleBasedFilterService:
     """
     필터 서비스 인스턴스를 싱글톤으로 반환합니다.
+    
+    Args:
+        force_reload: True이면 기존 인스턴스를 무시하고 새로 생성합니다.
     
     Returns:
         RuleBasedFilterService: 필터 서비스 인스턴스
     """
     global _filter_service_instance
-    if _filter_service_instance is None:
+    if _filter_service_instance is None or force_reload:
         _filter_service_instance = RuleBasedFilterService()
     return _filter_service_instance
 

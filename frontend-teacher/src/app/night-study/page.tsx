@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import ProtectedRoute from "@/components/auth/ProtectedRoute"
 import {
   MoonIcon,
   QrCodeIcon,
@@ -61,7 +62,7 @@ const QRCodeDisplay = ({ imageData }: { imageData: string }) => {
 
 type ViewMode = 'main' | 'students' | 'qr'
 
-export default function NightStudyPage() {
+function NightStudyPageContent() {
   const router = useRouter()
   const [viewMode, setViewMode] = useState<ViewMode>('main')
   const [students, setStudents] = useState<Student[]>([])
@@ -98,16 +99,18 @@ export default function NightStudyPage() {
     }
   }
 
-  // 인증 확인 및 토큰 검증
+  // 인증 확인 및 토큰 검증 - 즉시 체크
   useEffect(() => {
+    // 즉시 체크하여 빠른 리다이렉트
+    const token = localStorage.getItem('token')
+    const userInfo = localStorage.getItem('userInfo')
+    
+    if (!token || !userInfo) {
+      router.replace('/login')
+      return
+    }
+
     const checkAuth = async () => {
-      const token = localStorage.getItem('token')
-      const userInfo = localStorage.getItem('userInfo')
-      
-      if (!token || !userInfo) {
-        router.push('/login')
-        return
-      }
       
       // 토큰 유효성 검증
       try {
@@ -126,7 +129,7 @@ export default function NightStudyPage() {
             localStorage.removeItem('token')
             localStorage.removeItem('userInfo')
             window.dispatchEvent(new Event('authStateChange'))
-            router.push('/login')
+            router.replace('/login')
             return
           }
         }
@@ -176,7 +179,7 @@ export default function NightStudyPage() {
       const token = localStorage.getItem('token')
       if (!token) {
         console.error('토큰이 없습니다')
-        router.push('/login')
+        router.replace('/login')
         return
       }
       
@@ -205,7 +208,7 @@ export default function NightStudyPage() {
           console.error('인증 실패: 토큰이 유효하지 않습니다')
           localStorage.removeItem('token')
           localStorage.removeItem('userInfo')
-          router.push('/login')
+          router.replace('/login')
           return
         } else {
           // 401이 아닌 다른 에러인 경우
@@ -1075,4 +1078,12 @@ export default function NightStudyPage() {
   }
 
   return null
+}
+
+export default function NightStudyPage() {
+  return (
+    <ProtectedRoute>
+      <NightStudyPageContent />
+    </ProtectedRoute>
+  )
 }

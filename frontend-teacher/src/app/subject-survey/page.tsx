@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import ProtectedRoute from "@/components/auth/ProtectedRoute"
 import {
     AcademicCapIcon,
     BookOpenIcon,
@@ -79,7 +80,7 @@ interface SurveyResult {
   status: 'sufficient' | 'insufficient' | 'overbooked'
 }
 
-export default function SubjectSurveyPage() {
+function SubjectSurveyPageContent() {
   const [currentStep, setCurrentStep] = useState<'survey' | 'results' | 'schedule' | 'teachers'>('survey')
   
   // Subject Survey States
@@ -1371,5 +1372,13 @@ export default function SubjectSurveyPage() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function SubjectSurveyPage() {
+  return (
+    <ProtectedRoute>
+      <SubjectSurveyPageContent />
+    </ProtectedRoute>
   )
 }

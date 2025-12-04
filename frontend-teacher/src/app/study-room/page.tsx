@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import ProtectedRoute from "@/components/auth/ProtectedRoute"
 import {
   BookOpenIcon,
   ClockIcon,
@@ -219,7 +220,7 @@ const openQRDisplayWindow = (room: StudyRoom) => {
   qrWindow.document.close()
 }
 
-export default function StudyRoomPage() {
+function StudyRoomPageContent() {
   const [currentStep, setCurrentStep] = useState<'setup' | 'dashboard' | 'records'>('setup')
   const [selectedRoom, setSelectedRoom] = useState<StudyRoom | null>(null)
   
@@ -708,5 +709,13 @@ export default function StudyRoomPage() {
         </Button>
       </div>
     </div>
+  )
+}
+
+export default function StudyRoomPage() {
+  return (
+    <ProtectedRoute>
+      <StudyRoomPageContent />
+    </ProtectedRoute>
   )
 }

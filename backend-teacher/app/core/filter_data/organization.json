@@ -35,6 +35,13 @@
     "use_kiwi": false
   },
   {
+    "pattern": "환경부(\\s*(장관|차관|과장|팀장))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
     "pattern": "과학기술정보통신부\\s*(장관|차관|과장|팀장)?",
     "label": "특정 기관",
     "category": "ORGANIZATION",
@@ -57,6 +64,27 @@
   },
   {
     "pattern": "\\bUN(\\s*(사무총장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "국제연합(\\s*(사무총장|대표|기구))?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bUN\\s*\\(?국제연합\\)?|국제연합\\s*\\(?UN\\)?",
+    "label": "특정 기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "유엔\\s*\\(?국제연합\\)?|국제연합\\s*\\(?유엔\\)?",
     "label": "특정 기관",
     "category": "ORGANIZATION",
     "use_regex": true,
@@ -212,6 +240,944 @@
   {
     "pattern": "중앙교육연수원",
     "label": "교육관련기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울특별시청|서울시청|서울시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산광역시청|부산시청|부산시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구광역시청|대구시청|대구시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천광역시청|인천시청|인천시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주광역시청|광주시청|광주시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전광역시청|대전시청|대전시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산광역시청|울산시청|울산시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세종특별자치시청|세종시청|세종시)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경기도청|경기도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강원특별자치도청|강원도청|강원도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충청북도청|충북도청|충북도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충청남도청|충남도청|충남도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전라북도청|전북도청|전북도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전라남도청|전남도청|전남도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상북도청|경북도청|경북도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상남도청|경남도청|경남도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제주특별자치도청|제주도청|제주도)",
+    "label": "광역자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "종로구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "중구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "용산구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "성동구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "광진구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "동대문구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "중랑구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "성북구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "강북구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "도봉구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "노원구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "은평구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "서대문구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "마포구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "양천구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "강서구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "구로구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "금천구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "영등포구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "동작구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "관악구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "서초구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "강남구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "송파구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "강동구청",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산진구청|해운대구청|사하구청|금정구청|강서구청|연제구청|수영구청|사상구청|기장군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구수성구청|대구달서구청|대구달성군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천연수구청|인천남동구청|인천부평구청|인천계양구청|인천서구청|인천중구청|인천동구청|인천미추홀구청|인천강화군청|인천옹진군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주광산구청|광주남구청|광주북구청|광주동구청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전유성구청|대전대덕구청|대전서구청|대전중구청|대전동구청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산남구청|울산북구청|울산중구청|울산동구청|울산울주군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수원시청|성남시청|고양시청|용인시청|부천시청|안산시청|안양시청|남양주시청|화성시청|평택시청|의정부시청|시흥시청|김포시청|광명시청|광주시청|군포시청|하남시청|오산시청|이천시청|안성시청|의왕시청|구리시청|양주시청|포천시청|여주시청|양평군청|동두천시청|과천시청|가평군청|연천군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(춘천시청|원주시청|강릉시청|동해시청|태백시청|속초시청|삼척시청|홍천군청|횡성군청|영월군청|평창군청|정선군청|철원군청|화천군청|양구군청|인제군청|고성군청|양양군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청주시청|충주시청|제천시청|보은군청|옥천군청|영동군청|증평군청|진천군청|괴산군청|음성군청|단양군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(천안시청|공주시청|보령시청|아산시청|서산시청|논산시청|계룡시청|당진시청|금산군청|부여군청|서천군청|청양군청|홍성군청|예산군청|태안군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전주시청|군산시청|익산시청|정읍시청|남원시청|김제시청|완주군청|진안군청|무주군청|장수군청|임실군청|순창군청|고창군청|부안군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(목포시청|여수시청|순천시청|나주시청|광양시청|담양군청|곡성군청|구례군청|고흥군청|보성군청|화순군청|장흥군청|강진군청|해남군청|영암군청|무안군청|함평군청|영광군청|장성군청|완도군청|진도군청|신안군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포항시청|경주시청|김천시청|안동시청|구미시청|영주시청|영천시청|상주시청|문경시청|경산시청|군위군청|의성군청|청송군청|영양군청|영덕군청|청도군청|고령군청|성주군청|칠곡군청|예천군청|봉화군청|울진군청|울릉군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(창원시청|진주시청|통영시청|사천시청|김해시청|밀양시청|거제시청|양산시청|의령군청|함안군청|창녕군청|고성군청|남해군청|하동군청|산청군청|함양군청|거창군청|합천군청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제주시청|서귀포시청)",
+    "label": "기초자치단체",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울강남경찰서|서울강북경찰서|서울서초경찰서|서울송파경찰서|서울종로경찰서|서울중부경찰서|서울용산경찰서|서울성동경찰서|서울광진경찰서|서울동대문경찰서|서울중랑경찰서|서울성북경찰서|서울도봉경찰서|서울노원경찰서|서울은평경찰서|서울서대문경찰서|서울마포경찰서|서울양천경찰서|서울강서경찰서|서울구로경찰서|서울금천경찰서|서울영등포경찰서|서울동작경찰서|서울관악경찰서|서울강동경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산진경찰서|부산해운대경찰서|부산사하경찰서|부산금정경찰서|부산강서경찰서|부산연제경찰서|부산수영경찰서|부산사상경찰서|부산기장경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구수성경찰서|대구달서경찰서|대구달성경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천연수경찰서|인천남동경찰서|인천부평경찰서|인천계양경찰서|인천서경찰서|인천중경찰서|인천동경찰서|인천미추홀경찰서|인천강화경찰서|인천옹진경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주광산경찰서|광주남경찰서|광주북경찰서|광주동경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전유성경찰서|대전대덕경찰서|대전서경찰서|대전중경찰서|대전동경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산남경찰서|울산북경찰서|울산중경찰서|울산동경찰서|울산울주경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경기남부경찰청|경기북부경찰청|수원경찰서|성남경찰서|고양경찰서|용인경찰서|부천경찰서|안산경찰서|안양경찰서|남양주경찰서|화성경찰서|평택경찰서)",
+    "label": "경찰서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울강남소방서|서울강북소방서|서울서초소방서|서울송파소방서|서울종로소방서|서울중부소방서|서울용산소방서|서울성동소방서|서울광진소방서|서울동대문소방서|서울중랑소방서|서울성북소방서|서울도봉소방서|서울노원소방서|서울은평소방서|서울서대문소방서|서울마포소방서|서울양천소방서|서울강서소방서|서울구로소방서|서울금천소방서|서울영등포소방서|서울동작소방서|서울관악소방서|서울강동소방서)",
+    "label": "소방서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산진소방서|부산해운대소방서|부산사하소방서|부산금정소방서|부산강서소방서|부산연제소방서|부산수영소방서|부산사상소방서|부산기장소방서)",
+    "label": "소방서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구수성소방서|대구달서소방서|대구달성소방서)",
+    "label": "소방서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천연수소방서|인천남동소방서|인천부평소방서|인천계양소방서|인천서소방서|인천중소방서|인천동소방서|인천미추홀소방서|인천강화소방서|인천옹진소방서)",
+    "label": "소방서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주광산소방서|광주남소방서|광주북소방서|광주동소방서)",
+    "label": "소방서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전유성소방서|대전대덕소방서|대전서소방서|대전중소방서|대전동소방서)",
+    "label": "소방서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산남소방서|울산북소방서|울산중소방서|울산동소방서|울산울주소방서)",
+    "label": "소방서",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국전력공사|한전|KEPCO)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국도로공사|한도공|EX)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국수자원공사|K-water|수자원공사)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국가스공사|가스공사|KOGAS)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울환경공단|서울시환경공단)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국환경공단|환경공단|KEITI)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국지역난방공사|지역난방공사)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국철도공사|코레일|KORAIL)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국공항공사|공항공사|KAC)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천국제공항공사|인천공항공사|IIAC)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국관광공사|관광공사|KTO)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국농어촌공사|농어촌공사|ARPC)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국토지주택공사|LH|한국토지공사)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국석유공사|석유공사|KNOC)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국광물자원공사|광물자원공사|KOMIR)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국남부발전|남부발전|KOSPO)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국서부발전|서부발전|KOWEPO)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국동서발전|동서발전|EWP)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국중부발전|중부발전|KOMIPO)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국남동발전|남동발전|KOEN)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울교통공사|서울메트로|SMRT)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산교통공사|부산메트로)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구교통공사|대구메트로)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천교통공사|인천메트로)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주교통공사|광주메트로)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전교통공사|대전메트로)",
+    "label": "공기업",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울특별시교육청|서울시교육청|서울교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산광역시교육청|부산시교육청|부산교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구광역시교육청|대구시교육청|대구교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천광역시교육청|인천시교육청|인천교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주광역시교육청|광주시교육청|광주교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전광역시교육청|대전시교육청|대전교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산광역시교육청|울산시교육청|울산교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세종특별자치시교육청|세종시교육청|세종교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경기도교육청|경기교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강원특별자치도교육청|강원도교육청|강원교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충청북도교육청|충북도교육청|충북교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충청남도교육청|충남도교육청|충남교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전라북도교육청|전북도교육청|전북교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전라남도교육청|전남도교육청|전남교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상북도교육청|경북도교육청|경북교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상남도교육청|경남도교육청|경남교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제주특별자치도교육청|제주도교육청|제주교육청)",
+    "label": "교육청",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울특별시교육연수원|서울교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경기도교육연수원|경기교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산광역시교육연수원|부산교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구광역시교육연수원|대구교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천광역시교육연수원|인천교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주광역시교육연수원|광주교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대전광역시교육연수원|대전교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산광역시교육연수원|울산교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상북도교육연수원|경북교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상남도교육연수원|경남교육연수원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울특별시융합과학교육원|서울융합과학교육원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경기도융합과학교육원|경기융합과학교육원)",
+    "label": "교육기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울시립미술관|서울미술관)",
+    "label": "지자체산하기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울시립도서관|서울도서관)",
+    "label": "지자체산하기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울시민공원|서울공원)",
+    "label": "지자체산하기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산시립미술관|부산미술관)",
+    "label": "지자체산하기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산시민공원|부산공원)",
+    "label": "지자체산하기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구시립미술관|대구미술관)",
+    "label": "지자체산하기관",
+    "category": "ORGANIZATION",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천시립미술관|인천미술관)",
+    "label": "지자체산하기관",
     "category": "ORGANIZATION",
     "use_regex": true,
     "use_kiwi": false

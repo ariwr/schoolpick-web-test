@@ -9,8 +9,10 @@ import {
     UserGroupIcon
 } from "@heroicons/react/24/outline";
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { getUserInfo } from '@/lib/auth';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
 
 interface User {
   id: number;
@@ -20,43 +22,37 @@ interface User {
 }
 
 export default function DashboardPage() {
-  const router = useRouter();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // 로컬스토리지에서 사용자 정보 확인
-    const token = localStorage.getItem('token');
-    const userInfo = localStorage.getItem('userInfo');
-
-    if (!token || !userInfo) {
-      router.push('/login');
-      return;
+    if (isAuthenticated) {
+      const userInfo = getUserInfo();
+      if (userInfo) {
+        setUser(userInfo);
+      }
     }
+  }, [isAuthenticated]);
 
-    try {
-      const parsedUser = JSON.parse(userInfo);
-      setUser(parsedUser);
-    } catch (error) {
-      console.error('사용자 정보 파싱 오류:', error);
-      router.push('/login');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [router]);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary flex items-center justify-center">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-godding-primary rounded-full mb-4 shadow-lg">
-            <span className="text-xl font-bold text-white">고</span>
+  return (
+    <ProtectedRoute>
+      {authLoading ? (
+        <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary flex items-center justify-center">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-godding-primary rounded-full mb-4 shadow-lg">
+              <span className="text-xl font-bold text-white">고</span>
+            </div>
+            <p className="text-godding-text-secondary">로딩 중...</p>
           </div>
-          <p className="text-godding-text-secondary">로딩 중...</p>
         </div>
-      </div>
-    );
-  }
+      ) : (
+        <DashboardContent user={user} />
+      )}
+    </ProtectedRoute>
+  );
+}
+
+function DashboardContent({ user }: { user: User | null }) {
 
   const features = [
     {

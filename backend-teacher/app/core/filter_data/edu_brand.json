@@ -71,6 +71,1189 @@
     "category": "EDU_BRAND",
     "use_regex": true,
     "use_kiwi": false
+  },
+  {
+    "pattern": "(해커스어학원|해커스)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(해커스톡|Hackers\\s*Talk)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(해커스공무원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파고다어학원|파고다)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(YBM어학원|YBM)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시원스쿨)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정철어학원|정철)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(기초영어박코치)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이보영의토킹클럽)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(종로학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남종로학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대성학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남대성학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남하이퍼학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메가스터디학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(옥스포드학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청솔학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이투스247)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비상에듀학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코드스테이츠|Code\\s*States)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코드잇|Codeit)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(패스트캠퍼스|Fast\\s*Campus)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인프런|Inflearn)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(프로그래머스|Programmers)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(멋쟁이사자처럼)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네이버\\s*부스트캠프|부스트캠프)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우아한테크코스)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(엘리스|AI트랙|Elice)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코드캠프|Code\\s*Camp)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에듀피디)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시대고시기획|시대고시)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(박문각)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에듀마켓)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(베리타스)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(윌비스)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(캠브리지영어|Cambridge)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bETS\\b",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(Kaplan|카플란)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(프린스턴리뷰|Princeton\\s*Review)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남청솔학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(러셀|Russel)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(TCC학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주별첨학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(광주러셀)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남탑티어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(탑클래스학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서초메가스터디학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치메가스터디학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한샘학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대찬학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(탑에듀)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(독학재수학원|UWAY)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(효원학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강북청솔학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(분당청솔학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(CMS에듀|Creative\\s*Math\\s*&\\s*Science)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(와이즈만러닝)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(영재사관학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치아이빌)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치명인학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치명인국어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(안쌤국어)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치이강학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정상JLS)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(엠베스트)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비상패스)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치세정학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치S아카데미)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시대인재)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시대인재N)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비담국어)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(구평회수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(최상위수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(웅진씽크빅)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대교눈높이)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(재능교육|재능스스로)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한우리독서토론논술)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아발론교육)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(S·A·M교육센터|SAM교육센터)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치영)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치수학N)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(CMS수학관)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정올수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세정수학관)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(최상위수학관)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이상수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수학의아침)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이지수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(큰길수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청구경찰수학)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수학나라)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수학의힘)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수학의정석관)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정성수학전문학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(윤선생영어교실)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(폴리학원|POLY)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청담어학원|CDI|청담러닝)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(단대어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(탭스어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리딩게이트)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(브라이튼어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(GNB어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정상JLS어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(링구아어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(ECC어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(해법영어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청담퍼스트)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정샘영어)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(ETS코리아어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치미래탐구)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남하이스트)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(GENIUS\\s*ACADEMY|지니어스아카데미)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(브레인나래)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(로보티즈아카데미)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코딩놀자)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(엔코드아카데미)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(크래프톤정글)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(STEAM창의센터)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(퓨처랩스|Future\\s*Labs)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(매쓰플래닛)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(프로그래머스\\s*아카데미)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인프런\\s*Academy)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(라이즈에듀케이션|RISE)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(EF어학센터)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비담국어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(안쌤국어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신사고국어관)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국어의기준학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국풍2000학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(백발백중논술)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치피램|PREM)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수시드림학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서초논술학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대치명인논술)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세한아카데미)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차이나로중국어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시사중국어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남중국어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파고다중국어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(YBM일본어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(N1합격일본어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하야시일본어)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시원스쿨중국어)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SISE\\s*일본어)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(J플러스어학원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(베이비샘스쿨)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(잉글리시아이)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한솔교육)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(웅진북클럽)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(브레인스쿨)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이챌린지)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한우리독서토론)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(푸르넷\\s*공부방)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미취학\\s*놀이학교)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호로록영어)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이비플레이)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리틀팍스)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리틀천재)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(커넥츠)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(커넥츠스카이에듀)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(캠퍼스멘토)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(도서출판\\s*학지사\\s*교육센터|학지사\\s*교육센터)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(커넥츠\\s*공단기)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(커넥츠\\s*경찰단기)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(커넥츠\\s*자격단기)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메가공무원)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(똑소리교육)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(패스트원|Faston)",
+    "label": "특정 교육브랜드",
+    "category": "EDU_BRAND",
+    "use_regex": true,
+    "use_kiwi": false
   }
 ]
 

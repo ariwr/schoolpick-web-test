@@ -2,6 +2,7 @@
 
 import { useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
+import { isProtectedPath, isPublicPath, validateToken, getToken, logout } from "@/lib/auth"
 
 /**
  * 토큰 검증 컴포넌트
@@ -10,71 +11,53 @@ import { useRouter, usePathname } from "next/navigation"
 export default function TokenValidator() {
   const router = useRouter()
   const pathname = usePathname()
-  
-  // 로그인 페이지는 제외
-  const isLoginPage = pathname === '/login' || pathname === '/register' || pathname === '/find-account'
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (isLoginPage) return // 로그인 페이지에서는 검증하지 않음
+    
+    // 공개 페이지는 검증하지 않음
+    if (isPublicPath(pathname)) return
 
-    const validateToken = async () => {
-      const token = localStorage.getItem('token')
+    // 보호된 페이지는 ProtectedRoute에서 처리하므로 여기서는 리다이렉트하지 않음
+    // ProtectedRoute에서 모달을 표시하고 사용자 확인 후 리다이렉트 처리
+
+    // 토큰이 있으면 백그라운드에서 검증 (페이지 렌더링을 막지 않음)
+    const validateTokenInBackground = async () => {
+      const token = getToken()
       const userInfo = localStorage.getItem('userInfo')
       
-      // 토큰이 없으면 검증 불필요
+      // 토큰이 없으면 ProtectedRoute에서 처리하므로 여기서는 리다이렉트하지 않음
       if (!token || !userInfo) {
+        // ProtectedRoute에서 모달을 표시하고 처리하므로 여기서는 아무것도 하지 않음
         return
       }
 
-      // 개발 환경에서 토큰 초기화 옵션
-      // 개발 환경에서는 기본적으로 토큰을 초기화하여 깨끗한 상태로 시작
-      // 단, 로그인 성공 후에는 토큰을 유지 (sessionStorage로 체크)
-      // NEXT_PUBLIC_CLEAR_TOKEN_ON_START=false로 설정하면 토큰 유지
+      // 개발 환경에서 토큰 초기화 옵션 (선택사항)
       const isDevelopment = process.env.NODE_ENV === 'development'
       const hasLoggedIn = sessionStorage.getItem('has_logged_in') === 'true'
       const shouldClearToken = process.env.NEXT_PUBLIC_CLEAR_TOKEN_ON_START !== 'false' && isDevelopment && !hasLoggedIn
       
       if (shouldClearToken) {
         console.log('개발 모드: 토큰 초기화 (깨끗한 상태로 시작)')
-        localStorage.removeItem('token')
-        localStorage.removeItem('userInfo')
-        window.dispatchEvent(new Event('authStateChange'))
+        await logout()
         
-        // 보호된 페이지에 있으면 로그인 페이지로 리다이렉트
-        const protectedPaths = ['/dashboard', '/night-study', '/sae-teuk', '/study-room', '/subject-survey', '/attendance']
-        if (protectedPaths.some(path => pathname.startsWith(path))) {
-          router.push('/login')
-        }
+        // ProtectedRoute에서 모달을 표시하고 처리하므로 여기서는 리다이렉트하지 않음
+        // 대신 인증 상태 변경 이벤트만 발생시킴
+        window.dispatchEvent(new Event('authStateChange'))
         return
       }
 
-      // 토큰 유효성 검증 (간단한 API 호출)
+      // 토큰 유효성 검증 (백그라운드에서 비동기로 수행)
       try {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-        const response = await fetch(`${API_BASE_URL}/api/users/me`, {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          // 빠른 실패를 위한 짧은 타임아웃
-          signal: AbortSignal.timeout(5000)
-        })
-
-        if (!response.ok) {
-          // 401 또는 다른 인증 오류인 경우 토큰 제거
-          if (response.status === 401 || response.status === 403) {
-            console.log('토큰이 유효하지 않습니다. 자동 로그아웃합니다.')
-            localStorage.removeItem('token')
-            localStorage.removeItem('userInfo')
-            window.dispatchEvent(new Event('authStateChange'))
-            
-            // 현재 페이지가 보호된 페이지인 경우에만 로그인 페이지로 리다이렉트
-            const protectedPaths = ['/dashboard', '/night-study', '/sae-teuk', '/study-room', '/subject-survey', '/attendance']
-            if (protectedPaths.some(path => pathname.startsWith(path))) {
-              router.push('/login')
-            }
-          }
+        const isValid = await validateToken(token)
+        
+        if (!isValid) {
+          console.log('토큰이 유효하지 않습니다. 자동 로그아웃합니다.')
+          await logout()
+          
+          // ProtectedRoute에서 모달을 표시하고 처리하므로 여기서는 리다이렉트하지 않음
+          // 대신 인증 상태 변경 이벤트만 발생시킴
+          window.dispatchEvent(new Event('authStateChange'))
         }
       } catch (error) {
         // 네트워크 오류나 타임아웃인 경우는 토큰을 유지
@@ -84,8 +67,9 @@ export default function TokenValidator() {
       }
     }
 
-    validateToken()
-  }, [router, pathname, isLoginPage])
+    // 백그라운드에서 검증 (페이지 렌더링을 막지 않음)
+    validateTokenInBackground()
+  }, [router, pathname])
 
   return null // UI를 렌더링하지 않음
 }

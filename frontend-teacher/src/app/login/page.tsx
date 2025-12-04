@@ -32,6 +32,10 @@ export default function LoginPage() {
     const loginUrl = `${API_BASE}/api/auth/login`;
     console.log('로그인 시도:', loginUrl);
     
+    // AbortController를 사용하여 타임아웃 설정 (30초)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    
     try {
       // 백엔드 API 호출
       const response = await fetch(loginUrl, {
@@ -43,7 +47,10 @@ export default function LoginPage() {
           email: formData.email,
           password: formData.password,
         }),
+        signal: controller.signal, // 타임아웃 신호 추가
       });
+      
+      clearTimeout(timeoutId); // 성공 시 타임아웃 제거
 
       // 응답 본문을 텍스트로 먼저 읽기 (JSON 파싱 실패 대비)
       const responseText = await response.text();
@@ -68,12 +75,18 @@ export default function LoginPage() {
         
         // 사용자 정보 조회 (선택사항)
         try {
+          const userController = new AbortController();
+          const userTimeoutId = setTimeout(() => userController.abort(), 10000);
+          
           const userResponse = await fetch(`${API_BASE}/api/users/me`, {
             headers: {
               'Authorization': `Bearer ${data.access_token}`,
               'Content-Type': 'application/json'
-            }
+            },
+            signal: userController.signal,
           });
+          
+          clearTimeout(userTimeoutId);
           
           if (userResponse.ok) {
             const userData = await userResponse.json();
@@ -106,13 +119,16 @@ export default function LoginPage() {
         }
       }
     } catch (error: any) {
+      clearTimeout(timeoutId); // 에러 발생 시 타임아웃 제거
       console.error('로그인 오류:', error);
       
       // 더 구체적인 에러 메시지 제공
       let errorMessage = '서버 연결에 실패했습니다.';
       
-      if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        errorMessage = `백엔드 서버에 연결할 수 없습니다. 확인 사항: 1) 백엔드 서버가 실행 중인지 확인 (${API_BASE}), 2) CORS 설정 확인, 3) 네트워크 연결 확인`;
+      if (error.name === 'AbortError' || error.message === 'The user aborted a request.') {
+        errorMessage = `요청 시간이 초과되었습니다. 백엔드 서버(${API_BASE})가 실행 중인지 확인해주세요.`;
+      } else if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        errorMessage = `백엔드 서버에 연결할 수 없습니다.\n\n확인 사항:\n1. 백엔드 서버가 실행 중인지 확인 (${API_BASE})\n2. 터미널에서 다음 명령어로 서버 실행:\n   cd backend-teacher\n   python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000\n3. CORS 설정 확인\n4. 네트워크 연결 확인`;
       } else if (error.message) {
         errorMessage = `연결 오류: ${error.message}`;
       }

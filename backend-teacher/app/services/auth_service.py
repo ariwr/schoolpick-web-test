@@ -74,19 +74,26 @@ class AuthService:
             raise ValueError(f"비밀번호 해시화 실패: {str(e)}")
     
     def authenticate_user(self, email: str, password: str):
+        import logging
+        logger = logging.getLogger(__name__)
+        
         # 이메일로 User 찾기
         user = self.db.query(User).filter(User.email == email).first()
         if not user:
+            logger.debug(f"사용자를 찾을 수 없음: {email}")
             return False
         
         # 비밀번호 확인 (users 테이블의 password_hash 사용)
         if not self.verify_password(password, user.password_hash):
+            logger.debug(f"비밀번호 불일치: {email}")
             return False
         
         # 교사만 로그인 가능하도록 확인
         if user.user_type != "teacher":
+            logger.debug(f"교사가 아닌 사용자: {email}, user_type={user.user_type}")
             return False
         
+        logger.debug(f"인증 성공: {email}, user_type={user.user_type}")
         return user
     
     def create_access_token(self, data: dict):

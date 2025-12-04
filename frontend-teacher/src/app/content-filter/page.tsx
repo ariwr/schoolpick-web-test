@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { getByteLength } from "@/lib/utils"
 import CustomRuleSidebar from "@/components/content-filter/custom-rule-sidebar"
+import ProtectedRoute from "@/components/auth/ProtectedRoute"
 import { 
   ShieldCheckIcon, 
   ArrowPathIcon,
@@ -64,7 +65,7 @@ interface TextSegment {
   };
 }
 
-export default function ContentFilterPage() {
+function ContentFilterPageContent() {
   const [content, setContent] = useState("")
   const [filteredContent, setFilteredContent] = useState("")
   const [issues, setIssues] = useState<FilterIssue[]>([])
@@ -948,5 +949,13 @@ export default function ContentFilterPage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ContentFilterPage() {
+  return (
+    <ProtectedRoute>
+      <ContentFilterPageContent />
+    </ProtectedRoute>
   )
 }

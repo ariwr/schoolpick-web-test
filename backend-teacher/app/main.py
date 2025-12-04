@@ -225,7 +225,7 @@ app.include_router(check_router, tags=["세특 검열"])
 # 야자 출석 스케줄러 시작
 @app.on_event("startup")
 async def startup_event():
-    """애플리케이션 시작 시 스케줄러 시작"""
+    """애플리케이션 시작 시 스케줄러 시작 및 필터 서비스 초기화"""
     try:
         from app.services.scheduler_service import get_scheduler_service
         scheduler = get_scheduler_service()
@@ -233,6 +233,18 @@ async def startup_event():
         logger.info("야자 출석 스케줄러가 시작되었습니다")
     except Exception as e:
         logger.error(f"스케줄러 시작 중 오류 발생: {str(e)}")
+    
+    # 필터 서비스 초기화 (패턴 로드 확인)
+    try:
+        from app.services.filter_service import get_filter_service
+        filter_service = get_filter_service()
+        # 환경부 패턴이 로드되었는지 확인
+        env_patterns = [p for p in filter_service.patterns if '환경부' in p.pattern]
+        logger.info(f"필터 서비스 초기화 완료: 총 {len(filter_service.patterns)}개 패턴 로드됨 (환경부 패턴: {len(env_patterns)}개)")
+        if env_patterns:
+            logger.info(f"환경부 패턴 확인: {env_patterns[0].pattern}")
+    except Exception as e:
+        logger.error(f"필터 서비스 초기화 중 오류 발생: {str(e)}")
 
 @app.on_event("shutdown")
 async def shutdown_event():

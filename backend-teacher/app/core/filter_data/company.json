@@ -714,5 +714,5451 @@
     "category": "COMPANY",
     "use_regex": true,
     "use_kiwi": false
+  },
+  {
+    "pattern": "(GS25|GS\\s*25)",
+    "label": "특정 편의점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bCU\\b",
+    "label": "특정 편의점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세븐일레븐|7-Eleven|7-ELEVEN)",
+    "label": "특정 편의점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이마트24|emart24)",
+    "label": "특정 편의점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미니스톱|MINISTOP)",
+    "label": "특정 편의점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홈플러스|Homeplus)",
+    "label": "특정 마트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코스트코|Costco)",
+    "label": "특정 마트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이마트\\s*트레이더스|emart\\s*Traders)",
+    "label": "특정 마트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노브랜드|No\\s*Brand)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노브랜드\\s*버거)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(다이소|DAISO)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(올리브영|Olive\\s*Young)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(랄라블라|LALAVLA)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롭스|LOHB's)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(마켓컬리|Market\\s*Kurly)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(헬로네이처|Hello\\s*Nature)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SSG닷컴|SSG\\.com)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(G마켓|Gmarket)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(옥션|Auction)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(11번가|11st)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(위메프|Wemakeprice)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(티몬|TMON)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인터파크|Interpark)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인터파크\\s*쇼핑)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(W쇼핑|W\\s*Shopping)",
+    "label": "특정 홈쇼핑",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(NS홈쇼핑|NS\\s*Home\\s*Shopping)",
+    "label": "특정 홈쇼핑",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(CJ온스타일|CJ\\s*ONSTYLE)",
+    "label": "특정 홈쇼핑",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(GS샵|GS\\s*SHOP)",
+    "label": "특정 홈쇼핑",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(현대홈쇼핑|Hyundai\\s*Home\\s*Shopping)",
+    "label": "특정 홈쇼핑",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데홈쇼핑|Lotte\\s*Home\\s*Shopping)",
+    "label": "특정 홈쇼핑",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SK스토아|SK\\s*Stoa)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(AK몰|AK\\s*Mall)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데ON|롯데\\s*ON)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(현대H몰|현대\\s*H몰)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신세계백화점)",
+    "label": "특정 백화점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(NC백화점)",
+    "label": "특정 백화점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(갤러리아백화점|갤러리아)",
+    "label": "특정 백화점",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스타필드|Starfield)",
+    "label": "특정 쇼핑몰",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(타임스퀘어|Times\\s*Square)",
+    "label": "특정 쇼핑몰",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이파크몰|I\\s*PARK\\s*Mall)",
+    "label": "특정 쇼핑몰",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데아울렛|Lotte\\s*Outlet)",
+    "label": "특정 아울렛",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(마리오아울렛|Mario\\s*Outlet)",
+    "label": "특정 아울렛",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(빅마켓|Big\\s*Mart)",
+    "label": "특정 마트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(킴스클럽|Kim's\\s*Club)",
+    "label": "특정 마트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이디야커피|이디야)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(투썸플레이스|A\\s*Twosome\\s*Place)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(할리스커피|Hollys\\s*Coffee)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(커피빈|Coffee\\s*Bean)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(폴바셋|Paul\\s*Bassett)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(빽다방)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(컴포즈커피|Compose\\s*Coffee)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(요거프레소|Yogerpresso)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(탐앤탐스|Tom\\s*N\\s*Toms)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(드롭탑|Droptop)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더벤티|The\\s*Venti)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(달콤커피)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(매머드커피|Mammoth\\s*Coffee)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파스쿠찌|Pascucci)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쥬씨|Juicy)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(공차|Gong\\s*Cha)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(타이거슈가|Tiger\\s*Sugar)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스무디킹|Smoothie\\s*King)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코코브루니|Coco\\s*Bruni)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(빈스빈스|Beans\\s*Bins)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스타벅스\\s*리저브|Starbucks\\s*Reserve)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스타벅스\\s*델리버스|Starbucks\\s*Delivers)",
+    "label": "특정 카페",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파리바게뜨|Paris\\s*Baguette)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(뚜레쥬르|Tous\\s*Les\\s*Jours)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(성심당)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼송빵집)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리치몬드제과)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(김영모과자점)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(브레드이발소|Bread\\s*Barbershop)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(크로넛팩토리|Cronut\\s*Factory)",
+    "label": "특정 베이커리",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(배스킨라빈스|Baskin\\s*Robbins)",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(던킨|Dunkin')",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(크리스피크림도넛|Krispy\\s*Kreme)",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(설빙)",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(빙수야)",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(백미당)",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(나뚜루|Natuur)",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하겐다즈|Haagen-Dazs)",
+    "label": "특정 디저트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(투고샐러드|Two\\s*Go\\s*Salad)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(샐러디|Salady)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(프레시코드|Fresh\\s*Code)",
+    "label": "특정 브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데리아|Lotteria)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(맘스터치|Mom's\\s*Touch)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서브웨이|Subway)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쉐이크쉑|Shake\\s*Shack)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파파이스|Papa\\s*John's)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(버거헌터|Burger\\s*Hunter)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인앤아웃버거|In-N-Out\\s*Burger)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파이브가이즈|Five\\s*Guys)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(타코벨|Taco\\s*Bell)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(놀부부대찌개|놀부)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(놀부보쌈)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(본죽)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(본죽&비빔밥)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(본도시락)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한솥도시락|한솥)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이삭토스트|Isaac)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍콩반점|홍콩반점0410)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(새마을식당)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한신포차)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(백스비어|Backs\\s*Beer)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(북창동순두부)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신전떡볶이)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(엽기떡볶이)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(죠스떡볶이)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(두끼)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(배떡|배달떡볶이)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(놀부김치찌개)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(온기정)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쿠우쿠우)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스시로)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스시노백쉐프)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(무한리필선술집)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(순남시래기)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국수나무)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(김가네)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(얌샘김밥)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바르다김선생)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롤링파스타)",
+    "label": "특정 외식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(무신사\\s*스탠다드|Musinsa\\s*Standard)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아더에러|ADER\\s*ERROR)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코스|COS)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유니클로|UNIQLO)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(탑텐|TOP10)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스파오|SPAO)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에잇세컨즈|8\\s*Seconds)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(폴로랄프로렌|Polo\\s*Ralph\\s*Lauren)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(토미힐피거|Tommy\\s*Hilfiger)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스톤아일랜드|Stone\\s*Island)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(발렌시아가|Balenciaga)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(프라다|Prada)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(디올|Dior)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(생로랑|Saint\\s*Laurent|YSL)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(샤넬|Chanel)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(보테가베네타|Bottega\\s*Veneta)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(몽클레어|Moncler)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(몽벨|Mont\\s*Bell)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네파|NEPA)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(K2)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(블랙야크|Black\\s*Yak)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이더|EIDER)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노스페이스|The\\s*North\\s*Face)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(디스커버리\\s*익스페디션|Discovery\\s*Expedition)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수페르가|Superga)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(반스|Vans)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(컨버스|Converse)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(뉴발란스|New\\s*Balance)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(휠라|Fila)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(언더아머|Under\\s*Armour)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bMLB\\b",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(자라홈|Zara\\s*Home)",
+    "label": "특정 생활브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이케아|IKEA)",
+    "label": "특정 생활브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한샘|Hanssem)",
+    "label": "특정 생활브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(일룸|iloom)",
+    "label": "특정 생활브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리바트|Livart)",
+    "label": "특정 생활브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(까사미아|Casamia)",
+    "label": "특정 생활브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(모던하우스|Modern\\s*House)",
+    "label": "특정 생활브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더페이스샵|The\\s*Face\\s*Shop)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이니스프리|Innisfree)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에뛰드|Etude\\s*House)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미샤|MISSHA)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(A'Pieu|아뷰)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(라네즈|Laneige)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(헤라|HERA)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(설화수|Sulwhasoo)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(프리메라|Primera)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(닥터자르트|Dr\\.\\s*Jart)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(클리오|Clio)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(페리페라|Peripera)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홀리카홀리카|Holika\\s*Holika)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더샘|The\\s*Saem)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(잇츠스킨|It's\\s*Skin)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네이처리퍼블릭|Nature\\s*Republic)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(키엘|Kiehl's)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(맥|MAC)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바비브라운|Bobbi\\s*Brown)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(토니모리|Tony\\s*Moly)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시세이도|Shiseido)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(슈에무라|Shu\\s*Uemura)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메이블린|Maybelline)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(로라메르시에|Laura\\s*Mercier)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(베네피트|Benefit)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(닉스|NYX)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(올젠|Olzen)",
+    "label": "특정 화장품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(지오지아|Giordano)",
+    "label": "특정 패션브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(라인|LINE)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(줌|Zoom)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(슬랙|Slack)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(디스코드|Discord)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(드롭박스|Dropbox)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에어비앤비|Airbnb)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우버|Uber)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리프트|Lyft)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(트렐로|Trello)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노션|Notion)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에버노트|Evernote)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(피그마|Figma)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(캔바|Canva)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스포티파이|Spotify)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(사운드클라우드|SoundCloud)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(애플뮤직|Apple\\s*Music)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(멜론|Melon)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(지니뮤직|Genie\\s*Music)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(플로|FLO)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(벅스|Bugs)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(라프텔|Laftel)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(왓챠피디아|Watcha\\s*Pedia)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네이버웹툰)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(카카오웹툰)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리디북스|Ridibooks)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리디셀렉트|Ridi\\s*Select)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(밀리의서재|Millie's\\s*Library)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(yes24|YES24)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(알라딘|Aladin)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(교보문고|Kyobo)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(영풍문고|Youngpoong)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(반디앤루니스|Bandibooks)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(11번가\\s*북스토어)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미래에셋증권|Mirae\\s*Asset)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(NH투자증권|NH\\s*Investment)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성증권|Samsung\\s*Securities)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국투자증권|Korea\\s*Investment)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KB증권|KB\\s*Securities)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신한투자증권|Shinhan\\s*Investment)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(키움증권|Kiwoom)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대신증권|Daishin)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메리츠증권|Meritz)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하이투자증권|Hi\\s*Investment)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유안타증권|Yuanta)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유진투자증권|Eugene\\s*Investment)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한화투자증권|Hanwha\\s*Investment)",
+    "label": "특정 증권사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성생명|Samsung\\s*Life)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성화재|Samsung\\s*Fire)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(현대해상|Hyundai\\s*Marine)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(DB손해보험|DB\\s*Insurance)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메리츠화재|Meritz\\s*Fire)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한화손해보험|Hanwha\\s*Insurance)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(흥국화재|Heungkuk\\s*Fire)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KB손해보험|KB\\s*Insurance)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(교보생명|Kyobo\\s*Life)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동양생명|Dongyang\\s*Life)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(라이나생명|Lina\\s*Life)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(DB생명|DB\\s*Life)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(푸르덴셜생명|Prudential\\s*Life)",
+    "label": "특정 보험사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성카드|Samsung\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(현대카드|Hyundai\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데카드|Lotte\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신한카드|Shinhan\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KB국민카드|KB\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우리카드|Woori\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하나카드|Hana\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비씨카드|BC\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(농협카드|NH\\s*Card)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(카카오뱅크\\s*카드)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(토스뱅크\\s*체크카드)",
+    "label": "특정 카드사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네이버페이|Naver\\s*Pay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(카카오페이|Kakao\\s*Pay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성페이|Samsung\\s*Pay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(애플페이|Apple\\s*Pay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(페이코|Payco)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스마일페이|Smile\\s*Pay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제로페이|Zero\\s*Pay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(알리페이|Alipay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(위챗페이|WeChat\\s*Pay)",
+    "label": "특정 간편결제",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(카카오T|Kakao\\s*T)",
+    "label": "특정 모빌리티",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우티|UT)",
+    "label": "특정 모빌리티",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(타다|Tada)",
+    "label": "특정 모빌리티",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쏘카|SOCAR)",
+    "label": "특정 모빌리티",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(그린카|Green\\s*Car)",
+    "label": "특정 모빌리티",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(딜카|Deal\\s*Car)",
+    "label": "특정 모빌리티",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(현대캐피탈\\s*쏠라티|현대캐피탈\\s*솔라티)",
+    "label": "특정 모빌리티",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(티머니|T-money)",
+    "label": "특정 교통카드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(캐시비|Cashbee)",
+    "label": "특정 교통카드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bKTX\\b",
+    "label": "특정 교통수단",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bSRT\\b",
+    "label": "특정 교통수단",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코레일|Korail)",
+    "label": "특정 교통기관",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울교통공사|Seoul\\s*Metro)",
+    "label": "특정 교통기관",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인천교통공사|Incheon\\s*Metro)",
+    "label": "특정 교통기관",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(공항철도|AREX)",
+    "label": "특정 교통기관",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대한항공|Korean\\s*Air)",
+    "label": "특정 항공사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아시아나항공|Asiana)",
+    "label": "특정 항공사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제주항공|Jeju\\s*Air)",
+    "label": "특정 항공사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(진에어|Jin\\s*Air)",
+    "label": "특정 항공사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(티웨이항공|T'way)",
+    "label": "특정 항공사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에어부산|Air\\s*Busan)",
+    "label": "특정 항공사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에어서울|Air\\s*Seoul)",
+    "label": "특정 항공사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신라호텔|Shilla)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데호텔|Lotte\\s*Hotel)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파라다이스호텔|Paradise\\s*Hotel)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(워커힐|Walker\\s*Hill)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(그랜드하얏트|Grand\\s*Hyatt)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인터컨티넨탈호텔|InterContinental)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메리어트호텔|Marriott)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(힐튼호텔|Hilton)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노보텔|Novotel)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이비스|Ibis)",
+    "label": "특정 호텔",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한화리조트|Hanwha\\s*Resort)",
+    "label": "특정 리조트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대명리조트|대명\\s*소노호텔앤리조트|소노호텔앤리조트)",
+    "label": "특정 리조트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(휘닉스파크|Phoenix\\s*Park)",
+    "label": "특정 리조트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하나투어|Hana\\s*Tour)",
+    "label": "특정 여행사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(모두투어|Modetour)",
+    "label": "특정 여행사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노랑풍선|Yellow\\s*Balloon)",
+    "label": "특정 여행사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인터파크투어|Interpark\\s*Tour)",
+    "label": "특정 여행사",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(야놀자호텔|Yanolja\\s*Hotel)",
+    "label": "특정 여행플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(여기어때|Yogiyo)",
+    "label": "특정 여행플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부킹닷컴|Booking\\.com)",
+    "label": "특정 여행플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아고다|Agoda)",
+    "label": "특정 여행플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호텔스닷컴|Hotels\\.com)",
+    "label": "특정 여행플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(트리바고|Trivago)",
+    "label": "특정 여행플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에버랜드|Everland)",
+    "label": "특정 테마파크",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(롯데월드|Lotte\\s*World)",
+    "label": "특정 테마파크",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울랜드|Seoul\\s*Land)",
+    "label": "특정 테마파크",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경주월드|Gyeongju\\s*World)",
+    "label": "특정 테마파크",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(통도환타지아|Tongdo\\s*Fantasia)",
+    "label": "특정 테마파크",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(키자니아|KidZania)",
+    "label": "특정 테마파크",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(뽀로로파크|Pororo\\s*Park)",
+    "label": "특정 테마파크",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울아산병원|Asan\\s*Medical\\s*Center)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성서울병원|Samsung\\s*Medical\\s*Center)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세브란스병원|Severance)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울대학교병원|SNUH)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(고려대학교안암병원|Korea\\s*University\\s*Anam\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경희의료원|Kyung\\s*Hee\\s*Medical\\s*Center)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가톨릭중앙의료원|Catholic\\s*Medical\\s*Center)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(분당서울대학교병원|Seoul\\s*National\\s*University\\s*Bundang\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(일산백병원|Ilsan\\s*Baek\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국립암센터|National\\s*Cancer\\s*Center)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(보라매병원|Boramae\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(순천향대학교병원|Soonchunhyang\\s*University\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인하대병원|Inha\\s*University\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차병원|Cha\\s*Medical\\s*Center)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강북삼성병원|Gangbuk\\s*Samsung\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한양대학교병원|Hanyang\\s*University\\s*Hospital)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세W치과|Yonsei\\s*W\\s*Dental)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울리거|Seoul\\s*Rigger)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바른이치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(밝은세상안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(누네안과병원)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(온누리약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부광약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(새마을약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(사람인|Saramin)",
+    "label": "특정 구인구직",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(잡코리아|JobKorea)",
+    "label": "특정 구인구직",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(인크루트|Incruit)",
+    "label": "특정 구인구직",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(원티드|Wanted)",
+    "label": "특정 구인구직",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(크레딧잡|Credit\\s*Job)",
+    "label": "특정 구인구직",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(캐치|Catch)",
+    "label": "특정 구인구직",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(블라인드|Blind)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리멤버|Remember)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(링크드인|LinkedIn)",
+    "label": "특정 플랫폼",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(워크넷|Worknet)",
+    "label": "특정 구인구직",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(직방|Zigbang)",
+    "label": "특정 부동산",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(다방|Dabang)",
+    "label": "특정 부동산",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호갱노노|Hogangnono)",
+    "label": "특정 부동산",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네이버부동산|Naver\\s*Real\\s*Estate)",
+    "label": "특정 부동산",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(피터팬의좋은방구하기)",
+    "label": "특정 부동산",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(오늘의집|Ohouzz)",
+    "label": "특정 인테리어",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(집꾸미기)",
+    "label": "특정 인테리어",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한샘인테리어)",
+    "label": "특정 인테리어",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG지인)",
+    "label": "특정 인테리어",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한샘리하우스)",
+    "label": "특정 인테리어",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바이벳|Byvet)",
+    "label": "특정 반려동물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쿨펫|Coolpet)",
+    "label": "특정 반려동물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코코팜|Cocopalm)",
+    "label": "특정 반려동물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(29펫샵)",
+    "label": "특정 반려동물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(펫프렌즈|Pet\\s*Friends)",
+    "label": "특정 반려동물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(몰리스펫샵)",
+    "label": "특정 반려동물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(반려생활)",
+    "label": "특정 반려동물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(숨고|Soomgo)",
+    "label": "특정 O2O서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(크몽|Kmong)",
+    "label": "특정 O2O서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(탈잉|Tal-ing)",
+    "label": "특정 O2O서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미소|Miso)",
+    "label": "특정 O2O서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청소연구소)",
+    "label": "특정 O2O서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(오늘회)",
+    "label": "특정 O2O서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(만개의레시피)",
+    "label": "특정 O2O서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(배달특급)",
+    "label": "특정 배달서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(요기요|Yogiyo)",
+    "label": "특정 배달서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쿠팡이츠|Coupang\\s*Eats)",
+    "label": "특정 배달서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(땡겨요)",
+    "label": "특정 배달서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(위메프오)",
+    "label": "특정 배달서비스",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(죠스짬뽕)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(만권화밥)",
+    "label": "특정 도시락",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(역전우동)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍콩국수반점)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포메인)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(소바카페)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가야밀면)",
+    "label": "특정 면류",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(기절초풍돈까스)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(정돈돈카츠)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(돈돈정)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스시히로바)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이춘복참치)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(까르보나라전문점)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(온센라멘)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(멘야산다이메)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미분당)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(멘무샤)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유타로라멘)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(멸치국수집)",
+    "label": "특정 면류",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(감자옹심이칼국수)",
+    "label": "특정 면류",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(콩나물국수집)",
+    "label": "특정 면류",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대왕칼국수)",
+    "label": "특정 면류",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(춘천막국수)",
+    "label": "특정 면류",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메밀촌막국수)",
+    "label": "특정 면류",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(도시락살롱)",
+    "label": "특정 도시락",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(얌샘도시락)",
+    "label": "특정 도시락",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(래빗라이스)",
+    "label": "특정 도시락",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(도시락연구소)",
+    "label": "특정 도시락",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(야식)",
+    "label": "특정 야식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(야미야미)",
+    "label": "특정 야식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(야식의민족)",
+    "label": "특정 야식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(배달야식전문)",
+    "label": "특정 야식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(철판포차)",
+    "label": "특정 포차",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청춘포차)",
+    "label": "특정 포차",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포차의정석)",
+    "label": "특정 포차",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포차달인)",
+    "label": "특정 포차",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(희락돈까스)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(북경반점)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(만리장성)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍반장)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대가방)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차이797)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차이린)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍짜장)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(짬뽕지존)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(짬뽕타임)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(짬뽕의신)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대성각)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대련반점)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동대문짬뽕)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차이나문)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차이나팩토리)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(황궁쟁반짜장)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(진짜루)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동보성)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(베이징덕하우스)",
+    "label": "특정 중식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(버거파크)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(두툼버거)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(수제버거94)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(버거앤쉐이크)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(퀴즈노스|Quiznos)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(피클샌드위치)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(놀부어묵바)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대게나라)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍게나라)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하나참치)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(참치공방)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(참치명가)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(참치스시)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(초밥좋은날)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연어상회)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연어바다)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연어로만)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(어부네횟집)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(팔미수산)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(해물신화)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(조개와조개)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(조개킹)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(장어명가)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바다의집)",
+    "label": "특정 해물",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코코이찌방야)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파스타리코)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(빕스|VIPS)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(애슐리|Ashley)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(온더보더|On\\s*The\\s*Border)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아웃백스테이크하우스|Outback)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(TGI프라이데이|TGI\\s*Friday's)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(트라토리아몰토)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더파스타)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파스타고)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파스타팩토리)",
+    "label": "특정 일식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홈플퀵밀)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(마이밀키친)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쿠킷|CU\\s*밀키트)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(모노밀키트샵)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(오픈키친)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(프레시밀)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더반찬)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(얌심플)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(요리하는남자)",
+    "label": "특정 밀키트",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국성모병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(여의도성모병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(부산성모병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대구가톨릭병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(창원파티마병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대동병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(국군수도병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강동경희대병원|강동경희대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한림대성심병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한림대한강성심병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한림대춘천성심병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(고려대안산병원|고려대학교안산병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(고려대구로병원|고려대학교구로병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(순천향대부천병원|순천향대학교부천병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(순천향대천안병원|순천향대학교천안병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아주대병원|아주대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(가천대길병원|가천대학교길병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(울산대병원|울산대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동아대병원|동아대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경상국립대병원|경상국립대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(계명대동산병원|계명대학교동산병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(건양대병원|건양대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충남대병원|충남대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(충북대병원|충북대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강원대병원|강원대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전북대병원|전북대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(전남대병원|전남대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(조선대병원|조선대학교병원)",
+    "label": "특정 병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이리움안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울밝은안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(밝은눈안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이케어안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스마일라식안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이큐안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아이엔안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울아이센타안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세안과네트워크)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(압구정서울안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스페셜아이안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세대장금치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세미소지움치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울탑치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울라인치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(닥터홍치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(치과의민족)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우리동네치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울스마일치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(튼튼어린이치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울수치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울화이트치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울오라클치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울샘치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바른서울치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울에이치치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울365치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(굿닥치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(웃음꽃치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(마음샘정신건강의학과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세더바른정형외과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바른본정형외과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바른스포츠정형외과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세본정형외과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바른신경외과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울마디정형외과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울본정신건강의학과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울맑은정신건강의학과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세로즈피부과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더마스터피부과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리쥬란피부과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(오라클피부과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유디치과|UD치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(좋은날내과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(속편한내과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(튼튼의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(열린의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(365열린의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(365더웰의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세리더스피부과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더바디피부과)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(웰니스의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유앤아이의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(범어연세의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(굿닥의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미즈여성의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울맑은의원)",
+    "label": "특정 의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한국건강관리협회|KHSA)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메디피아검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KMI한국의학연구소|KMI)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메디체크)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하이닥검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세브란스검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코람데오검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(차움검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(웰니스검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(굿약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(명문약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(메디팜약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(일신약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하나약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세명약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하트약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(굿모닝약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(365약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(블루약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(건강플러스약국)",
+    "label": "특정 약국",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미즈메디병원)",
+    "label": "특정 여성병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미즈여성병원)",
+    "label": "특정 여성병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미래여성병원)",
+    "label": "특정 여성병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(서울여성병원)",
+    "label": "특정 여성병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(더블유여성병원|W여성병원)",
+    "label": "특정 여성병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미즈산부인과)",
+    "label": "특정 산부인과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미래아이산부인과)",
+    "label": "특정 산부인과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세산부인과)",
+    "label": "특정 산부인과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(마리에산부인과)",
+    "label": "특정 산부인과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(연세봄여성병원)",
+    "label": "특정 여성병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(자생한방병원)",
+    "label": "특정 한방병원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(자생한의원)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바른한의원)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(함소아한의원)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경희한의원)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(그리고한의원)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(365한의원)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우리아이함소아한의원)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG생활건강)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(애경산업|AEKYUNG)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(피죤|Pigeon)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(샤프란)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(페브리즈|Febreze)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(폴리덴트)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홈스타|HomeStar)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(무궁화)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유한양행\\s*생활용품)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유한락스|Yuhan\\s*Clorox)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(다우니|Downy)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아우라|Aura)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비트|Beads)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(레노버스)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에코버|Ecover)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(스카트|유한킴벌리)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(크리넥스|Kleenex)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(화이트|유한킴벌리\\s*화이트)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(릴리안)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하기스|Huggies)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(브라운|Braun)\\s*(면도기|가전)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(질레트|Gillette)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(셀라피|Cerapy)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세제연구소)",
+    "label": "특정 생활용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(위니아|WINIA)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(위니아딤채|Dimchae)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쿠쿠|CUCKOO)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(쿠첸|Cuchen)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SK매직|SK\\s*Magic)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청호나이스|청호정수기)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파세코|PASECO)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(발뮤다|Balmuda)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(드롱기|DeLonghi)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(필립스|Philips)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(테팔|Tefal)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(지멘스|Siemens)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(보쉬|Bosch)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(샤오미|Xiaomi)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하이센스|Hisense)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(트위니|Twiny)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(다이슨|Dyson)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(레스떼|Resté)",
+    "label": "특정 가전브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에몬스가구|EMONS)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(지누스|ZINUS)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼익가구|SAMICK)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(도무스가구)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에이스침대|ACE\\s*BED)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(시몬스침대|SIMMONS)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(템퍼페딕|TEMPUR)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(슬로우|slou)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(알레르망|ALERU\\s*MANG)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(라텍스코리아)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바디럽|Bodyluv)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바네스데코)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미라지퍼니처)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(로하스가구)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(야마토야)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(포커시스|Focusis)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(두닷|Dodot)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(라샘가구)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(오하우스|O-House)",
+    "label": "특정 가구브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LX하우시스|LX\\s*Hausys)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(KCC\\s*인테리어)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG지인|Z:IN)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼화페인트)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노루페인트)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신한벽지)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(개나리벽지)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG바닥재)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한일카페트)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(경동나비엔)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(린나이|Rinnai)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(귀뚜라미보일러)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(우림인테리어)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(동화자연마루)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이지데코)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코리아나벽지)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG하우스데코)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(한솔데코)",
+    "label": "특정 인테리어브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(키친에이드|KitchenAid)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(브레빌|Breville)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(휘슬러|Fissler)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(헹켈|Zwilling|Henckels)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "\\bWMF\\b",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(락앤락|Lock&Lock)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코렐|Corelle)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(파이렉스|Pyrex)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(비스카|VISKA)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(매직쉐프)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(제니퍼룸|Jennifer\\s*Room)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리첸|Richen)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(도루코|DORCO)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네스프레소|Nespresso)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(돌체구스토|Dolce\\s*Gusto)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하이메이드|Himade)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(벨라이프|Bell\\s*Life)",
+    "label": "특정 주방용품브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(자주|JAJU)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코즈니|KOZNAY)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(버터|BUTTER)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(아르떼)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(플라잉타이거코펜하겐|Flying\\s*Tiger\\s*Copenhagen)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미니소|Miniso)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(넥서스|NEXUS)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(데이리빙|Day\\s*Living)",
+    "label": "특정 홈리빙브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(샤오미\\s*스마트홈|Xiaomi\\s*Mi\\s*Home)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼성\\s*SmartThings)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG\\s*ThinQ)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(브로드링크|Broadlink)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(에코비|Ecobee)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(유라코리아|JURA)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(루미아이|Lumi\\s*AI\\s*Home)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(큐비홈|Cubi\\s*Home)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(클레버타키온)",
+    "label": "특정 스마트홈브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코웨이|Coway)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(SK매직\\s*렌탈)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(현대렌탈케어)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바디프랜드)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(세라젬|Ceragem)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(휴테크|Hutech)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(리브맘|LivMom)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(LG케어솔루션)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(하이메디케어)",
+    "label": "특정 생활서비스브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(마지스|Magis)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(루이스폴센|Louis\\s*Poulsen)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(플로스|FLOS)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(이케아\\s*조명)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(모던하우스\\s*조명)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(무아스|MUAS)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(필립스\\s*휴|Philips\\s*Hue)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(코콤|KOCOM)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(대경엘이디|DK\\s*LED)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(바이빔|BYBEAM)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(조명나라)",
+    "label": "특정 조명브랜드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(도미노피자|Domino's)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미스터피자|Mr\\.\\s*Pizza)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(피자헛|Pizza\\s*Hut)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(피자스쿨|Pizza\\s*School)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(피자알볼로|Pizza\\s*Alvolo)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(59쌀피자)",
+    "label": "특정 패스트푸드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청년피자)",
+    "label": "특정 피자",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(교촌치킨|Kyochon)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(BBQ치킨|BBQ)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(bhc치킨|BHC)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(굽네치킨|Goobne)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(네네치킨|Nene)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(멕시카나치킨|Mexicana)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(또래오래)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(처갓집양념치킨|처갓집)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(페리카나|Pericana)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(호식이두마리치킨|호식이)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(60계치킨)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(노랑통닭)",
+    "label": "특정 치킨",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(삼첩분식)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(미미네떡볶이)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(즉석우동가마)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(청년다방)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(김밥천국)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(죠스조스김밥)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(원조신가네김밥)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(분식48)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(걸작떡볶이)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(분식이이쁘다)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(신참떡볶이)",
+    "label": "특정 분식",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍대돈부리)",
+    "label": "특정 고기집",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍대샐러드)",
+    "label": "특정 샐러드",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(홍대개미)",
+    "label": "특정 식당",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남미소지움치과)",
+    "label": "특정 치과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남아이원안과)",
+    "label": "특정 안과",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남세브란스검진센터)",
+    "label": "특정 건강검진센터",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
+  },
+  {
+    "pattern": "(강남자생)",
+    "label": "특정 한의원",
+    "category": "COMPANY",
+    "use_regex": true,
+    "use_kiwi": false
   }
 ]

@@ -6,7 +6,6 @@ export default function Footer() {
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center space-x-3 mb-6">
               <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/30">
-                <span className="text-white font-bold text-lg">고</span>
               </div>
               <div>
                 <span className="text-xl font-bold text-white">스쿨픽 교사용</span>
@@ -40,12 +39,6 @@ export default function Footer() {
               <li className="hover:text-white transition-colors cursor-pointer">업데이트 로그</li>
             </ul>
           </div>
-        </div>
-        
-        <div className="mt-12 pt-8 border-t border-white/20">
-          <p className="text-center text-sm text-white/70">
-            © 2024 스쿨픽 교사용 플랫폼. All rights reserved.
-          </p>
         </div>
       </div>
     </footer>

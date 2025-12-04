@@ -125,13 +125,18 @@ async def login(
             )
         
         auth_service = AuthService(db)
+        logger.info(f"로그인 시도: 이메일={login_data.email}")
+        
         user = auth_service.authenticate_user(login_data.email, login_data.password)
         if not user:
+            logger.warning(f"로그인 실패: 이메일={login_data.email} (사용자 없음 또는 비밀번호 불일치 또는 user_type 불일치)")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="잘못된 이메일 또는 비밀번호입니다",
                 headers={"WWW-Authenticate": "Bearer"},
             )
+        
+        logger.info(f"로그인 성공: 이메일={login_data.email}, user_type={user.user_type}")
         access_token = auth_service.create_access_token(data={"sub": user.email})
         return {"access_token": access_token, "token_type": "bearer"}
     except HTTPException as e:
@@ -157,9 +162,19 @@ async def login(
         )
 
 @router.post("/logout")
-async def logout():
-    """로그아웃"""
-    return {"message": "로그아웃되었습니다"}
+async def logout(
+    current_user: dict = Depends(AuthService.get_current_user)
+):
+    """
+    로그아웃
+    주의: JWT 토큰은 stateless이므로 서버에서 무효화할 수 없습니다.
+    클라이언트에서 토큰을 제거해야 합니다.
+    향후 토큰 블랙리스트를 구현할 수 있습니다.
+    """
+    return {
+        "message": "로그아웃되었습니다",
+        "email": current_user.get("email")
+    }
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(
