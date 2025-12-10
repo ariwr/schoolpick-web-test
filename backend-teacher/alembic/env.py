@@ -24,7 +24,7 @@ target_metadata = Base.metadata
 
 def get_url():
     """환경변수에서 데이터베이스 URL 가져오기"""
-    return os.getenv("DATABASE_URL", "postgresql://username:password@localhost:5432/schoolpick_teacher")
+    return os.getenv("DATABASE_URL", "postgresql://postgres:password@localhost:5432/schoolpick_teacher")
 
 def run_migrations_offline() -> None:
     """오프라인 모드에서 마이그레이션 실행"""

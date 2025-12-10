@@ -1,0 +1,14 @@
+{
+  "status": "init",
+  "executionArgs": {
+    "projectName": "schoolpick-web",
+    "projectPath": "c:\\Users\\LG\\Heart_Ware\\schoolpick-web",
+    "testIds": [
+      "TC001"
+    ],
+    "additionalInstruction": "Run TC001 only to verify the login fix.",
+    "envs": {
+      "API_KEY": "sk-user-RdtfU_DNQF9RqrWFIxqgibCyy9qLNrqHjL7EkbsW-lq-pEEOkyisqTOkifFOgrcBJZVaVe2Vmcisc5rYmolE8iToLfnOrBiBK_0UcA8aoBcNluAaLEvlBhFog-bd4ijatNM"
+    }
+  }
+}

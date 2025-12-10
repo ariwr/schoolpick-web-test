@@ -1,4 +1,4 @@
-﻿"use client"
+"use client"
 
 import React, { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,8 +9,8 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 // Popover 컴포넌트가 없으므로 커스텀 Popover 구현
 import { getByteLength } from "@/lib/utils"
 import ProtectedRoute from "@/components/auth/ProtectedRoute"
-import { 
-  ClipboardDocumentListIcon, 
+import {
+  ClipboardDocumentListIcon,
   PlusIcon,
   TrashIcon,
   EyeIcon,
@@ -79,7 +79,7 @@ interface CheckResponse {
 }
 
 // 텍스트 세그먼트 타입 정의
-type TextSegment = 
+type TextSegment =
   | { type: 'correct'; content: string }
   | { type: 'error'; data: ErrorDetail }
 
@@ -127,17 +127,17 @@ function SaeTeukPageContent() {
   const [selectedRequest, setSelectedRequest] = useState<ActivityRequest | null>(null)
   const [selectedStudent, setSelectedStudent] = useState<StudentResponse | null>(null)
   const [selectedTemplate, setSelectedTemplate] = useState<'autonomy' | 'career' | 'club' | 'custom' | null>(null)
-  
+
   const [newRequest, setNewRequest] = useState({
     title: '',
     description: '',
     targetClass: '',
     deadline: ''
   })
-  
+
   const [questions, setQuestions] = useState<Question[]>([])
   const [newQuestion, setNewQuestion] = useState('')
-  
+
   // 학생별 세특 최종안 저장
   const [studentFinalTexts, setStudentFinalTexts] = useState<Record<string, Record<string, string>>>({})
   const [byteLimits, setByteLimits] = useState<Record<string, number>>({})
@@ -147,6 +147,11 @@ function SaeTeukPageContent() {
   const [isFiltering, setIsFiltering] = useState(false)
   const [filterError, setFilterError] = useState<string | null>(null)
   const [selectedErrorId, setSelectedErrorId] = useState<string | null>(null) // 선택된 오류 ID
+  const [isUploading, setIsUploading] = useState(false) // PDF 업로드 상태
+  const [inputTab, setInputTab] = useState<'direct' | 'pdf'>('direct') // 입력 방식 탭
+  const [pdfFile, setPdfFile] = useState<File | null>(null) // 선택된 PDF 파일
+  const [isExtracting, setIsExtracting] = useState(false) // PDF 텍스트 추출 중
+  const [extractError, setExtractError] = useState<string | null>(null) // PDF 추출 오류
 
   // Mock data - 더 많은 샘플 데이터 추가
   const [activityRequests, setActivityRequests] = useState<ActivityRequest[]>([
@@ -303,7 +308,7 @@ function SaeTeukPageContent() {
     const { current, limit: maxLimit, percentage } = getByteCounter(text, limit)
     const isWarning = maxLimit && current > maxLimit * 0.9
     const isOver = maxLimit && current > maxLimit
-    
+
     return (
       <div className="mt-2">
         <div className="flex items-center justify-between text-sm mb-1">
@@ -317,9 +322,8 @@ function SaeTeukPageContent() {
         {maxLimit && (
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
-              className={`h-2 rounded-full transition-all ${
-                isOver ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-blue-500'
-              }`}
+              className={`h-2 rounded-full transition-all ${isOver ? 'bg-red-500' : isWarning ? 'bg-yellow-500' : 'bg-blue-500'
+                }`}
               style={{ width: `${Math.min(percentage, 100)}%` }}
             />
           </div>
@@ -335,8 +339,8 @@ function SaeTeukPageContent() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="flex items-center space-x-4 mb-6">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setCurrentView('list')}
                 className="flex items-center space-x-2"
               >
@@ -355,7 +359,7 @@ function SaeTeukPageContent() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card 
+            <Card
               className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border hover:shadow-lg transition-all cursor-pointer"
               onClick={() => setSelectedTemplate('autonomy')}
             >
@@ -370,7 +374,7 @@ function SaeTeukPageContent() {
               </CardHeader>
             </Card>
 
-            <Card 
+            <Card
               className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border hover:shadow-lg transition-all cursor-pointer"
               onClick={() => setSelectedTemplate('career')}
             >
@@ -385,7 +389,7 @@ function SaeTeukPageContent() {
               </CardHeader>
             </Card>
 
-            <Card 
+            <Card
               className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border hover:shadow-lg transition-all cursor-pointer"
               onClick={() => setSelectedTemplate('club')}
             >
@@ -400,7 +404,7 @@ function SaeTeukPageContent() {
               </CardHeader>
             </Card>
 
-            <Card 
+            <Card
               className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border hover:shadow-lg transition-all cursor-pointer md:col-span-3"
               onClick={() => setSelectedTemplate('custom')}
             >
@@ -426,8 +430,8 @@ function SaeTeukPageContent() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="flex items-center space-x-4 mb-6">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => {
                   setSelectedTemplate(null)
                   setCurrentView('list')
@@ -582,7 +586,7 @@ function SaeTeukPageContent() {
                   <CardTitle className="text-godding-text-primary">작업</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button 
+                  <Button
                     onClick={createRequest}
                     disabled={!newRequest.title || !newRequest.targetClass || questions.length === 0}
                     className="w-full"
@@ -613,8 +617,8 @@ function SaeTeukPageContent() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="flex items-center space-x-4 mb-6">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setCurrentView('list')}
                 className="flex items-center space-x-2"
               >
@@ -657,7 +661,7 @@ function SaeTeukPageContent() {
                     </div>
                     <div className="text-sm text-godding-text-secondary mt-1">전체 학생</div>
                   </div>
-                  
+
                   <div className="mt-4">
                     <div className="flex items-center justify-between text-sm mb-2">
                       <span className="font-medium text-godding-text-primary">진행률</span>
@@ -685,15 +689,14 @@ function SaeTeukPageContent() {
                 <CardContent>
                   <div className="space-y-3">
                     {selectedRequest?.responses.map((student) => (
-                      <div 
+                      <div
                         key={student.studentId}
                         className="flex items-center justify-between p-4 bg-white/50 rounded-lg hover:bg-white/70 transition-colors cursor-pointer"
                         onClick={() => openWorkspace(student)}
                       >
                         <div className="flex items-center space-x-4">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                            student.submitted ? 'bg-green-100' : 'bg-red-100'
-                          }`}>
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${student.submitted ? 'bg-green-100' : 'bg-red-100'
+                            }`}>
                             {student.submitted ? (
                               <CheckCircleIcon className="w-5 h-5 text-green-600" />
                             ) : (
@@ -703,21 +706,22 @@ function SaeTeukPageContent() {
                           <div>
                             <h4 className="font-medium text-godding-text-primary">{student.studentName}</h4>
                             <p className="text-sm text-godding-text-secondary">
-                              {student.submitted 
-                                ? `제출 완료 - ${student.submittedAt}` 
+                              {student.submitted
+                                ? `제출 완료 - ${student.submittedAt}`
                                 : '미제출'
                               }
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             onClick={(e) => {
                               e.stopPropagation()
                               openWorkspace(student)
                             }}
+                            data-testid="create-saeteuk-button"
                           >
                             <PencilIcon className="w-4 h-4 mr-1" />
                             세특 작성
@@ -756,15 +760,15 @@ function SaeTeukPageContent() {
         const popoverWidth = 320 // w-80 = 320px
         const popoverHeight = 150 // 예상 높이
         const padding = 8
-        
+
         let top = rect.bottom + window.scrollY + padding
         let left = rect.left + window.scrollX
-        
+
         // 화면 오른쪽 경계 체크
         if (left + popoverWidth > window.innerWidth) {
           left = window.innerWidth - popoverWidth - padding
         }
-        
+
         // 화면 아래 경계 체크
         if (rect.bottom + popoverHeight > window.innerHeight) {
           // 위쪽에 표시
@@ -774,12 +778,12 @@ function SaeTeukPageContent() {
             top = rect.bottom + window.scrollY + padding
           }
         }
-        
+
         // 화면 왼쪽 경계 체크
         if (left < 0) {
           left = padding
         }
-        
+
         setPosition({ top, left })
       }
     }, [isOpen, spanElement])
@@ -812,7 +816,7 @@ function SaeTeukPageContent() {
 
     return (
       <>
-        <span 
+        <span
           ref={setSpanElement}
           className="underline decoration-wavy decoration-red-500 decoration-2 underline-offset-2 text-red-700 cursor-pointer hover:bg-red-50 px-1 rounded relative inline-block"
           onClick={(e) => {
@@ -845,7 +849,7 @@ function SaeTeukPageContent() {
                 )}
               </div>
             </div>
-            
+
             {/* 액션 버튼 */}
             <div className="flex items-center gap-2">
               {corrected && (
@@ -931,31 +935,31 @@ function SaeTeukPageContent() {
 
     const studentKey = `${selectedRequest?.id}_${selectedStudent?.studentId}`
     const currentText = studentFinalTexts[studentKey]?.main || ''
-    
+
     const { start_index, original } = error
     const originalLength = original.length
     const endIndex = start_index + originalLength
-    
+
     // start_index가 유효한지 확인
     if (start_index < 0 || start_index >= currentText.length || endIndex > currentText.length) {
       console.warn('Error 위치를 찾을 수 없습니다:', error)
       return
     }
-    
+
     let newText = ''
-    
+
     if (correctedText === null) {
       // 삭제: 해당 부분을 제거하되, 주변 공백 처리로 자연스러운 문장 구성
       const beforeText = currentText.substring(0, start_index)
       const afterText = currentText.substring(endIndex)
-      
+
       // 삭제된 텍스트 앞뒤 문자 확인
       const beforeChar = beforeText.slice(-1)
       const afterChar = afterText.charAt(0)
-      
+
       let cleanedBefore = beforeText
       let cleanedAfter = afterText
-      
+
       // 공백 처리 규칙:
       // 1. 삭제된 단어 뒤에 공백이 있고, 앞에 공백이 없으면 뒤 공백 제거
       if (afterChar === ' ' && beforeChar !== ' ' && beforeChar !== '' && beforeChar !== '\n' && beforeChar !== '\r') {
@@ -965,7 +969,7 @@ function SaeTeukPageContent() {
       if (beforeChar === ' ' && afterChar === ' ') {
         cleanedBefore = beforeText.slice(0, -1)
       }
-      
+
       newText = cleanedBefore + cleanedAfter
     } else {
       // 수정: correctedText로 교체
@@ -983,7 +987,7 @@ function SaeTeukPageContent() {
     // API 재호출로 인덱스 밀림 문제 해결
     setIsFiltering(true)
     setSelectedErrorId(null)
-    
+
     try {
       // 수정된 텍스트로 다시 점검 API 호출
       await handleInlineFilter(newText)
@@ -995,10 +999,10 @@ function SaeTeukPageContent() {
   }
 
   // 하이라이트된 텍스트를 렌더링하는 컴포넌트 (부산대 맞춤법 검사기 스타일)
-  const HighlightedTextEditor = ({ 
-    value, 
-    onChange, 
-    errors, 
+  const HighlightedTextEditor = ({
+    value,
+    onChange,
+    errors,
     selectedErrorId,
     onHighlightClick,
     placeholder
@@ -1021,7 +1025,7 @@ function SaeTeukPageContent() {
 
       // errors를 start_index 기준으로 정렬
       const sortedErrors = [...errors].sort((a, b) => a.start_index - b.start_index)
-      
+
       const segments: React.ReactNode[] = []
       let lastIndex = 0
 
@@ -1044,9 +1048,8 @@ function SaeTeukPageContent() {
           <span
             key={id}
             id={`highlight-${id}`}
-            className={`inline-block cursor-pointer underline decoration-wavy decoration-red-500 decoration-2 underline-offset-2 text-red-700 bg-red-50 px-1 rounded ${
-              isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-red-100'
-            } transition-all`}
+            className={`inline-block cursor-pointer underline decoration-wavy decoration-red-500 decoration-2 underline-offset-2 text-red-700 bg-red-50 px-1 rounded ${isSelected ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:bg-red-100'
+              } transition-all`}
             onClick={(e) => {
               e.stopPropagation()
               onHighlightClick(id)
@@ -1127,7 +1130,7 @@ function SaeTeukPageContent() {
     // 왼쪽 하이라이트 클릭 핸들러
     const handleHighlightClick = (errorId: string) => {
       setSelectedErrorId(errorId)
-      
+
       // 오른쪽 카드 리스트에서 해당 카드로 스크롤
       setTimeout(() => {
         const cardElement = document.getElementById(`error-card-${errorId}`)
@@ -1140,7 +1143,7 @@ function SaeTeukPageContent() {
     // 오른쪽 카드 클릭 핸들러
     const handleCardClick = (errorId: string) => {
       setSelectedErrorId(errorId)
-      
+
       // 왼쪽 하이라이트로 스크롤
       setTimeout(() => {
         const highlightElement = document.getElementById(`highlight-${errorId}`)
@@ -1215,13 +1218,79 @@ function SaeTeukPageContent() {
       }
     }
 
+    // PDF 텍스트 추출 핸들러
+    const handleExtractPdf = async (file?: File) => {
+      const targetFile = file || pdfFile
+      if (!targetFile) {
+        setExtractError('PDF 파일을 선택해주세요.')
+        return
+      }
+
+      setIsExtracting(true)
+      setExtractError(null)
+
+      try {
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+
+        if (!API_BASE_URL) {
+          throw new Error("API 서버 주소가 설정되지 않았습니다.")
+        }
+
+        const formData = new FormData()
+        formData.append('file', targetFile)
+
+        const response = await fetch(`${API_BASE_URL}/api/ocr/extract`, {
+          method: 'POST',
+          body: formData,
+        })
+
+        if (!response.ok) {
+          let errorMessage = "텍스트 추출 중 오류가 발생했습니다."
+          try {
+            const errorData = await response.json()
+            errorMessage = errorData.detail || errorData.message || errorMessage
+          } catch {
+            errorMessage = `서버 오류 (${response.status}): ${response.statusText || '알 수 없는 오류'}`
+          }
+          throw new Error(errorMessage)
+        }
+
+        const data = await response.json()
+
+        if (!data.text || !data.text.trim()) {
+          throw new Error("PDF에서 텍스트를 추출할 수 없습니다.")
+        }
+
+        // 추출된 텍스트를 상태에 덮어씌우기
+        setStudentFinalTexts(prev => ({
+          ...prev,
+          [studentKey]: { ...prev[studentKey], main: data.text }
+        }))
+
+        // [직접 입력] 탭으로 자동 전환
+        setInputTab('direct')
+
+        // 파일 선택 초기화
+        setPdfFile(null)
+      } catch (err) {
+        setExtractError(err instanceof Error ? err.message : "텍스트 추출 중 오류가 발생했습니다.")
+      } finally {
+        setIsExtracting(false)
+      }
+    }
+
+    const handleFileUpload = async (file: File) => {
+      setPdfFile(file)
+      await handleExtractPdf(file)
+    }
+
     return (
       <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
             <div className="flex items-center space-x-4 mb-6">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={() => setCurrentView('dashboard')}
                 className="flex items-center space-x-2"
               >
@@ -1231,7 +1300,12 @@ function SaeTeukPageContent() {
                 <PencilIcon className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-godding-text-primary">세특 생성 워크스페이스</h1>
+                <h2
+                  data-testid="workspace-header"
+                  className="text-2xl font-bold text-godding-text-primary"
+                >
+                  세특 생성 워크스페이스
+                </h2>
                 <p className="text-lg text-godding-text-secondary mt-2">
                   {selectedStudent?.studentName} ({selectedStudent?.studentNumber}) - {selectedRequest?.title}
                 </p>
@@ -1249,89 +1323,196 @@ function SaeTeukPageContent() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex space-x-2">
-                  <Button onClick={generateLLM} className="flex-1">
-                    <ClipboardDocumentListIcon className="w-4 h-4 mr-2" />
-                    LLM 초안 생성
-                  </Button>
-                  <Button variant="outline">
-                    템플릿 적용
-                  </Button>
-                </div>
+                <Tabs value={inputTab} onValueChange={(value) => setInputTab(value as 'direct' | 'pdf')}>
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="direct">직접 입력</TabsTrigger>
+                    <TabsTrigger value="pdf">PDF 불러오기</TabsTrigger>
+                  </TabsList>
 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="block text-sm font-medium text-godding-text-primary">
-                      세특 내용
-                    </label>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        console.log('Saving draft...')
-                      }}
-                    >
-                      <DocumentArrowDownIcon className="w-4 h-4 mr-1" />
-                      임시 저장
-                    </Button>
-                  </div>
-                  <HighlightedTextEditor
-                    value={currentText}
-                    onChange={(newValue) => {
-                      setStudentFinalTexts(prev => ({
-                        ...prev,
-                        [studentKey]: { ...prev[studentKey], main: newValue }
-                      }))
-                    }}
-                    errors={filterErrors}
-                    selectedErrorId={selectedErrorId}
-                    onHighlightClick={handleHighlightClick}
-                    placeholder="학생의 답변을 바탕으로 세특을 작성하거나, LLM 초안 생성 버튼을 클릭하여 자동으로 생성하세요"
-                  />
-                  <ByteCounter text={currentText} limit={byteLimit} label="세특 내용" />
-                  
-                  <div className="flex space-x-2 mt-4">
-                    <Button 
-                      variant="outline"
-                      onClick={async () => {
-                        if (!currentText.trim()) {
-                          alert('점검할 내용이 없습니다. 세특을 먼저 작성해주세요.')
-                          return
-                        }
-                        await handleInlineFilter(currentText)
-                      }}
-                      disabled={isFiltering}
-                      className="flex-1"
-                    >
-                      {isFiltering ? (
-                        <>
-                          <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                          점검 중...
-                        </>
-                      ) : (
-                        <>
-                          <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                          세특 점검
-                        </>
-                      )}
-                    </Button>
-                    <Button 
-                      className="flex-1"
-                      onClick={() => {
-                        console.log('Saving final text...')
-                      }}
-                    >
-                      <DocumentArrowDownIcon className="w-4 h-4 mr-2" />
-                      최종 저장
-                    </Button>
-                  </div>
-
-                  {filterError && (
-                    <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                      <p className="text-sm text-red-800">{filterError}</p>
+                  <TabsContent value="direct" className="space-y-4 mt-4">
+                    <div className="flex space-x-2">
+                      <Button onClick={generateLLM} className="flex-1">
+                        <ClipboardDocumentListIcon className="w-4 h-4 mr-2" />
+                        LLM 초안 생성
+                      </Button>
+                      <div className="relative">
+                        <input
+                          type="file"
+                          accept=".pdf"
+                          className="hidden"
+                          id="pdf-upload"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0]
+                            if (file) await handleFileUpload(file)
+                            // Reset input
+                            e.target.value = ''
+                          }}
+                        />
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                          disabled={isUploading}
+                          onClick={() => document.getElementById('pdf-upload')?.click()}
+                          data-testid="pdf-upload-button"
+                        >
+                          {isUploading ? (
+                            <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <DocumentArrowDownIcon className="w-4 h-4 mr-2" />
+                          )}
+                          {isUploading ? '업로드 중...' : 'PDF 업로드'}
+                        </Button>
+                      </div>
+                      <Button variant="outline">
+                        템플릿 적용
+                      </Button>
                     </div>
-                  )}
-                </div>
+
+                    <div>
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-sm font-medium text-godding-text-primary">
+                          세특 내용
+                        </label>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            console.log('Saving draft...')
+                          }}
+                        >
+                          <DocumentArrowDownIcon className="w-4 h-4 mr-1" />
+                          임시 저장
+                        </Button>
+                      </div>
+                      <HighlightedTextEditor
+                        value={currentText}
+                        onChange={(newValue) => {
+                          setStudentFinalTexts(prev => ({
+                            ...prev,
+                            [studentKey]: { ...prev[studentKey], main: newValue }
+                          }))
+                        }}
+                        errors={filterErrors}
+                        selectedErrorId={selectedErrorId}
+                        onHighlightClick={handleHighlightClick}
+                        placeholder="학생의 답변을 바탕으로 세특을 작성하거나, LLM 초안 생성 버튼을 클릭하여 자동으로 생성하세요"
+                      />
+                      <ByteCounter text={currentText} limit={byteLimit} label="세특 내용" />
+
+                      <div className="flex space-x-2 mt-4">
+                        <Button
+                          variant="outline"
+                          onClick={async () => {
+                            if (!currentText.trim()) {
+                              alert('점검할 내용이 없습니다. 세특을 먼저 작성해주세요.')
+                              return
+                            }
+                            await handleInlineFilter(currentText)
+                          }}
+                          disabled={isFiltering}
+                          className="flex-1"
+                        >
+                          {isFiltering ? (
+                            <>
+                              <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
+                              점검 중...
+                            </>
+                          ) : (
+                            <>
+                              <ShieldCheckIcon className="w-4 h-4 mr-2" />
+                              세특 점검
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          className="flex-1"
+                          onClick={() => {
+                            console.log('Saving final text...')
+                          }}
+                        >
+                          <DocumentArrowDownIcon className="w-4 h-4 mr-2" />
+                          최종 저장
+                        </Button>
+                      </div>
+
+                      {filterError && (
+                        <div className="mt-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm text-red-800">{filterError}</p>
+                        </div>
+                      )}
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="pdf" className="space-y-4 mt-4">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-godding-text-primary mb-2">
+                          PDF 파일 선택
+                        </label>
+                        <Input
+                          type="file"
+                          accept=".pdf"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0]
+                            if (file) {
+                              if (file.type !== 'application/pdf') {
+                                setExtractError('PDF 파일만 업로드 가능합니다.')
+                                setPdfFile(null)
+                                return
+                              }
+                              setPdfFile(file)
+                              setExtractError(null)
+                            }
+                          }}
+                          className="cursor-pointer"
+                        />
+                        {pdfFile && (
+                          <p className="mt-2 text-sm text-godding-text-secondary">
+                            선택된 파일: {pdfFile.name}
+                          </p>
+                        )}
+                      </div>
+
+                      <Button
+                        onClick={() => handleExtractPdf()}
+                        disabled={!pdfFile || isExtracting}
+                        className="w-full"
+                      >
+                        {isExtracting ? (
+                          <>
+                            <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
+                            텍스트 추출 중...
+                          </>
+                        ) : (
+                          <>
+                            <DocumentTextIcon className="w-4 h-4 mr-2" />
+                            텍스트 추출하기
+                          </>
+                        )}
+                      </Button>
+
+                      {extractError && (
+                        <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                          <p className="text-sm text-red-800">{extractError}</p>
+                        </div>
+                      )}
+
+                      <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div className="flex items-start space-x-2">
+                          <InformationCircleIcon className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                          <div className="text-sm text-blue-800">
+                            <p className="font-medium mb-1">PDF 불러오기 안내</p>
+                            <ul className="list-disc list-inside space-y-1 text-blue-700">
+                              <li>PDF 파일에서 한글 텍스트를 자동으로 추출합니다.</li>
+                              <li>텍스트 추출이 완료되면 자동으로 [직접 입력] 탭으로 전환됩니다.</li>
+                              <li>추출된 텍스트는 기존 내용을 덮어씁니다.</li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
 
@@ -1369,14 +1550,13 @@ function SaeTeukPageContent() {
                     {filterErrors.map((error) => {
                       const isSelected = selectedErrorId === error.id
                       return (
-                        <Card 
+                        <Card
                           key={error.id}
                           id={`error-card-${error.id}`}
-                          className={`border transition-all cursor-pointer ${
-                            isSelected 
-                              ? 'border-blue-500 ring-2 ring-blue-300 bg-blue-50' 
-                              : 'border-gray-200 hover:border-blue-300'
-                          }`}
+                          className={`border transition-all cursor-pointer ${isSelected
+                            ? 'border-blue-500 ring-2 ring-blue-300 bg-blue-50'
+                            : 'border-gray-200 hover:border-blue-300'
+                            }`}
                           onClick={() => handleCardClick(error.id)}
                         >
                           <CardContent className="p-4">
@@ -1387,7 +1567,7 @@ function SaeTeukPageContent() {
                                   {error.original}
                                 </div>
                               </div>
-                              
+
                               {error.corrected && (
                                 <div>
                                   <div className="text-xs text-gray-500 mb-1">대치어</div>
@@ -1450,7 +1630,7 @@ function SaeTeukPageContent() {
 
     const byteCount = getByteLength(content)
     const maxBytes = 2000
-    
+
     if (byteCount > maxBytes) {
       setFilterError(`내용이 최대 바이트 수(${maxBytes}바이트)를 초과했습니다. 현재: ${byteCount}바이트`)
       return
@@ -1463,7 +1643,7 @@ function SaeTeukPageContent() {
 
     try {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-      
+
       if (!API_BASE_URL) {
         throw new Error("API 서버 주소가 설정되지 않았습니다.")
       }
@@ -1473,7 +1653,7 @@ function SaeTeukPageContent() {
         // 타임아웃을 위한 AbortController (LLM API 호출은 시간이 오래 걸릴 수 있으므로 120초로 설정)
         const controller = new AbortController()
         const timeoutId = setTimeout(() => controller.abort(), 120000) // 120초 타임아웃
-        
+
         // 새로운 API 엔드포인트 사용
         response = await fetch(`${API_BASE_URL}/check/setuek`, {
           method: "POST",
@@ -1485,7 +1665,7 @@ function SaeTeukPageContent() {
           }),
           signal: controller.signal
         })
-        
+
         clearTimeout(timeoutId) // 성공 시 타임아웃 제거
       } catch (fetchError) {
         // 타임아웃 오류 처리
@@ -1513,32 +1693,32 @@ function SaeTeukPageContent() {
       }
 
       const data: CheckResponse = await response.json()
-      
+
       // errors에 고유 ID 추가 (개별 객체 형식)
       const errorsWithId = (data.errors || []).map((error, index) => ({
         ...error,
         id: `error_${Date.now()}_${index}_${error.start_index}_${error.original.substring(0, 10)}`
       }))
-      
+
       // 중복 제거: 같은 start_index와 original을 가진 오류 제거
       const uniqueErrors: ErrorDetail[] = []
       const seenErrors = new Set<string>()
-      
+
       errorsWithId.forEach((error) => {
         const key = `${error.start_index}-${error.original}-${error.type || ''}`
-        
+
         // 이미 같은 키가 있으면 건너뛰기
         if (seenErrors.has(key)) {
           return
         }
-        
+
         // 겹치는 위치의 오류도 확인
         const isOverlapping = uniqueErrors.some(existing => {
           const existingStart = existing.start_index
           const existingEnd = existing.start_index + existing.original.length
           const errorStart = error.start_index
           const errorEnd = error.start_index + error.original.length
-          
+
           // 완전히 겹치거나 포함되는 경우
           if (errorStart >= existingStart && errorEnd <= existingEnd) {
             return true
@@ -1546,17 +1726,17 @@ function SaeTeukPageContent() {
           if (existingStart >= errorStart && existingEnd <= errorEnd) {
             return true
           }
-          
+
           // 부분적으로 겹치는 경우도 중복으로 간주
           return !(errorEnd <= existingStart || errorStart >= existingEnd)
         })
-        
+
         if (!isOverlapping) {
           seenErrors.add(key)
           uniqueErrors.push(error)
         }
       })
-      
+
       // errors를 start_index 기준으로 정렬
       const sortedErrors = [...uniqueErrors].sort((a, b) => a.start_index - b.start_index)
       setFilterErrors(sortedErrors)
@@ -1579,7 +1759,7 @@ function SaeTeukPageContent() {
 
     const byteCount = getByteLength(filteringContent)
     const maxBytes = 2000
-    
+
     if (byteCount > maxBytes) {
       setFilterError(`내용이 최대 바이트 수(${maxBytes}바이트)를 초과했습니다. 현재: ${byteCount}바이트`)
       return
@@ -1591,7 +1771,7 @@ function SaeTeukPageContent() {
 
     try {
       const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
-      
+
       // API URL 유효성 검사
       if (!API_BASE_URL) {
         throw new Error("API 서버 주소가 설정되지 않았습니다.")
@@ -1635,13 +1815,13 @@ function SaeTeukPageContent() {
       } catch (jsonError) {
         throw new Error("서버 응답을 파싱할 수 없습니다.")
       }
-      
+
       // CheckResponse 형식을 ErrorDetail 형식으로 변환
       const errorsWithId = (data.errors || []).map((error: ErrorDetail, index: number) => ({
         ...error,
         id: error.id || `error_${Date.now()}_${index}_${error.start_index}_${error.original.substring(0, 10)}`
       }))
-      
+
       // filterErrors에 설정 (기존 코드와 호환)
       setFilterErrors(errorsWithId)
     } catch (err) {
@@ -1714,7 +1894,7 @@ function SaeTeukPageContent() {
 
     // errors를 start_index 기준으로 정렬
     const sortedErrors = [...errors].sort((a, b) => a.start_index - b.start_index)
-    
+
     const segments: TextSegment[] = []
     let lastIndex = 0
 
@@ -1783,7 +1963,7 @@ function SaeTeukPageContent() {
         if (textarea) {
           const rect = textarea.getBoundingClientRect()
           setTextareaRect(rect)
-          
+
           const computedStyle = window.getComputedStyle(textarea)
           setTextareaStyle({
             paddingTop: parseFloat(computedStyle.paddingTop) || 0,
@@ -1852,7 +2032,7 @@ function SaeTeukPageContent() {
           const top = lineNum * textareaStyle.lineHeight
           const charWidth = textareaStyle.fontSize * 0.6
           const left = colNum * charWidth
-          
+
           // 원본 텍스트의 실제 너비 계산
           const width = Math.max(originalLength * charWidth, 20)
 
@@ -1860,8 +2040,8 @@ function SaeTeukPageContent() {
           const colorClass = isBanned
             ? "bg-red-200/80 border-red-400 border-b-2"
             : type === "spelling"
-            ? "bg-yellow-200/80 border-yellow-400 border-b-2"
-            : "bg-blue-200/80 border-blue-400 border-b-2"
+              ? "bg-yellow-200/80 border-yellow-400 border-b-2"
+              : "bg-blue-200/80 border-blue-400 border-b-2"
 
           return (
             <div
@@ -1894,7 +2074,7 @@ function SaeTeukPageContent() {
                       )}
                     </div>
                   </div>
-                  
+
                   {/* 버튼 영역 */}
                   <div className="px-3 py-2 flex items-center justify-between gap-2">
                     <div className="flex gap-2 flex-1">
@@ -1954,7 +2134,7 @@ function SaeTeukPageContent() {
 
     // position 기준으로 정렬 (이미 validatedIssues로 재계산된 position 사용)
     const sortedIssues = [...issues].sort((a, b) => a.position - b.position)
-    
+
     let result: React.ReactElement[] = []
     let lastIndex = 0
 
@@ -1965,10 +2145,10 @@ function SaeTeukPageContent() {
       let actualPosition = issue.position
       let actualText = originalText
       let actualLength = issue.length
-      
+
       // 실제 컨텐츠에서 해당 위치의 텍스트 확인
       const actualContentText = content.substring(actualPosition, Math.min(actualPosition + actualLength, content.length))
-      
+
       // original_text가 실제 컨텐츠와 정확히 일치하는지 확인
       if (actualContentText === originalText) {
         // 일치하면 그대로 사용
@@ -1988,7 +2168,7 @@ function SaeTeukPageContent() {
         // original_text가 없으면 position 기반으로
         actualText = actualContentText
       }
-      
+
       const actualEnd = actualPosition + actualLength
 
       // 이슈 전 텍스트
@@ -2002,12 +2182,12 @@ function SaeTeukPageContent() {
 
       // 이슈 텍스트 (하이라이트) - 실제 찾은 텍스트 사용
       const issueText = actualText
-        
-      const colorClass = issue.type === "delete" 
+
+      const colorClass = issue.type === "delete"
         ? "bg-red-200 text-red-900 underline decoration-red-500 font-semibold"
         : issue.type === "modify"
-        ? "bg-yellow-200 text-yellow-900 underline decoration-yellow-500 font-semibold"
-        : "bg-blue-200 text-blue-900 underline decoration-blue-500 font-semibold"
+          ? "bg-yellow-200 text-yellow-900 underline decoration-yellow-500 font-semibold"
+          : "bg-blue-200 text-blue-900 underline decoration-blue-500 font-semibold"
 
       // 중복 방지: lastIndex보다 앞에 있으면 건너뛰기
       if (actualPosition < lastIndex) {
@@ -2143,11 +2323,10 @@ function SaeTeukPageContent() {
                         <span>작성한 세특</span>
                       </CardTitle>
                       <div className="flex items-center space-x-4 text-sm">
-                        <span className={`font-medium ${
-                          byteCount > maxBytes ? 'text-red-600' : 
-                          byteCount > maxBytes * 0.9 ? 'text-yellow-600' : 
-                          'text-gray-600'
-                        }`}>
+                        <span className={`font-medium ${byteCount > maxBytes ? 'text-red-600' :
+                          byteCount > maxBytes * 0.9 ? 'text-yellow-600' :
+                            'text-gray-600'
+                          }`}>
                           {byteCount} / {maxBytes} 바이트
                         </span>
                       </div>
@@ -2322,113 +2501,112 @@ function SaeTeukPageContent() {
   return (
     <>
       <FilterModal />
-    <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-godding-primary rounded-2xl flex items-center justify-center shadow-lg">
-                <ClipboardDocumentListIcon className="w-6 h-6 text-white" />
+      <div className="min-h-screen bg-gradient-to-br from-godding-bg-primary to-godding-bg-secondary py-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-8">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-4">
+                <div className="w-12 h-12 bg-godding-primary rounded-2xl flex items-center justify-center shadow-lg">
+                  <ClipboardDocumentListIcon className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-4xl font-bold text-godding-text-primary">세특 조사 관리</h1>
+                  <p className="text-lg text-godding-text-secondary mt-2">
+                    학생들의 활동 기록을 체계적으로 수집하고 세특을 생성하세요
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-4xl font-bold text-godding-text-primary">세특 조사 관리</h1>
-                <p className="text-lg text-godding-text-secondary mt-2">
-                  학생들의 활동 기록을 체계적으로 수집하고 세특을 생성하세요
-                </p>
-              </div>
+              <Button
+                onClick={() => {
+                  setSelectedTemplate(null)
+                  setCurrentView('create')
+                }}
+                className="flex items-center space-x-2"
+              >
+                <PlusIcon className="w-4 h-4" />
+                <span>새 요청 생성</span>
+              </Button>
             </div>
-            <Button 
-              onClick={() => {
-                setSelectedTemplate(null)
-                setCurrentView('create')
-              }}
-              className="flex items-center space-x-2"
-            >
-              <PlusIcon className="w-4 h-4" />
-              <span>새 요청 생성</span>
-            </Button>
+          </div>
+
+          {/* Activity Requests List - 개선된 카드 UI */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {activityRequests.map((request) => {
+              const progress = getSubmissionProgress(request)
+              const submittedCount = request.responses.filter(r => r.submitted).length
+              const totalCount = request.responses.length
+
+              return (
+                <Card key={request.id} className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border hover:shadow-lg transition-all duration-300 cursor-pointer group">
+                  <CardHeader>
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <CardTitle className="text-godding-text-primary group-hover:text-godding-primary transition-colors">
+                          {request.title}
+                        </CardTitle>
+                        <CardDescription className="text-godding-text-secondary mt-2">
+                          {request.description}
+                        </CardDescription>
+                      </div>
+                      <div className={`px-2 py-1 rounded-full text-xs font-medium ${request.status === 'sent' ? 'bg-green-100 text-green-700' :
+                        request.status === 'draft' ? 'bg-yellow-100 text-yellow-700' :
+                          'bg-blue-100 text-blue-700'
+                        }`}>
+                        {request.status === 'sent' ? '발송됨' :
+                          request.status === 'draft' ? '임시저장' : '완료'}
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="flex items-center space-x-4 text-sm text-godding-text-secondary">
+                      <div className="flex items-center space-x-1">
+                        <UserGroupIcon className="w-4 h-4" />
+                        <span>{request.targetClass}</span>
+                      </div>
+                      <div className="flex items-center space-x-1">
+                        <ClockIcon className="w-4 h-4" />
+                        <span>{request.deadline}</span>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-godding-text-secondary">제출 현황</span>
+                        <span className="font-medium text-godding-text-primary">
+                          {submittedCount} / {totalCount} 명
+                        </span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div
+                          className={`h-2 rounded-full transition-all ${progress === 100 ? 'bg-green-500' : 'bg-blue-500'
+                            }`}
+                          style={{ width: `${progress}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between pt-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          openDashboard(request)
+                        }}
+                        className="flex-1"
+                        data-testid="view-status-button"
+                      >
+                        <EyeIcon className="w-4 h-4 mr-1" />
+                        현황 보기
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
         </div>
-
-        {/* Activity Requests List - 개선된 카드 UI */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {activityRequests.map((request) => {
-            const progress = getSubmissionProgress(request)
-            const submittedCount = request.responses.filter(r => r.submitted).length
-            const totalCount = request.responses.length
-
-            return (
-              <Card key={request.id} className="bg-godding-card-bg backdrop-blur-sm border-godding-card-border hover:shadow-lg transition-all duration-300 cursor-pointer group">
-                <CardHeader>
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex-1">
-                      <CardTitle className="text-godding-text-primary group-hover:text-godding-primary transition-colors">
-                        {request.title}
-                      </CardTitle>
-                      <CardDescription className="text-godding-text-secondary mt-2">
-                        {request.description}
-                      </CardDescription>
-                    </div>
-                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                      request.status === 'sent' ? 'bg-green-100 text-green-700' :
-                      request.status === 'draft' ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-blue-100 text-blue-700'
-                    }`}>
-                      {request.status === 'sent' ? '발송됨' : 
-                       request.status === 'draft' ? '임시저장' : '완료'}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center space-x-4 text-sm text-godding-text-secondary">
-                    <div className="flex items-center space-x-1">
-                      <UserGroupIcon className="w-4 h-4" />
-                      <span>{request.targetClass}</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <ClockIcon className="w-4 h-4" />
-                      <span>{request.deadline}</span>
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-godding-text-secondary">제출 현황</span>
-                      <span className="font-medium text-godding-text-primary">
-                        {submittedCount} / {totalCount} 명
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className={`h-2 rounded-full transition-all ${
-                          progress === 100 ? 'bg-green-500' : 'bg-blue-500'
-                        }`}
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-2">
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        openDashboard(request)
-                      }}
-                      className="flex-1"
-                    >
-                      <EyeIcon className="w-4 h-4 mr-1" />
-                      현황 보기
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )
-          })}
-        </div>
       </div>
-    </div>
     </>
   )
 }
@@ -2440,4 +2618,3 @@ export default function SaeTeukPage() {
     </ProtectedRoute>
   )
 }
-

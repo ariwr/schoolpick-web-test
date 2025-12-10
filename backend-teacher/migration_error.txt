@@ -1,0 +1,362 @@
+﻿python : INFO  [alembic.ru
+ntime.migration] Context i
+mpl PostgresqlImpl.
+위치 줄:1 문자:1
++ python -m alembic revisi
+on --autogenerate -m "Init
+ial migration" > mi ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (I  
+  NFO  [alembic....Post   
+ gresqlImpl.:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+INFO  [alembic.runtime.mig
+ration] Will assume transa
+ctional DDL.
+Traceback (most recent cal
+l last):
+  File "<frozen runpy>", l
+ine 198, in _run_module_as
+_main
+  File "<frozen runpy>", l
+ine 88, in _run_code
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\__main__.py", line
+ 4, in <module>
+    main(prog="alembic")
+    ~~~~^^^^^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\config.py", line 1
+033, in main
+    CommandLine(prog=prog)
+.main(argv=argv)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\config.py", line 1
+023, in main
+    self.run_cmd(cfg, opti
+ons)
+    ~~~~~~~~~~~~^^^^^^^^^^
+^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\config.py", line 9
+57, in run_cmd
+    fn(
+    ~~^
+        config,
+        ^^^^^^^
+        *[getattr(options,
+ k, None) for k in positio
+nal],
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^
+        **{k: getattr(opti
+ons, k, None) for k in kwa
+rg},
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\command.py", line 
+309, in revision
+    script_directory.run_e
+nv()
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\script\base.py", l
+ine 545, in run_env
+    util.load_python_file(
+self.dir, "env.py")
+    ~~~~~~~~~~~~~~~~~~~~~^
+^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\util\pyfiles.py", 
+line 116, in load_python_f
+ile
+    module = load_module_p
+y(module_id, path)
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\util\pyfiles.py", 
+line 136, in load_module_p
+y
+    spec.loader.exec_modul
+e(module)  # type: ignore
+    ~~~~~~~~~~~~~~~~~~~~~~
+~^^^^^^^^
+  File "<frozen importlib.
+_bootstrap_external>", lin
+e 762, in exec_module
+  File "<frozen importlib.
+_bootstrap>", line 491, in
+ _call_with_frames_removed
+  File "C:\Users\LG\Heart_
+Ware\schoolpick-web\backen
+d-teacher\alembic\env.py",
+ line 64, in <module>
+    run_migrations_online(
+)
+    ~~~~~~~~~~~~~~~~~~~~~^
+^
+  File "C:\Users\LG\Heart_
+Ware\schoolpick-web\backen
+d-teacher\alembic\env.py",
+ line 59, in run_migration
+s_online
+    context.run_migrations
+()
+    ~~~~~~~~~~~~~~~~~~~~~~
+^^
+  File "<string>", line 8,
+ in run_migrations
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\runtime\environmen
+t.py", line 946, in run_mi
+grations
+    self.get_context().run
+_migrations(**kw)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\runtime\migration.
+py", line 615, in run_migr
+ations
+    for step in self._migr
+ations_fn(heads, self):
+                ~~~~~~~~~~
+~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\command.py", line 
+285, in retrieve_migration
+s
+    revision_context.run_a
+utogenerate(rev, context)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\autogenerate\api.p
+y", line 570, in run_autog
+enerate
+    self._run_environment(
+rev, migration_context, Tr
+ue)
+    ~~~~~~~~~~~~~~~~~~~~~^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\autogenerate\api.p
+y", line 617, in _run_envi
+ronment
+    compare._populate_migr
+ation_script(
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~^
+        autogen_context, m
+igration_script
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\autogenerate\compa
+re.py", line 66, in _popul
+ate_migration_script
+    _produce_net_changes(a
+utogen_context, upgrade_op
+s)
+    ~~~~~~~~~~~~~~~~~~~~^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\autogenerate\compa
+re.py", line 99, in _produ
+ce_net_changes
+    comparators.dispatch("
+schema", autogen_context.d
+ialect.name)(
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~^
+        autogen_context, u
+pgrade_ops, schemas
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\util\langhelpers.p
+y", line 315, in go
+    fn(*arg, **kw)
+    ~~^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\autogenerate\compa
+re.py", line 135, in _auto
+gen_for_tables
+    [(table.schema, table.
+name) for table in autogen
+_context.sorted_tables]
+                          
+                   ^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\util\langhelper
+s.py", line 1226, in __get
+__
+    obj.__dict__[self.__na
+me__] = result = self.fget
+(obj)
+                          
+                 ~~~~~~~~~
+^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\autogenerate\api.p
+y", line 482, in sorted_ta
+bles
+    result.extend(m.sorted
+_tables)
+                  ^^^^^^^^
+^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\sql\schema.py",
+ line 5682, in sorted_tabl
+es
+    return ddl.sort_tables
+(
+           ~~~~~~~~~~~~~~~
+^
+        sorted(self.tables
+.values(), key=lambda t: t
+.key)  # type: ignore
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\sql\ddl.py", li
+ne 1318, in sort_tables
+    for (t, fkcs) in sort_
+tables_and_constraints(
+                     ~~~~~
+~~~~~~~~~~~~~~~~~~~~~~^
+        tables,
+        ^^^^^^^
+    ...<2 lines>...
+        _warn_for_cycles=T
+rue,
+        ^^^^^^^^^^^^^^^^^^
+^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\sql\ddl.py", li
+ne 1394, in sort_tables_an
+d_constraints
+    dependent_on = fkc.ref
+erred_table
+                   ^^^^^^^
+^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\sql\schema.py",
+ line 4799, in referred_ta
+ble
+    return self.elements[0
+].column.table
+           ^^^^^^^^^^^^^^^
+^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\util\langhelper
+s.py", line 1226, in __get
+__
+    obj.__dict__[self.__na
+me__] = result = self.fget
+(obj)
+                          
+                 ~~~~~~~~~
+^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\sql\schema.py",
+ line 3199, in column
+    return self._resolve_c
+olumn()
+           ~~~~~~~~~~~~~~~
+~~~~~^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\sql\schema.py",
+ line 3222, in _resolve_co
+lumn
+    raise exc.NoReferenced
+TableError(
+    ...<5 lines>...
+    )
+sqlalchemy.exc.NoReference
+dTableError: Foreign key a
+ssociated with column 'tea
+cher_timetables.subject_id
+' could not find table 'su
+bjects' with which to gene
+rate a foreign key to targ
+et column 'id'

@@ -58,6 +58,15 @@ class SchoolClass(Base):
     # 관계 설정
     homeroom_teacher = relationship("Teacher")
 
+# 기존 subjects 테이블 활용
+class Subject(Base):
+    __tablename__ = "subjects"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    code = Column(String)
+    created_at = Column(DateTime(timezone=True))
+
 # 기존 teacher_timetables 테이블 활용
 class TeacherTimetable(Base):
     __tablename__ = "teacher_timetables"

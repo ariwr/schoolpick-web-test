@@ -5,14 +5,15 @@ import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { 
-  ClipboardDocumentListIcon, 
-  ChartBarIcon, 
-  BookOpenIcon, 
+import {
+  ClipboardDocumentListIcon,
+  ChartBarIcon,
+  BookOpenIcon,
   UserGroupIcon,
   ShieldCheckIcon,
   MoonIcon,
-  ArrowRightOnRectangleIcon
+  ArrowRightOnRectangleIcon,
+  DocumentArrowDownIcon
 } from "@heroicons/react/24/outline"
 
 const navigation = [
@@ -21,6 +22,7 @@ const navigation = [
   { name: "정독실", href: "/study-room", icon: BookOpenIcon },
   { name: "야자 출첵", href: "/night-study", icon: MoonIcon },
   { name: "세특 점검", href: "/content-filter", icon: ShieldCheckIcon },
+
 ]
 
 export default function Header() {
@@ -33,14 +35,14 @@ export default function Header() {
   useEffect(() => {
     // 클라이언트에서만 실행되도록 마운트 상태 설정
     setMounted(true)
-    
+
     // 로그인 상태 확인
     const checkAuth = () => {
       if (typeof window === 'undefined') return
-      
+
       const token = localStorage.getItem('token')
       const userInfo = localStorage.getItem('userInfo')
-      
+
       if (token && userInfo) {
         setIsAuthenticated(true)
         try {
@@ -63,7 +65,7 @@ export default function Header() {
     }
 
     window.addEventListener('storage', handleStorageChange)
-    
+
     // 커스텀 이벤트로 로그인 상태 변경 감지 (다른 탭이나 컴포넌트에서 발생)
     window.addEventListener('authStateChange', handleStorageChange)
 
@@ -76,10 +78,10 @@ export default function Header() {
   // pathname이 변경될 때마다 인증 상태 다시 확인 (페이지 이동 시)
   useEffect(() => {
     if (typeof window === 'undefined' || !mounted) return
-    
+
     const token = localStorage.getItem('token')
     const userInfo = localStorage.getItem('userInfo')
-    
+
     setIsAuthenticated(!!(token && userInfo))
     if (userInfo) {
       try {
@@ -97,10 +99,10 @@ export default function Header() {
     // 로그아웃 함수 사용
     const { logout } = await import('@/lib/auth')
     await logout()
-    
+
     setIsAuthenticated(false)
     setUserName(null)
-    
+
     router.push('/login')
   }
 
@@ -116,7 +118,7 @@ export default function Header() {
               </div>
             </Link>
           </div>
-          
+
           <nav className="hidden md:flex space-x-2">
             {navigation.map((item) => {
               const isActive = pathname === item.href
@@ -146,8 +148,8 @@ export default function Header() {
                     {userName}님
                   </span>
                 )}
-                <Button 
-                  variant="glass" 
+                <Button
+                  variant="glass"
                   size="sm"
                   onClick={handleLogout}
                   className="flex items-center space-x-2"

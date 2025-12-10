@@ -11,6 +11,7 @@ import json
 import time
 import re
 import codecs
+import hashlib
 from app.config import settings
 from app.services.filter_service import filter_text as rule_based_filter
 
@@ -29,6 +30,11 @@ logger = logging.getLogger(__name__)
 # 기본 모델 설정
 DEFAULT_MODEL = "gpt-4o-mini"
 OPENAI_MODEL = DEFAULT_MODEL
+
+# [최적화] LLM 응답 캐시 (Content Hash -> Response)
+# 서버 재시작 시 초기화됨. 메모리 관리를 위해 최대 항목 수 제한 필요 시 LRU 적용 권장.
+# 현재는 단순 Dict 사용.
+_llm_cache = {}
 
 # 모델 정보 로깅
 logger.info(f"기본 모델을 사용합니다: {DEFAULT_MODEL}")
@@ -317,9 +323,10 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> Con
         raw_detections = []
         pre_filtered_content = content
     
-    # [수정된 로직 시작] ============================================================
+    
     # 2. 원본 텍스트 재스캔 (Re-scanning)
     # 1차 필터가 찾아낸 단어들을 키워드로 해서, 원본 텍스트 내의 '모든' 등장 위치를 다시 찾습니다.
+    # [수정된 로직 시작] ============================================================
     
     all_matches = []
     
@@ -391,12 +398,54 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> Con
     if rule_detections:
         logger.info(f"재스캔 완료: 총 {len(rule_detections)}개의 이슈 확정")
     
-    # 1차 필터링된 텍스트를 LLM에 전달
+    # 1차 필터링된 텍스트를 LLM에 전달 (사실상 문맥 파악용이므로 원본에 가까운게 좋지만, 규칙 필터가 masking한 건 제외)
     content_to_check = pre_filtered_content
     # [수정된 로직 끝] ==============================================================
+
+    # [최적화] LLM 캐시 확인
+    # Content가 동일하다면, LLM의 응답도 동일할 것으로 가정 (custom rule 변경은 위 rule_based_filter에서 처리됨)
+    # 키는 원본 content의 해시값 사용
+    content_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
     
-    # ChatGPT에 전달할 프롬프트 작성 (2025 기재요령 PDF 기준 보강)
-    system_prompt = """당신은 2025학년도 학교생활기록부 기재요령 전문가입니다.
+    # response_text 초기화 (UnboundLocalError 방지)
+    response_text = None
+    
+    cached_response_text = _llm_cache.get(content_hash)
+    if cached_response_text:
+        logger.info(f"✨ LLM 캐시 Hit! (Hash: {content_hash}) - OpenAI 호출 생략")
+        response_text = cached_response_text
+        
+        # [중요 Fix] 캐시된 응답의 filtered_content는 "과거의 규칙" 기준임.
+        # "현재의 규칙"을 반영하려면, 캐시된 텍스트(LLM이 다듬은 문장)에 대해 다시 한번 규칙 필터를 적용해야 함.
+        # 이렇게 해야 '인공지능'을 금지어로 추가했을 때, 왼쪽 교정 문서에서도 'XXX'로 마스킹되어 보임.
+        try:
+            # 1. 캐시된 JSON 파싱
+            cached_json = _parse_json_with_recovery(response_text, content_to_check)
+            cached_content = cached_json.get("filtered_content", "")
+            
+            if cached_content:
+                # 2. 현재 규칙으로 다시 필터링 (단순 치환)
+                # 여기서는 detections는 필요없고, 텍스트 치환(masking)만 필요함.
+                re_filtered = rule_based_filter(cached_content)
+                final_filtered_content = re_filtered.get("filtered_text", cached_content)
+                
+                # 3. JSON의 filtered_content 교체
+                cached_json["filtered_content"] = final_filtered_content
+                
+                # 4. response_text 업데이트 (문자열로 다시 변환)
+                response_text = json.dumps(cached_json, ensure_ascii=False)
+                logger.info("캐시된 컨텐츠에 새로운 필터 규칙 적용 완료 (Re-filtering Cache)")
+        except Exception as e:
+            logger.warning(f"캐시된 컨텐츠 재필터링 실패 (기존 캐시 사용): {e}")
+            # 실패하면 그냥 원래 cached_response_text 사용
+            response_text = cached_response_text
+
+    # 캐시가 없으면 OpenAI 호출 (Indentation Fix)
+    if not response_text:
+        logger.info(f"LLM 캐시 Miss (Hash: {content_hash}) - OpenAI 호출 시작")
+        
+        # ChatGPT에 전달할 프롬프트 작성 (2025 기재요령 PDF 기준 보강)
+        system_prompt = """당신은 2025학년도 학교생활기록부 기재요령 전문가입니다.
 
 학교생활기록부 기재요령(교육부훈령)에 따라 다음 내용을 엄격하게 검열해야 합니다.
 
@@ -674,8 +723,11 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> Con
             usage = response.usage
             logger.debug(f"토큰 사용량 - 입력: {usage.prompt_tokens}, 출력: {usage.completion_tokens}, 총: {usage.total_tokens}")
         
-        # 응답 파싱
         response_text = response.choices[0].message.content
+        
+        # [최적화] 캐시에 저장
+        _llm_cache[content_hash] = response_text
+        logger.info(f"LLM 응답 캐시 저장 완료 (Keys: {len(_llm_cache)})")
         
         # 응답 전체를 파일로 저장 (디버깅용)
         try:
@@ -933,6 +985,17 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> Con
                     rule_start = rule_issue.position
                     rule_end = rule_issue.position + rule_issue.length
                     
+                    # [중요 수정] Rule-based 이슈는 절대 제거하지 않음
+                    # 사용자가 명시적으로 추가한 금지어는 반드시 표시되어야 함
+                    if rule_issue.source == "rule_based":
+                        logger.debug(f"Rule-based 이슈 보호: '{rule_issue.original_text}' at {rule_issue.position}")
+                        # LLM 이슈가 같은 위치를 가리키면 LLM 이슈는 추가하지 않음
+                        if llm_start == rule_start and llm_end == rule_end:
+                            should_include_llm = False
+                            break
+                        # LLM이 더 넓은 범위거나 다른 타입이면 둘 다 유지
+                        continue
+                    
                     # 케이스 1: LLM이 spelling이나 modify 타입이면 항상 포함 (1차는 delete만)
                     if llm_issue.type in ['spelling', 'modify']:
                         should_include_llm = True
@@ -942,7 +1005,9 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> Con
                     # 케이스 2: LLM이 더 넓은 범위를 잡은 경우 (1차 결과를 포함)
                     if llm_start <= rule_start and llm_end >= rule_end:
                         should_include_llm = True
-                        should_remove_rules.append(rule_issue)
+                        # Rule-based가 아닌 경우만 제거 대상에 추가
+                        if rule_issue.source != "rule_based":
+                            should_remove_rules.append(rule_issue)
                         logger.debug(f"LLM 이슈 포함: 더 넓은 범위 (LLM: {llm_start}-{llm_end}, 1차: {rule_start}-{rule_end})")
                         continue  # 다음 rule_issue 확인
                     
@@ -969,9 +1034,10 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> Con
                 if should_include_llm:
                     final_issues.append(llm_issue)
                     # 겹치는 1차 결과 제거 (LLM이 더 넓은 범위를 잡은 경우)
+                    # [중요] Rule-based 이슈는 제거하지 않음
                     # should_remove_rules를 역순으로 제거하여 인덱스 문제 방지
                     for rule_to_remove in reversed(should_remove_rules):
-                        if rule_to_remove in final_issues:
+                        if rule_to_remove in final_issues and rule_to_remove.source != "rule_based":
                             final_issues.remove(rule_to_remove)
                             logger.debug(f"1차 결과 제거: LLM이 더 넓은 범위를 잡음 - '{rule_to_remove.original_text}'")
             else:
@@ -1064,6 +1130,7 @@ async def call_chatgpt_for_filtering(content: str, max_bytes: int = 2000) -> Con
 
 
 class SetuekCheckRequest(BaseModel):
+
     """세특 검열 요청 모델 (새로운 형식)"""
     text: str = Field(..., description="검열할 세특 내용", max_length=2000)
 
@@ -1304,25 +1371,49 @@ async def refine_context(request: RefineRequest):
 4. 결과는 오직 수정된 텍스트만 반환하세요.
 """
     
-    try:
-        from openai import OpenAI
-        client = OpenAI(api_key=OPENAI_API_KEY)
+    import hashlib
+    import json
+    
+    user_prompt = request.text
+    
+    # 캐싱을 위한 해시 생성
+    content_hash = hashlib.md5((system_prompt + user_prompt).encode('utf-8')).hexdigest()
+    
+    response_text = None
+    
+    # 캐시 확인
+    if content_hash in _llm_cache:
+        response_text = _llm_cache[content_hash]
+        logger.info(f"LLM 응답 캐시 히트 (Hash: {content_hash})")
+    
+    if not response_text:
+        try:
+            # OpenAI API 호출 (chat completions 사용)
+            from openai import OpenAI
+            
+            # OpenAI 클라이언트 초기화
+            client = OpenAI(api_key=OPENAI_API_KEY)
+            
+            response = client.chat.completions.create(
+                model="gpt-4o-mini",  # 빠른 응답을 위해 3.5 또는 4o-mini 권장
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0,  # 결정론적 결과
+                top_p=0.1,  # 높은 확률 토큰만 선택하여 일관성 향상
+                presence_penalty=0.1,  # 반복 방지
+                frequency_penalty=0.1  # 중복 방지
+            )
+            
+            response_text = response.choices[0].message.content.strip()
+            
+            # 캐시 저장
+            _llm_cache[content_hash] = response_text
+            logger.info(f"LLM 응답 캐시 저장 완료 (Hash: {content_hash})")
+            
+        except Exception as e:
+            logger.error(f"OpenAI API 호출 중 오류: {e}")
+            raise HTTPException(status_code=500, detail="문맥 교정 중 오류 발생")
         
-        response = client.chat.completions.create(
-            model="gpt-4o-mini",  # 빠른 응답을 위해 3.5 또는 4o-mini 권장
-            messages=[
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": request.text}
-            ],
-            temperature=0,
-            top_p=0.1,  # 높은 확률 토큰만 선택하여 일관성 향상
-            presence_penalty=0.1,  # 반복 방지
-            frequency_penalty=0.1  # 중복 방지
-        )
-        
-        refined_text = response.choices[0].message.content.strip()
-        return RefineResponse(refined_text=refined_text)
-    except Exception as e:
-        logger.error(f"Refine error: {e}")
-        raise HTTPException(status_code=500, detail="문맥 교정 중 오류 발생")
-
+    return RefineResponse(refined_text=response_text)

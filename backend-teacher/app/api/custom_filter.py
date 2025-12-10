@@ -163,8 +163,14 @@ async def create_custom_rule(rule_data: CustomRuleCreate):
                 detail="금지어 저장에 실패했습니다."
             )
         
-        # 필터 서비스 패턴 리로드를 백그라운드에서 비동기로 처리 (응답 지연 방지)
-        _reload_executor.submit(_reload_patterns_async)
+        # [동기 변경] 필터 서비스 패턴 리로드를 동기로 처리하여 즉시 반영 보장
+        try:
+            filter_service = get_filter_service()
+            filter_service.reload_patterns()
+            logger.info("사용자 정의 금지어 변경(추가) 후 필터 패턴 리로드 완료")
+        except Exception as reload_error:
+            logger.warning(f"필터 패턴 리로드 중 오류 발생: {reload_error}")
+            # 리로드 실패해도 저장은 되었으므로 진행
         
         logger.info(f"사용자 정의 금지어 추가됨: '{new_rule['word']}' -> '{new_rule['replacement']}'")
         
@@ -235,8 +241,13 @@ async def delete_custom_rule(rule_id: int):
                 detail="금지어 삭제에 실패했습니다."
             )
         
-        # 필터 서비스 패턴 리로드를 백그라운드에서 비동기로 처리 (응답 지연 방지)
-        _reload_executor.submit(_reload_patterns_async)
+        # [동기 변경] 필터 서비스 패턴 리로드를 동기로 처리하여 즉시 반영 보장
+        try:
+            filter_service = get_filter_service()
+            filter_service.reload_patterns()
+            logger.info("사용자 정의 금지어 변경(삭제) 후 필터 패턴 리로드 완료")
+        except Exception as reload_error:
+            logger.warning(f"필터 패턴 리로드 중 오류 발생: {reload_error}")
         
         logger.info(f"사용자 정의 금지어 삭제됨: '{deleted_word}' (ID: {rule_id})")
         
