@@ -76,7 +76,7 @@ function NightStudyPageContent() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [serverError, setServerError] = useState<string | null>(null)
   
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
   // 서버 연결 테스트
   const testServerConnection = async () => {

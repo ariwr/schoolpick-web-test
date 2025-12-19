@@ -58,7 +58,7 @@ function ContentFilterPageContent() {
   // Fetch Custom Rules
   const fetchRules = useCallback(async () => {
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
       const response = await fetch(`${API_BASE_URL}/api/custom-rules`)
       if (response.ok) {
         const data = await response.json()
@@ -78,7 +78,7 @@ function ContentFilterPageContent() {
     const wordToAdd = quickRule.trim()
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
       // Optimistic Update
       const optimisticRule: CustomRule = {
@@ -138,7 +138,7 @@ function ContentFilterPageContent() {
     ))
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
       const response = await fetch(`${API_BASE_URL}/api/custom-rules/${id}`, {
         method: "DELETE",
       })
@@ -188,7 +188,7 @@ function ContentFilterPageContent() {
     formData.append("file", file)
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
       const response = await fetch(`${API_BASE_URL}/api/ocr/extract`, {
         method: "POST",
         body: formData,
@@ -229,7 +229,7 @@ function ContentFilterPageContent() {
     setError(null)
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
       // API URL 유효성 검사
       if (!API_BASE_URL) {
@@ -503,7 +503,7 @@ function ContentFilterPageContent() {
       // 5. 문맥 교정이 필요한 경우 (비동기 LLM 호출)
       if (needsRefine) {
         try {
-          const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+          const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
           const refineRes = await fetch(`${API_BASE_URL}/api/content-filter/refine`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },

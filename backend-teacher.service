@@ -1,0 +1,26 @@
+# systemd 서비스 파일
+# EC2의 /etc/systemd/system/backend-teacher.service 에 복사
+
+[Unit]
+Description=SchoolPick Teacher Backend (FastAPI)
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/backend-teacher
+Environment="PATH=/home/ubuntu/backend-teacher/venv/bin"
+ExecStart=/home/ubuntu/backend-teacher/venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=10
+
+# 환경변수 로드
+EnvironmentFile=/home/ubuntu/backend-web.env
+
+# 로그 설정
+StandardOutput=append:/home/ubuntu/backend-teacher/server.log
+StandardError=append:/home/ubuntu/backend-teacher/server.log
+
+[Install]
+WantedBy=multi-user.target
+

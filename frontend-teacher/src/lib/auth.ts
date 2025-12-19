@@ -2,7 +2,7 @@
  * 인증 관련 유틸리티 함수
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || ''
 
 /**
  * 토큰이 유효한지 확인

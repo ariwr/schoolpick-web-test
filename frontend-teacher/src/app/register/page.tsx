@@ -8,7 +8,7 @@ import { useState } from 'react';
 
 export default function RegisterPage() {
   const router = useRouter();
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || '';
   const [formData, setFormData] = useState({
     email: '',
     password: '',

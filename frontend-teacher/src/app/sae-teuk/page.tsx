@@ -1230,7 +1230,7 @@ function SaeTeukPageContent() {
       setExtractError(null)
 
       try {
-        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+        const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
         if (!API_BASE_URL) {
           throw new Error("API 서버 주소가 설정되지 않았습니다.")
@@ -1642,7 +1642,7 @@ function SaeTeukPageContent() {
     setSelectedErrorId(null)
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
       if (!API_BASE_URL) {
         throw new Error("API 서버 주소가 설정되지 않았습니다.")
@@ -1770,7 +1770,7 @@ function SaeTeukPageContent() {
     setFilterErrors([])
 
     try {
-      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
       // API URL 유효성 검사
       if (!API_BASE_URL) {

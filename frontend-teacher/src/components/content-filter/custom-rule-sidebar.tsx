@@ -23,7 +23,7 @@ export default function CustomRuleSidebar({ onRulesChange }: CustomRuleSidebarPr
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
   // 금지어 목록 조회
   const fetchRules = async () => {
