@@ -86,20 +86,4 @@ class TeacherTimetable(Base):
     # 관계 설정
     teacher = relationship("Teacher")
 
-# 출석 관리를 위한 새 테이블 (기존에 없을 수 있음)
-class Attendance(Base):
-    __tablename__ = "attendance_records"
-    
-    id = Column(Integer, primary_key=True, index=True)
-    student_id = Column(Integer, ForeignKey("students.id"))
-    teacher_id = Column(Integer, ForeignKey("teachers.id"))
-    date = Column(DateTime(timezone=True))
-    status = Column(String)  # present, absent, late, early_leave
-    check_in_time = Column(DateTime(timezone=True))
-    check_out_time = Column(DateTime(timezone=True))
-    note = Column(Text)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    
-    # 관계 설정
-    student = relationship("Student")
-    teacher = relationship("Teacher")
+

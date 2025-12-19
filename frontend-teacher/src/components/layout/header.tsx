@@ -22,6 +22,7 @@ const navigation = [
   { name: "정독실", href: "/study-room", icon: BookOpenIcon },
   { name: "야자 출첵", href: "/night-study", icon: MoonIcon },
   { name: "세특 점검", href: "/content-filter", icon: ShieldCheckIcon },
+  { name: "시간표 생성", href: "/schedule-creation", icon: DocumentArrowDownIcon },
 
 ]
 

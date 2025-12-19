@@ -4,7 +4,52 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.config import settings
-from app.api import auth, users, students, attendance, schedule, content_filter, admin, custom_filter, ocr
+from app.api import auth, users, students, attendance, schedule, admin
+import sys
+import logging
+
+# 로거 설정을 최상단으로 이동
+logger = logging.getLogger(__name__)
+
+# [Python 3.14 호환성 패치]
+# numpy/cv2/kiwipiepy 등 의존성 문제가 있는 모듈은 선택적으로 임포트합니다.
+# 임포트 실패 시 해당 기능은 비활성화되지만 서버는 정상 실행됩니다.
+
+content_filter = None
+custom_filter = None
+ocr = None
+check_router = None
+
+# Python 3.14+ (win32)에서 numpy 임포트 시 행(hang) 현상 발생 방지
+# OCR, Content Filter 등 numpy 의존 모듈은 불러오지 않음
+if sys.version_info >= (3, 14) and sys.platform == 'win32':
+    logger.warning("⚠️ Python 3.14 (Windows) 환경 감지됨: 불안정한 모듈(OCR, Content Filter) 로드를 건너뜁니다.")
+else:
+    # 1. Content Filter Module (Requires OpenAI, potentially numpy/kiwipiepy)
+    try:
+        from app.api import content_filter
+        from app.api.content_filter import check_router
+    except ImportError as e:
+        logger.warning(f"⚠️ Content Filter 모듈 로드 실패 (의존성 누락): {e}")
+    except Exception as e:
+        logger.warning(f"⚠️ Content Filter 모듈 로드 중 오류 발생: {e}")
+
+    # 2. Custom Filter Module (Requires Filter Service -> Kiwipiepy)
+    try:
+        from app.api import custom_filter
+    except ImportError as e:
+        logger.warning(f"⚠️ Custom Filter 모듈 로드 실패: {e}")
+    except Exception as e:
+        logger.warning(f"⚠️ Custom Filter 모듈 로드 중 오류 발생: {e}")
+
+    # 3. OCR Module (Requires numpy, cv2, pdf2image)
+    try:
+        from app.api import ocr
+    except ImportError as e:
+        logger.warning(f"⚠️ OCR 모듈 로드 실패 (numpy/cv2 호환성 문제 가능성): {e}")
+    except Exception as e:
+        logger.warning(f"⚠️ OCR 모듈 로드 중 오류 발생: {e}")
+
 from app.database import engine, SessionLocal
 from app.models.existing_db import Base
 from sqlalchemy import text
@@ -22,11 +67,6 @@ app = FastAPI(
 )
 
 # CORS 설정
-# 디버깅: 현재 허용된 origin 목록 출력
-import logging
-logger = logging.getLogger(__name__)
-
-# CORS 허용 목록 확인 및 출력
 # 기본값에 여러 포트를 포함하여 개발 환경에서 유연하게 대응
 default_origins = [
     "http://localhost:3000",
@@ -216,12 +256,16 @@ app.include_router(students.router, prefix="/api/students", tags=["학생"])
 app.include_router(attendance.router, prefix="/api/attendance", tags=["출석"])
 app.include_router(admin.router, prefix="/api/admin", tags=["관리자"])
 app.include_router(schedule.router, prefix="/api/schedule", tags=["시간표"])
-app.include_router(content_filter.router, prefix="/api/content-filter", tags=["세특 점검"])
-app.include_router(custom_filter.router, prefix="/api", tags=["사용자 정의 금지어"])
-app.include_router(ocr.router, prefix="/api/ocr", tags=["OCR"])
-# /check/setuek 엔드포인트를 위한 별도 라우터 등록 (prefix 없이)
-from app.api.content_filter import check_router
-app.include_router(check_router, tags=["세특 점검"])
+
+if content_filter:
+    app.include_router(content_filter.router, prefix="/api/content-filter", tags=["세특 점검"])
+if custom_filter:
+    app.include_router(custom_filter.router, prefix="/api", tags=["사용자 정의 금지어"])
+if ocr:
+    app.include_router(ocr.router, prefix="/api/ocr", tags=["OCR"])
+    
+if check_router:
+    app.include_router(check_router, tags=["세특 점검"])
 
 # 야자 출석 스케줄러 시작
 @app.on_event("startup")
@@ -237,13 +281,16 @@ async def startup_event():
     
     # 필터 서비스 초기화 (패턴 로드 확인)
     try:
-        from app.services.filter_service import get_filter_service
-        filter_service = get_filter_service()
-        # 환경부 패턴이 로드되었는지 확인
-        env_patterns = [p for p in filter_service.patterns if '환경부' in p.pattern]
-        logger.info(f"필터 서비스 초기화 완료: 총 {len(filter_service.patterns)}개 패턴 로드됨 (환경부 패턴: {len(env_patterns)}개)")
-        if env_patterns:
-            logger.info(f"환경부 패턴 확인: {env_patterns[0].pattern}")
+        if sys.version_info >= (3, 14) and sys.platform == 'win32':
+            logger.warning("⚠️ Python 3.14 (Windows): 필터 서비스 초기화를 건너뜁니다.")
+        else:
+            from app.services.filter_service import get_filter_service
+            filter_service = get_filter_service()
+            # 환경부 패턴이 로드되었는지 확인
+            env_patterns = [p for p in filter_service.patterns if '환경부' in p.pattern]
+            logger.info(f"필터 서비스 초기화 완료: 총 {len(filter_service.patterns)}개 패턴 로드됨 (환경부 패턴: {len(env_patterns)}개)")
+            if env_patterns:
+                logger.info(f"환경부 패턴 확인: {env_patterns[0].pattern}")
     except Exception as e:
         logger.error(f"필터 서비스 초기화 중 오류 발생: {str(e)}")
 

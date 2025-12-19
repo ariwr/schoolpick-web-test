@@ -4,13 +4,14 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { 
-  ClipboardDocumentListIcon, 
-  ChartBarIcon, 
-  BookOpenIcon, 
+import {
+  ClipboardDocumentListIcon,
+  ChartBarIcon,
+  BookOpenIcon,
   UserGroupIcon,
   ShieldCheckIcon,
-  SparklesIcon
+  SparklesIcon,
+  DocumentArrowDownIcon
 } from "@heroicons/react/24/outline";
 
 const features = [
@@ -49,6 +50,13 @@ const features = [
     href: "/content-filter",
     color: "bg-red-500",
   },
+  {
+    name: "시간표 생성",
+    description: "교육과정과 시간표의 모순을 해결하는 스마트 배정 시스템",
+    icon: DocumentArrowDownIcon,
+    href: "/schedule-creation",
+    color: "bg-indigo-500",
+  },
 ];
 
 export default function Home() {
@@ -56,21 +64,21 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     const token = localStorage.getItem('token');
     const userInfo = localStorage.getItem('userInfo');
-    
+
     setIsAuthenticated(!!(token && userInfo));
-    
+
     const handleStorageChange = () => {
       const token = localStorage.getItem('token');
       const userInfo = localStorage.getItem('userInfo');
       setIsAuthenticated(!!(token && userInfo));
     };
-    
+
     window.addEventListener('storage', handleStorageChange);
     window.addEventListener('authStateChange', handleStorageChange);
-    
+
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       window.removeEventListener('authStateChange', handleStorageChange);

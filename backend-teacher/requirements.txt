@@ -3,12 +3,12 @@
 # FastAPI 및 관련 패키지
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-pydantic==2.5.0
-pydantic-settings==2.1.0
+pydantic>=2.10.0
+pydantic-settings>=2.7.0
 
 # 데이터베이스
-sqlalchemy==2.0.23
-alembic==1.13.1
+sqlalchemy>=2.0.36
+alembic>=1.14.0
 # PostgreSQL 드라이버 (Windows에서는 psycopg2-binary 권장)
 psycopg2-binary==2.9.11  # Windows 친화적, 설치 쉬움
 # 또는 psycopg3 사용시:
@@ -39,7 +39,7 @@ loguru==0.7.2
 fastapi-cors==0.0.6
 
 # OpenAI API
-openai==1.12.0
+openai>=1.55.0
 
 # QR 코드 기반 출석 시스템
 PyJWT==2.8.0  # JWT 토큰 생성 및 검증
