@@ -34,6 +34,7 @@ export interface ClassBlock {
     warnings?: string[]; // list of conflict messages
     grade: number; // 1, 2, 3
     classNum: number; // 1 ~ 10
+    groupId?: number; // Backend Group ID (optional for mock, required for real)
     blockGroup?: string; // e.g. "A", "B" (Logical time block tag)
 }
 
@@ -84,7 +85,13 @@ export interface TimeOffSlot {
 }
 
 // 학교 기본 정보
+// 학교 기본 정보
 export interface SchoolBasicInfo {
+    schoolName: string; // 학교명
+    totalGrades: number; // 전체 학년 수
+    periodsPerDay: number; // 일일 교시 수
+    daysPerWeek: number; // 주당 수업 일수
+    lunchPeriod: number; // 점심 시간 교시
     grades: {
         grade: number; // 1, 2, 3
         classCount: number; // 반 수

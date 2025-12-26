@@ -12,6 +12,7 @@ class SchoolConfigurationBase(BaseWizardModel):
     periods_per_day: int = 7
     days_per_week: int = 5
     lunch_period: Optional[int] = None
+    facilities: List[str] = [] # Added facilities list (names)
 
 class SchoolConfigurationCreate(SchoolConfigurationBase):
     pass

@@ -32,9 +32,9 @@ export default function LoginPage() {
     const loginUrl = `${API_BASE}/api/auth/login`;
     console.log('로그인 시도:', loginUrl);
 
-    // AbortController를 사용하여 타임아웃 설정 (30초)
+    // AbortController를 사용하여 타임아웃 설정 (60초)
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
 
     try {
       // 백엔드 API 호출

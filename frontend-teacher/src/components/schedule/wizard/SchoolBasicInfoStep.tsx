@@ -12,16 +12,28 @@ import { TagInput } from "@/components/ui/tag-input";
 export function SchoolBasicInfoStep() {
     const { schoolBasicInfo, setSchoolBasicInfo, nextStep } = useWizardStore();
 
+    const [schoolName, setSchoolName] = useState(schoolBasicInfo?.schoolName || "고딩픽 고등학교");
     const [grades, setGrades] = useState(schoolBasicInfo?.grades || [
         { grade: 1, classCount: 10 },
         { grade: 2, classCount: 10 },
         { grade: 3, classCount: 10 },
     ]);
+    const [periodsPerDay, setPeriodsPerDay] = useState(schoolBasicInfo?.periodsPerDay || 7);
+    const [daysPerWeek, setDaysPerWeek] = useState(schoolBasicInfo?.daysPerWeek || 5);
+    const [lunchPeriod, setLunchPeriod] = useState(schoolBasicInfo?.lunchPeriod || 4);
 
     const [facilities, setFacilities] = useState<string[]>(schoolBasicInfo?.facilities || []);
 
     const handleNext = () => {
-        setSchoolBasicInfo({ grades, facilities });
+        setSchoolBasicInfo({
+            schoolName,
+            totalGrades: grades.length,
+            periodsPerDay,
+            daysPerWeek,
+            lunchPeriod,
+            grades,
+            facilities
+        });
         nextStep();
     };
 
@@ -35,6 +47,52 @@ export function SchoolBasicInfoStep() {
                 <h2 className="text-2xl font-bold">Step 1: 학교 기본 정보</h2>
                 <p className="text-gray-500 mt-1">학년별 반 수와 특별실 정보를 입력해주세요.</p>
             </div>
+
+            {/* <Card>
+                <CardHeader>
+                    <CardTitle>기본 설정</CardTitle>
+                    <CardDescription>학교 이름 및 시간표 기본 설정을 입력하세요</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                            <Label>학교 이름</Label>
+                            <Input 
+                                value={schoolName} 
+                                onChange={(e) => setSchoolName(e.target.value)} 
+                                placeholder="예: 고딩픽 고등학교"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>하루 교시 수</Label>
+                            <Input 
+                                type="number" 
+                                value={periodsPerDay} 
+                                onChange={(e) => setPeriodsPerDay(parseInt(e.target.value) || 7)} 
+                                min={4} max={12}
+                            />
+                        </div>
+                         <div className="space-y-2">
+                            <Label>주당 수업 일수</Label>
+                            <Input 
+                                type="number" 
+                                value={daysPerWeek} 
+                                onChange={(e) => setDaysPerWeek(parseInt(e.target.value) || 5)} 
+                                min={1} max={7}
+                            />
+                        </div>
+                         <div className="space-y-2">
+                            <Label>점심 시간 (교시 후)</Label>
+                            <Input 
+                                type="number" 
+                                value={lunchPeriod} 
+                                onChange={(e) => setLunchPeriod(parseInt(e.target.value) || 4)} 
+                                min={1} max={periodsPerDay}
+                            />
+                        </div>
+                    </div>
+                </CardContent>
+            </Card> */}
 
             <Card>
                 <CardHeader>

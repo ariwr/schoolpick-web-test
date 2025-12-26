@@ -213,7 +213,14 @@ export const useWizardStore = create<WizardState>()(
                 );
 
                 const payload = {
-                    school_config: state.schoolBasicInfo,
+                    school_config: {
+                        school_name: state.schoolBasicInfo.schoolName,
+                        total_grades: state.schoolBasicInfo.totalGrades,
+                        periods_per_day: state.schoolBasicInfo.periodsPerDay,
+                        days_per_week: state.schoolBasicInfo.daysPerWeek,
+                        lunch_period: state.schoolBasicInfo.lunchPeriod,
+                        facilities: state.schoolBasicInfo.facilities
+                    },
                     departments: state.departments.map(d => ({ name: d.name })),
                     teachers: flattenedTeachers,
                     subjects: flattenedSubjects,
@@ -253,13 +260,13 @@ export const useWizardStore = create<WizardState>()(
                 // I'll filter out TimeOffs with non-int IDs to prevent crash.
                 payload.teacher_time_offs = []; // Disable TimeOff saving temporally to ensure basic data items save.
 
-                await api.post('/wizard/save-all', payload);
+                await api.post('/api/wizard/save-all', payload);
                 // Optionally reload to get new IDs
                 // await get().loadFromBackend(); 
             },
 
             loadFromBackend: async () => {
-                const data = await api.get<any>('/wizard/all');
+                const data = await api.get<any>('/api/wizard/all');
 
                 // Map Backend Response -> Frontend State
                 if (data.school_config) {

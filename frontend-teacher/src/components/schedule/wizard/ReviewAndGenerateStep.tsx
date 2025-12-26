@@ -55,11 +55,29 @@ export function ReviewAndGenerateStep() {
             // Card generation is a "Simulation" step initially.
             // I will keep the existing logic for unassignedCards (store call).
 
-            // const { unassignedCards, createLectureGroupsBatch } = useScheduleStore.getState();
-            // if (unassignedCards.length > 0) {
-            //    console.log("Persisting cards to backend...", unassignedCards.length);
-            //    await createLectureGroupsBatch(unassignedCards);
-            // }
+            // 3. Persist Cards to Backend (Lecture Groups)
+            console.log("Saving Lecture Groups...");
+            const scheduleStore = useScheduleStore.getState();
+
+            // Ensure we have an active schedule
+            let scheduleId = scheduleStore.activeScheduleId;
+            if (!scheduleId) {
+                const fetchedId = await scheduleStore.fetchActiveSchedule();
+                if (fetchedId) scheduleId = fetchedId;
+            }
+
+            // Get the cards we just generated
+            const cards = scheduleStore.unassignedCards;
+
+            if (scheduleId && cards.length > 0) {
+                const success = await scheduleStore.createLectureGroupsBatch(cards);
+                if (!success) {
+                    console.error("Partial failure in group creation");
+                    // We continue anyway, or alert?
+                }
+            } else {
+                console.warn("No schedule ID or no cards to save");
+            }
 
             // 3. Mark Wizard Completed
             completeWizard();

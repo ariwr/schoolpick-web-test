@@ -8,6 +8,7 @@ interface ScheduleState {
     blocks: ClassBlock[]; // Flat list of all assigned blocks
     conflicts: Conflict[];
     unassignedCards: UnassignedCard[]; // 미배정 카드 리스트
+    activeScheduleId?: number; // Active Backend Schedule ID
 
     // Actions
     addSubject: (subject: Subject) => void;
@@ -26,14 +27,15 @@ interface ScheduleState {
     // API Actions
     fetchSchoolData: () => Promise<void>;
     fetchActiveSchedule: () => Promise<number | null>;
-    fetchScheduleState: (scheduleId: number) => Promise<void>; // 🆕
     fetchScheduleState: (scheduleId: number) => Promise<void>;
-    createLectureGroupsBatch: (cards: UnassignedCard[]) => Promise<boolean>; // 🆕
+    createLectureGroupsBatch: (cards: UnassignedCard[]) => Promise<boolean>;
+    autoScheduleUnassigned: () => Promise<boolean>; // 🆕 Auto-Scheduler
     // Unassigned Cards Actions
     createUnassignedCard: (subjectId: string, credits: number, grade: number, classNum: number, slicingOption?: '2+2' | '3+1' | '4') => void;
     assignCardToSlot: (cardId: string, day: DayOfWeek, period: Period, grade: number, classNum: number) => void;
     returnCardToUnassigned: (blockId: string) => void;
     setUnassignedCards: (cards: UnassignedCard[]) => void; // wizard-store에서 사용
+    createLectureGroupHelper: (card: UnassignedCard) => Promise<number | null>; // Helper for JIT creation
 }
 
 // Temporary ID generator
@@ -399,39 +401,75 @@ export const useScheduleStore = create<ScheduleState>((set, get) => ({
         return null;
     },
 
-    // 🆕 Batch Creation for Wizard
+    // 🆕 Batch Creation for Wizard (Optimized)
     createLectureGroupsBatch: async (cards: UnassignedCard[]) => {
         const { activeScheduleId } = get();
         if (!activeScheduleId) return false;
 
         try {
-            // Sequential or Parallel? Parallel is faster but might hit rate limits.
-            // Let's do parallel for now.
-            const promises = cards.map(card => {
-                const body = {
-                    schedule_id: activeScheduleId,
+            // Prepare Payload
+            const payload = {
+                schedule_id: activeScheduleId,
+                groups: cards.map(card => ({
                     subject_id: parseInt(card.subjectId.replace(/\D/g, '')) || 1,
-                    teacher_id: 1, // Still using mock teacher ID 1 for now
+                    teacher_id: 1, // Mock
                     grade: card.grade,
                     class_num: card.classNum,
                     total_credits: card.credits,
                     slicing_option: card.slicingOption,
-                };
-                return fetch(`${API_BASE}/api/schedule/groups`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
+                    // neis_class_code optional
+                }))
+            };
+
+            const res = await fetch(`${API_BASE}/api/schedule/groups/batch`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
             });
 
-            await Promise.all(promises);
-            // Refresh state
-            await get().fetchScheduleState(activeScheduleId);
-            return true;
+            if (res.ok) {
+                // Refresh state
+                await get().fetchScheduleState(activeScheduleId);
+                return true;
+            } else {
+                console.error("Batch creation failed:", res.status);
+                return false;
+            }
         } catch (e) {
             console.error("Batch creation failed:", e);
             return false;
         }
+    },
+
+    autoScheduleUnassigned: async () => {
+        const { activeScheduleId } = get();
+        if (!activeScheduleId) return false;
+
+        try {
+            console.log("Requesting Auto-Schedule...");
+            const res = await fetch(`${API_BASE}/api/schedule/${activeScheduleId}/auto-schedule`, {
+                method: 'POST',
+            });
+
+            if (res.ok) {
+                const newBlocks = await res.json();
+                console.log("Auto-Schedule Success:", newBlocks.length, "blocks created");
+
+                // Refresh full state
+                await get().fetchScheduleState(activeScheduleId);
+                return true;
+            } else {
+                console.error("Auto-Schedule Failed:", res.status);
+                const err = await res.json();
+                alert(`자동 배정 실패: ${err.detail || '알 수 없는 오류'}`);
+                return false;
+            }
+        } catch (e) {
+            console.error("Auto-Schedule Network Error:", e);
+            return false;
+        }
+
+
     },
 
     assignCardToSlot: async (cardId, day, period, grade, classNum) => {
@@ -446,7 +484,8 @@ export const useScheduleStore = create<ScheduleState>((set, get) => ({
             // Check if we already have a block for this "logical" group?
             // Or assume Wizard should have created it.
             // If JIT creation is needed:
-            groupId = await get().createLectureGroupHelper(card);
+            const newGroupId = await get().createLectureGroupHelper(card);
+            if (newGroupId) groupId = newGroupId;
             if (!groupId) {
                 console.warn("Backend sync failed, falling back to local only mode.");
                 // We proceed locally anyway to avoid UI freezing

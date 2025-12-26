@@ -2,9 +2,20 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 # --- Validation Response ---
+# --- Validation Response ---
+class ValidationError(BaseModel):
+    type: str
+    description: str
+    block_ids: Optional[List[int]] = None
+    teacher_id: Optional[int] = None
+    room_id: Optional[int] = None
+    day: Optional[str] = None
+    period: Optional[int] = None
+    reason: Optional[str] = None
+
 class ValidationResult(BaseModel):
     is_valid: bool
-    errors: List[str] = []   # Hard constraints (blocking)
+    errors: List[ValidationError] = []   # Detailed Errors
     warnings: List[str] = [] # Soft constraints (advisory)
 
 # --- Lecture Block Schemas ---
@@ -45,8 +56,13 @@ class LectureGroupResponse(LectureGroupBase):
     id: int
     schedule_id: int
 
+
     class Config:
         from_attributes = True
+
+class LectureGroupCreateBatch(BaseModel):
+    schedule_id: int
+    groups: List[LectureGroupBase]
 
 # --- Schedule Metadata Schemas ---
 class ScheduleMetadataBase(BaseModel):

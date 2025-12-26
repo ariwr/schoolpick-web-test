@@ -50,6 +50,26 @@ class TeacherResponse(BaseModel):
     class Config:
         from_attributes = True
 
+# --- Subject ---
+class SubjectBase(BaseModel):
+    name: str
+    department_id: Optional[int] = None
+    required_hours: int = 2
+    target_grade: Optional[int] = None
+    category: Optional[str] = None
+    required_facility_id: Optional[int] = None 
+    credit_hours: Optional[int] = None # Added for compatibility with Wizard
+
+class SubjectCreate(SubjectBase):
+    pass
+
+class Subject(SubjectBase):
+    id: int
+    created_at: Optional[datetime] = None
+    
+    class Config:
+        from_attributes = True
+
 # --- Subject Update Schema ---
 class SubjectDescUpdate(BaseModel):
     department_id: Optional[int] = None
@@ -57,13 +77,8 @@ class SubjectDescUpdate(BaseModel):
     target_grade: Optional[int] = None
     category: Optional[str] = None
 
-class SubjectResponse(BaseModel):
+class SubjectResponse(SubjectBase): # Inherit from match
     id: int
-    name: Optional[str] = None
-    department_id: Optional[int]
-    required_hours: int
-    target_grade: Optional[int]
-    category: Optional[str]
     
     class Config:
         from_attributes = True

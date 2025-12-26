@@ -4,7 +4,7 @@ from app.database import get_db
 from app.api.deps import get_current_user
 from app.models.existing_db import (
     User, SchoolConfiguration, Department, Subject, 
-    TeacherTimeOff, BlockGroupDefinition, Teacher
+    TeacherTimeOff, BlockGroupDefinition, Teacher, Facility
 )
 from app.schemas.wizard import WizardSaveAllRequest, WizardDataResponse, SchoolConfigurationResponse, TeacherTimeOffResponse, BlockGroupDefinitionResponse
 from app.api.utils import validate_wizard_data, get_user_records
@@ -59,6 +59,7 @@ def save_wizard_data(
         # If not cascaded, we delete subjects first.
         db.query(Subject).filter(Subject.user_id == user_id).delete()
         db.query(Department).filter(Department.user_id == user_id).delete()
+        db.query(Facility).filter(Facility.user_id == user_id).delete() # Delete existing facilities
         
         # We generally do NOT delete Teachers, but we might update their Department/Assignment.
         # The payload 'teachers' contains department assignments.
@@ -71,6 +72,20 @@ def save_wizard_data(
             new_config = SchoolConfiguration(**data.school_config.model_dump(), user_id=user_id)
             db.add(new_config)
             
+        # Facilities from SchoolConfig
+        facility_map = {}
+        if data.school_config and data.school_config.facilities:
+            for fac_name in data.school_config.facilities:
+                new_fac = Facility(
+                    name=fac_name,
+                    type="SPECIAL", # Assume all wizard facilities are SPECIAL
+                    user_id=user_id
+                )
+                db.add(new_fac)
+                db.flush()
+                db.refresh(new_fac)
+                facility_map[fac_name] = new_fac.id
+
         # Departments
         dept_map = {} # name -> id
         for dept_data in data.departments:
@@ -118,11 +133,16 @@ def save_wizard_data(
             dept_name = subj_data.get("department_name")
             dept_id = dept_map.get(dept_name)
             
+            # Resolve required facility
+            req_room_name = subj_data.get("requiredRoom")
+            fac_id = facility_map.get(req_room_name)
+
             new_subj = Subject(
                 name=subj_data.get("name"),
                 credit_hours=subj_data.get("credit_hours"),
                 subject_type=subj_data.get("subject_type", "general"),
                 department_id=dept_id,
+                required_facility_id=fac_id, # Added constraint
                 user_id=user_id
                 # Add other fields as needed
             )

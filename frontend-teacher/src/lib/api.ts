@@ -5,10 +5,18 @@ async function request<T>(
     options: RequestInit = {}
 ): Promise<T> {
     const url = `${BASE_URL}${endpoint}`;
-    const headers = {
+    const headers: HeadersInit = {
         'Content-Type': 'application/json',
         ...options.headers,
     };
+
+    // Add Authorization header if token exists
+    if (typeof window !== 'undefined') {
+        const token = localStorage.getItem('token');
+        if (token) {
+            (headers as any)['Authorization'] = `Bearer ${token}`;
+        }
+    }
 
     const response = await fetch(url, {
         ...options,

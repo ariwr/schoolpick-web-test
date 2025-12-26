@@ -1,5 +1,5 @@
 # 기존 데이터베이스 테이블에 맞는 모델 (교사용)
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text, Date
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text, Date, UniqueConstraint, Index
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -90,11 +90,13 @@ class Subject(Base):
     required_hours = Column(Integer, default=2) # 주당 시수
     target_grade = Column(Integer) # 대상 학년
     category = Column(String) # 과목 구분 (국어, 수학, 창체 등)
+    required_facility_id = Column(Integer, ForeignKey("facilities.id")) # 특별실 필수 여부
     
     created_at = Column(DateTime(timezone=True))
     
     department = relationship("Department", back_populates="subjects")
     user = relationship("User", back_populates="subjects")
+    required_facility = relationship("Facility")
 
 # 기존 teacher_timetables 테이블 활용
 class TeacherTimetable(Base):
@@ -205,6 +207,10 @@ class LectureBlock(Base):
     group = relationship("LectureGroup")
     room = relationship("Facility")
 
+    __table_args__ = (
+        Index('ix_lecture_block_unique_room_slot', 'day', 'period', 'room_id', unique=True, postgresql_where=(room_id != None)),
+    )
+
 class TeacherConstraint(Base):
     """
     교사 제약 조건.
@@ -254,6 +260,10 @@ class TeacherTimeOff(Base):
     user = relationship("User", back_populates="teacher_time_offs")
     teacher = relationship("Teacher", back_populates="constraints")
 
+    __table_args__ = (
+        UniqueConstraint('teacher_id', 'day', 'period', name='uq_teacher_time_off_slot'),
+    )
+
 class BlockGroupDefinition(Base):
     """Wizard Step 4: Block group definitions"""
     __tablename__ = "block_group_definitions"
@@ -266,6 +276,31 @@ class BlockGroupDefinition(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     
     user = relationship("User", back_populates="block_definitions")
+
+class ScheduleConstraint(Base):
+    """
+    범용 제약 조건 테이블 (Solver용).
+    예: 선생님 하루 최대 수업 시수, 연강 금지 등.
+    """
+    __tablename__ = "schedule_constraints"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    schedule_id = Column(Integer, ForeignKey("schedule_metadata.id", ondelete="CASCADE"), nullable=True) # 특정 스케줄 전용 or 전역
+    
+    name = Column(String(100)) # 제약 조건 이름 (예: "Max Daily Hours")
+    constraint_type = Column(String(50), nullable=False) # SYSTEM, USER_DEFINED
+    target_type = Column(String(50)) # TEACHER, GRADE, SUBJECT, GLOBAL
+    target_id = Column(Integer, nullable=True) # 대상 ID (Optional)
+    
+    configuration = Column(Text) # JSON String for parameters (e.g. {"max_hours": 4})
+    weight = Column(Integer, default=100) # 가중치 (Hard=1000, Soft=10-100)
+    is_active = Column(Boolean, default=True)
+    
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    user = relationship("User") # Link to user
+
 
 
 

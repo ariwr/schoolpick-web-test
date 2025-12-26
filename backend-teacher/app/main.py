@@ -277,10 +277,9 @@ app.include_router(wizard.router, prefix="/api/wizard", tags=["학교 설정 마
 async def startup_event():
     """애플리케이션 시작 시 스케줄러 시작 및 필터 서비스 초기화"""
     try:
-        from app.services.scheduler_service import get_scheduler_service
-        scheduler = get_scheduler_service()
-        scheduler.start()
-        logger.info("야자 출석 스케줄러가 시작되었습니다")
+        # scheduler = get_scheduler_service()
+        # scheduler.start()
+        logger.info("야자 출석 스케줄러가 일시적으로 비활성화되었습니다 (디버깅)")
     except Exception as e:
         logger.error(f"스케줄러 시작 중 오류 발생: {str(e)}")
     

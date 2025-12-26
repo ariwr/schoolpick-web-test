@@ -4,16 +4,21 @@ from sqlalchemy.orm import Session
 from sqlalchemy import and_, desc
 
 from app.database import get_db
+from app.api.deps import get_current_user
 from app.models.existing_db import LectureBlock, LectureGroup, Teacher, Facility, ScheduleMetadata
 from app.schemas.schedule import (
     LectureBlockCreate,
     LectureBlockResponse,
     LectureGroupCreate,
+    LectureGroupCreateBatch,
     LectureGroupResponse,
     ValidationResult,
+    ValidationError,
     ScheduleMetadataCreate,
     ScheduleMetadataResponse
 )
+from app.services.validator import ScheduleValidator
+from app.services.scheduler import AutoScheduler
 
 router = APIRouter()
 
@@ -52,7 +57,10 @@ def validate_assignment(db: Session, block_in: LectureBlockCreate) -> Validation
     # 1. Fetch Context (LectureGroup -> Teacher, Grade, Class)
     group = db.query(LectureGroup).filter(LectureGroup.id == block_in.group_id).first()
     if not group:
-        return ValidationResult(is_valid=False, errors=["Invalid group_id: Lecture Group not found"])
+        return ValidationResult(
+            is_valid=False, 
+            errors=[ValidationError(type="INVALID_GROUP", description="Invalid group_id: Lecture Group not found")]
+        )
 
     # 2. Hard Constraint: Teacher Double Booking
     # 같은 요일(day), 교시(period)에 해당 교사(teacher_id)가 이미 다른 블록에 있는지 확인
@@ -70,7 +78,14 @@ def validate_assignment(db: Session, block_in: LectureBlockCreate) -> Validation
     
     if conflict_block:
         teacher_name = group.teacher.name if group.teacher else "Unknown"
-        errors.append(f"교사 중복 배정: {teacher_name} 선생님은 이미 {conflict_block.day} {conflict_block.period}교시에 수업이 있습니다.")
+        errors.append(ValidationError(
+            type="DOUBLE_BOOKING_TEACHER",
+            description=f"교사 중복 배정: {teacher_name} 선생님은 이미 {conflict_block.day} {conflict_block.period}교시에 수업이 있습니다.",
+            block_ids=[conflict_block.id],
+            teacher_id=group.teacher_id,
+            day=block_in.day,
+            period=block_in.period
+        ))
 
     # 3. Hard Constraint: Room Double Booking
     if block_in.room_id:
@@ -86,7 +101,14 @@ def validate_assignment(db: Session, block_in: LectureBlockCreate) -> Validation
         if room_conflict:
             room = db.query(Facility).filter(Facility.id == block_in.room_id).first()
             room_name = room.name if room else "Unknown"
-            errors.append(f"특별실 중복: {room_name}은(는) 이미 사용 중입니다.")
+            errors.append(ValidationError(
+                type="DOUBLE_BOOKING_ROOM",
+                description=f"특별실 중복: {room_name}은(는) 이미 사용 중입니다.",
+                block_ids=[room_conflict.id],
+                room_id=block_in.room_id,
+                day=block_in.day,
+                period=block_in.period
+            ))
 
     # 4. Soft Constraint: Max Daily Hours (Example)
     # 해당 교사의 오늘 수업 시수 계산
@@ -118,6 +140,39 @@ def create_lecture_group(group_in: LectureGroupCreate, db: Session = Depends(get
     db.commit()
     db.refresh(group)
     return group
+
+@router.post("/groups/batch", response_model=List[LectureGroupResponse])
+def create_lecture_groups_batch(batch_in: LectureGroupCreateBatch, db: Session = Depends(get_db)):
+    """수업 그룹(Intent) 일괄 생성 (Performance Optimized)"""
+    new_groups = []
+    
+    # 1. Prepare objects
+    for group_data in batch_in.groups:
+        new_group = LectureGroup(
+            schedule_id=batch_in.schedule_id,
+            subject_id=group_data.subject_id,
+            teacher_id=group_data.teacher_id,
+            grade=group_data.grade,
+            class_num=group_data.class_num,
+            total_credits=group_data.total_credits,
+            slicing_option=group_data.slicing_option,
+            neis_class_code=group_data.neis_class_code,
+            student_count=group_data.student_count
+        )
+        new_groups.append(new_group)
+    
+    # 2. Bulk Insert (Using add_all is simpler for getting IDs back with refresh, 
+    # but bulk_save_objects is faster if IDs not needed immediately. 
+    # Frontend needs IDs? Yes, for hydration. 
+    # So we use add_all + commit, which is reasonably fast for <1000 items)
+    db.add_all(new_groups)
+    db.commit()
+    
+    # 3. Refresh to get IDs
+    for g in new_groups:
+        db.refresh(g)
+        
+    return new_groups
 
 @router.post("/blocks", response_model=LectureBlockResponse)
 def create_lecture_block(block_in: LectureBlockCreate, db: Session = Depends(get_db)):
@@ -160,7 +215,50 @@ def get_lecture_blocks(schedule_id: int, db: Session = Depends(get_db)):
     )
     return blocks
 
-@router.post("/validate", response_model=ValidationResult)
+@router.post("/{schedule_id}/validate", response_model=ValidationResult)
+def validate_full_schedule(schedule_id: int, db: Session = Depends(get_db)):
+    """전체 시간표 유효성 검사 수행"""
+    validator = ScheduleValidator(db, schedule_id)
+    # Run validation
+    result_dataclass = validator.validate()
+    
+    # Convert dataclass errors to Pydantic models
+    pydantic_errors = []
+    for err in result_dataclass.errors:
+        pydantic_errors.append(ValidationError(**err))
+        
+    return ValidationResult(
+        is_valid=result_dataclass.is_valid,
+        errors=pydantic_errors,
+        warnings=[] # Warnings not implemented in service yet
+    )
+
+@router.post("/{schedule_id}/auto-schedule", response_model=List[LectureBlockResponse])
+def run_auto_scheduler(schedule_id: int, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
+    """자동 배정 실행"""
+    # 1. Clear existing blocks? (Optional, depends on use case. For now, assume adding to empty or filling gaps)
+    # If full reschedule requested:
+    # db.query(LectureBlock).join(LectureGroup).filter(LectureGroup.schedule_id == schedule_id).delete()
+    
+    scheduler = AutoScheduler(db, schedule_id, current_user.id)
+    try:
+        new_blocks = scheduler.schedule()
+        
+        # Bulk insert
+        for block in new_blocks:
+            db.add(block)
+        db.commit()
+        
+        # Refresh to get IDs
+        for block in new_blocks:
+            db.refresh(block)
+            
+        return new_blocks
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Scheduling failed: {str(e)}")
+
+@router.post("/validate-check", response_model=ValidationResult)
 def check_validation_only(block_in: LectureBlockCreate, db: Session = Depends(get_db)):
     """저장하지 않고 유효성 검사만 수행 (드래그 앤 드롭 미리보기용)"""
     return validate_assignment(db, block_in)
