@@ -6,12 +6,15 @@ import { useScheduleStore } from "@/store/schedule-store";
 import { ClassBlock, Teacher } from "@/types/schedule";
 import { cn } from "@/lib/utils";
 
+import { MOCK_TEACHERS } from "@/data/mock-data";
+
 interface ChangChePopoverProps {
     block: ClassBlock;
 }
 
 export default function ChangChePopover({ block }: ChangChePopoverProps) {
-    const { teachers, blocks, assignTeacherToBlock } = useScheduleStore();
+    const { blocks, assignTeacherToBlock } = useScheduleStore();
+    const teachers = MOCK_TEACHERS;
 
     const assignedTeacher = teachers.find((t) => t.id === block.teacherId);
 

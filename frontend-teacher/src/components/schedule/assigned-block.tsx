@@ -12,9 +12,12 @@ interface AssignedBlockProps {
     hasConflict?: boolean;
 }
 
+import { MOCK_TEACHERS } from "@/data/mock-data";
+
 export default function AssignedBlock({ block, hasConflict }: AssignedBlockProps) {
     const { subjects, removeBlock } = useScheduleStore();
     const subject = subjects.find((s) => s.id === block.subjectId);
+    const teacher = MOCK_TEACHERS.find(t => t.id === block.teacherId);
 
     const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
         id: `block-${block.id}`,
@@ -29,20 +32,35 @@ export default function AssignedBlock({ block, hasConflict }: AssignedBlockProps
             {...listeners}
             {...attributes}
             className={cn(
-                "relative group text-xs p-1.5 rounded border shadow-sm flex justify-between items-center cursor-grab active:cursor-grabbing",
+                "relative group text-xs p-1.5 rounded border shadow-sm flex flex-col gap-0.5 justify-start cursor-grab active:cursor-grabbing",
                 subject.color,
                 hasConflict ? "border-red-400 ring-1 ring-red-400" : "border-transparent",
                 isDragging ? "opacity-30" : "hover:shadow-md"
             )}
         >
-            <div className="flex flex-col gap-0.5 min-w-0">
-                <span className="font-medium truncate">{subject.name}</span>
-                {subject.category === '창체' && (
-                    <div onPointerDown={(e) => e.stopPropagation()}>
-                        <ChangChePopover block={block} />
-                    </div>
+            {/* Teacher Name */}
+            <span className="font-bold text-gray-900 truncate">
+                {teacher?.name || "미배정"}
+            </span>
+
+            {/* Subject and Block Tag */}
+            <div className="flex items-center gap-1 text-[10px] text-gray-600">
+                <span className="truncate">{subject.name}</span>
+                {block.blockGroup && (
+                    <span className="font-mono bg-black/10 px-1 rounded text-[9px]">
+                        {block.blockGroup}
+                    </span>
                 )}
             </div>
+
+            {/* Custom Popover for Creative Activities */}
+            {subject.category === '창체' && (
+                <div onPointerDown={(e) => e.stopPropagation()} className="mt-1">
+                    <ChangChePopover block={block} />
+                </div>
+            )}
+
+            {/* Delete Button */}
             <button
                 type="button"
                 onPointerDown={(e) => {

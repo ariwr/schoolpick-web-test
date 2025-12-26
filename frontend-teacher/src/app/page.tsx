@@ -54,13 +54,18 @@ const features = [
     name: "시간표 생성",
     description: "교육과정과 시간표의 모순을 해결하는 스마트 배정 시스템",
     icon: DocumentArrowDownIcon,
-    href: "/schedule-creation",
+    href: "/schedule-creation/setup",
     color: "bg-indigo-500",
   },
 ];
 
+import LoginRequiredModal from "@/components/auth/LoginRequiredModal";
+import { useRouter } from "next/navigation";
+
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -102,7 +107,7 @@ export default function Home() {
           {!isAuthenticated && (
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/login">
-                <Button size="lg" className="text-lg px-8 py-4">
+                <Button size="lg" className="text-lg px-8 py-4 bg-[#3BB5C1] hover:bg-[#2A9BA6] text-white border-0">
                   <SparklesIcon className="w-5 h-5 mr-2" />
                   로그인하기
                 </Button>
@@ -128,7 +133,18 @@ export default function Home() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature) => (
-            <Link key={feature.name} href={feature.href}>
+            <Link
+              key={feature.name}
+              href={feature.href}
+              onClick={(e) => {
+                // 시간표 생성 등 보호된 메뉴 접근 시 로그인 체크
+                if (feature.href.startsWith("/schedule-creation") && !isAuthenticated) {
+                  e.preventDefault();
+                  setIsLoginModalOpen(true);
+                  // alert 삭제
+                }
+              }}
+            >
               <Card className="h-full bg-godding-card-bg backdrop-blur-sm border-godding-card-border hover:bg-white transition-all duration-300 cursor-pointer group hover:scale-105 hover:shadow-2xl">
                 <CardHeader>
                   <div className="flex items-center space-x-4">
@@ -149,7 +165,12 @@ export default function Home() {
             </Link>
           ))}
         </div>
-      </div>
-    </div>
+      </div >
+      <LoginRequiredModal
+        isOpen={isLoginModalOpen}
+        onConfirm={() => router.push('/login')}
+        onCancel={() => setIsLoginModalOpen(false)}
+      />
+    </div >
   );
 }

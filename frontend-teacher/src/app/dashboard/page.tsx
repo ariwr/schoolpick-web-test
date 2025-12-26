@@ -2,11 +2,12 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import {
-    BookOpenIcon,
-    ChartBarIcon,
-    ClipboardDocumentListIcon,
-    ShieldCheckIcon,
-    UserGroupIcon
+  BookOpenIcon,
+  ChartBarIcon,
+  ClipboardDocumentListIcon,
+  ShieldCheckIcon,
+  UserGroupIcon,
+  DocumentArrowDownIcon
 } from "@heroicons/react/24/outline";
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
@@ -89,6 +90,13 @@ function DashboardContent({ user }: { user: User | null }) {
       icon: ShieldCheckIcon,
       href: "/content-filter",
       color: "bg-red-500",
+    },
+    {
+      name: "시간표 생성",
+      description: "교육과정과 시간표의 모순을 해결하는 스마트 배정 시스템",
+      icon: DocumentArrowDownIcon,
+      href: "/schedule-creation/setup",
+      color: "bg-indigo-500",
     },
   ];
 

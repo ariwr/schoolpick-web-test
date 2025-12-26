@@ -1,0 +1,137 @@
+﻿
+> frontend-teacher@0.1.0 lint
+> eslint
+
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\app\content-filter\page.tsx
+    17:3   warning  'ExclamationTriangleIcon' is defined but never used                                                                                                                                            @typescript-eslint/no-unused-vars
+    18:3   warning  'XCircleIcon' is defined but never used                                                                                                                                                        @typescript-eslint/no-unused-vars
+   216:9   warning  The 'handleFilter' function makes the dependencies of useCallback Hook (at line 344) change on every render. To fix this, wrap the definition of 'handleFilter' in its own useCallback() Hook  react-hooks/exhaustive-deps
+   275:16  warning  'jsonError' is defined but never used                                                                                                                                                          @typescript-eslint/no-unused-vars
+   452:11  error    'nextIssues' is never reassigned. Use 'const' instead                                                                                                                                          prefer-const
+   564:66  warning  'allIssues' is defined but never used                                                                                                                                                          @typescript-eslint/no-unused-vars
+   564:92  warning  'content' is defined but never used                                                                                                                                                            @typescript-eslint/no-unused-vars
+   576:5   warning  'segmentStart' is defined but never used                                                                                                                                                       @typescript-eslint/no-unused-vars
+   577:5   warning  'segmentEnd' is defined but never used                                                                                                                                                         @typescript-eslint/no-unused-vars
+   578:5   warning  'allIssues' is defined but never used                                                                                                                                                          @typescript-eslint/no-unused-vars
+   579:5   warning  'content' is defined but never used                                                                                                                                                            @typescript-eslint/no-unused-vars
+   710:6   warning  React Hook useCallback has a missing dependency: 'determineSegmentStyle'. Either include it or remove the dependency array                                                                     react-hooks/exhaustive-deps
+  1077:37  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                react/no-unescaped-entities
+  1077:51  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`                                                                                                                                react/no-unescaped-entities
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\app\login\page.tsx
+   57:17  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   61:16  warning  'jsonError' is defined but never used     @typescript-eslint/no-unused-vars
+  121:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\app\night-study\page.tsx
+   14:3   warning  'PlusIcon' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+   54:7   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  155:6   warning  React Hook useEffect has a missing dependency: 'testServerConnection'. Either include it or remove the dependency array                                                                                                                                                                  react-hooks/exhaustive-deps
+  262:16  warning  'e' is defined but never used                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  417:6   warning  React Hook useEffect has a missing dependency: 'generateQRCode'. Either include it or remove the dependency array                                                                                                                                                                        react-hooks/exhaustive-deps
+  427:6   warning  React Hook useEffect has a missing dependency: 'fetchAttendanceRecords'. Either include it or remove the dependency array                                                                                                                                                                react-hooks/exhaustive-deps
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\app\register\page.tsx
+   71:29  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  115:17  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  118:16  warning  '_' is defined but never used             @typescript-eslint/no-unused-vars
+  155:20  warning  '_' is defined but never used             @typescript-eslint/no-unused-vars
+  161:21  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\app\sae-teuk\page.tsx
+   143:22  warning  'setByteLimits' is assigned a value but never used               @typescript-eslint/no-unused-vars
+   145:28  warning  'setFilteringContent' is assigned a value but never used         @typescript-eslint/no-unused-vars
+   150:23  warning  'setIsUploading' is assigned a value but never used              @typescript-eslint/no-unused-vars
+   900:9   warning  'SpellCheckDisplay' is assigned a value but never used           @typescript-eslint/no-unused-vars
+   932:9   warning  'handleFixError' is assigned a value but never used              @typescript-eslint/no-unused-vars
+  1815:16  warning  'jsonError' is defined but never used                            @typescript-eslint/no-unused-vars
+  1835:9   warning  'applyFilteredContent' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  1934:9   warning  'InlineHighlightOverlay' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  2130:9   warning  'renderHighlightedContent' is assigned a value but never used    @typescript-eslint/no-unused-vars
+  2130:62  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
+  2138:9   error    'result' is never reassigned. Use 'const' instead                prefer-const
+  2371:41  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  2371:58  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  2406:41  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  2406:58  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\app\study-room\page.tsx
+   13:3   warning  'QrCodeIcon' is defined but never used                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+   66:11  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  243:25  warning  'setIsInitialized' is assigned a value but never used                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\app\subject-survey\page.tsx
+    18:5   warning  'TrashIcon' is defined but never used                                                                                                                                                       @typescript-eslint/no-unused-vars
+   245:9   warning  'getStudentById' is assigned a value but never used                                                                                                                                         @typescript-eslint/no-unused-vars
+   812:49  error    React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+   813:57  error    React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+  1097:55  error    React Hook "useState" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\components\auth\token-validator.tsx
+  5:10  warning  'isProtectedPath' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\components\content-filter\custom-rule-sidebar.tsx
+   47:18  warning  'jsonError' is defined but never used                                                                          @typescript-eslint/no-unused-vars
+  210:6   warning  React Hook useEffect has a missing dependency: 'fetchRules'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\components\layout\header.tsx
+  12:3   warning  'UserGroupIcon' is defined but never used  @typescript-eslint/no-unused-vars
+  91:16  warning  'error' is defined but never used          @typescript-eslint/no-unused-vars
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\components\schedule\changche-popover.tsx
+  6:22  warning  'Teacher' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\components\schedule\dnd-provider-wrapper.tsx
+  12:5  warning  'closestCenter' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\components\schedule\subject-panel.tsx
+  6:10  warning  'useState' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\components\schedule\timetable-cell.tsx
+   7:10  warning  'XMarkIcon' is defined but never used             @typescript-eslint/no-unused-vars
+  23:13  warning  'removeBlock' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  23:26  warning  'subjects' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\lib\auth.ts
+  50:32  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\LG\Heart_Ware\schoolpick-web\frontend-teacher\src\store\schedule-store.ts
+    3:16  warning  'uuidv4' is defined but never used  @typescript-eslint/no-unused-vars
+  138:41  warning  'key' is defined but never used     @typescript-eslint/no-unused-vars
+
+✖ 65 problems (18 errors, 47 warnings)
+  2 errors and 0 warnings potentially fixable with the `--fix` option.
+
+node.exe : npm error Lifec
+ycle script `lint` failed 
+with error:
+위치 줄:1 문자:1
++ & "C:\Program Files\node
+js/node.exe" "C:\Program F
+iles\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (n  
+  pm error Lifec...led    
+ with error::String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+npm error code 1
+npm error path C:\Users\LG
+\Heart_Ware\schoolpick-web
+\frontend-teacher
+npm error workspace fronte
+nd-teacher@0.1.0
+npm error location C:\User
+s\LG\Heart_Ware\schoolpick
+-web\frontend-teacher
+npm error command failed
+npm error command C:\WINDO
+WS\system32\cmd.exe /d /s 
+/c eslint

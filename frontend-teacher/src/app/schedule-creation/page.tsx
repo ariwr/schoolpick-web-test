@@ -1,8 +1,7 @@
 "use client";
 
 import DndProviderWrapper from "@/components/schedule/dnd-provider-wrapper";
-import SubjectPanel from "@/components/schedule/subject-panel";
-import TimetableGrid from "@/components/schedule/timetable-grid";
+import MainTimetable from "@/components/schedule/MainTimetable";
 import ConflictAlert from "@/components/schedule/conflict-alert";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -33,14 +32,9 @@ export default function ScheduleCreationPage() {
             {/* Main Content */}
             <DndProviderWrapper>
                 <div className="flex flex-1 p-6 gap-6 overflow-hidden">
-                    {/* Left Panel */}
-                    <div className="flex-shrink-0">
-                        <SubjectPanel />
-                    </div>
-
-                    {/* Right Panel (Grid) */}
-                    <div className="flex-1 overflow-auto">
-                        <TimetableGrid />
+                    {/* Main Grid Area */}
+                    <div className="flex-1 overflow-hidden">
+                        <MainTimetable />
                     </div>
                 </div>
 

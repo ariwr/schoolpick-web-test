@@ -267,6 +267,9 @@ if ocr:
 if check_router:
     app.include_router(check_router, tags=["세특 점검"])
 
+from app.api.endpoints import school_data
+app.include_router(school_data.router, prefix="/api/school-data", tags=["학교 설정"])
+
 # 야자 출석 스케줄러 시작
 @app.on_event("startup")
 async def startup_event():

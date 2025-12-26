@@ -15,6 +15,7 @@ import {
   ArrowRightOnRectangleIcon,
   DocumentArrowDownIcon
 } from "@heroicons/react/24/outline"
+import LoginRequiredModal from "@/components/auth/LoginRequiredModal"
 
 const navigation = [
   { name: "세특 작성", href: "/sae-teuk", icon: ClipboardDocumentListIcon },
@@ -22,7 +23,7 @@ const navigation = [
   { name: "정독실", href: "/study-room", icon: BookOpenIcon },
   { name: "야자 출첵", href: "/night-study", icon: MoonIcon },
   { name: "세특 점검", href: "/content-filter", icon: ShieldCheckIcon },
-  { name: "시간표 생성", href: "/schedule-creation", icon: DocumentArrowDownIcon },
+  { name: "시간표 생성", href: "/schedule-creation/setup", icon: DocumentArrowDownIcon },
 
 ]
 
@@ -32,6 +33,7 @@ export default function Header() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userName, setUserName] = useState<string | null>(null)
   const [mounted, setMounted] = useState(false)
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
 
   useEffect(() => {
     // 클라이언트에서만 실행되도록 마운트 상태 설정
@@ -127,6 +129,12 @@ export default function Header() {
                 <Link
                   key={item.name}
                   href={item.href}
+                  onClick={(e) => {
+                    if (item.href.startsWith("/schedule-creation") && !isAuthenticated) {
+                      e.preventDefault();
+                      setIsLoginModalOpen(true);
+                    }
+                  }}
                   className={cn(
                     "flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200",
                     isActive
@@ -145,15 +153,18 @@ export default function Header() {
             {mounted && isAuthenticated ? (
               <>
                 {userName && (
-                  <span className="text-white/90 text-sm hidden sm:inline">
-                    {userName}님
-                  </span>
+                  <div className="flex items-center">
+                    <span className="text-white font-semibold text-sm hidden sm:inline mr-4">
+                      {userName}님
+                    </span>
+                    <div className="h-4 w-px bg-white/30 mr-2" aria-hidden="true" />
+                  </div>
                 )}
                 <Button
-                  variant="glass"
+                  variant="ghost"
                   size="sm"
                   onClick={handleLogout}
-                  className="flex items-center space-x-2"
+                  className="flex items-center space-x-2 text-white hover:bg-white/20 hover:text-white transition-colors border border-transparent hover:border-white/30"
                 >
                   <ArrowRightOnRectangleIcon className="w-4 h-4" />
                   <span>로그아웃</span>
@@ -161,7 +172,11 @@ export default function Header() {
               </>
             ) : (
               <Link href="/login">
-                <Button variant="glass" size="sm">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-white border border-white hover:bg-white hover:text-godding-primary transition-colors ml-2"
+                >
                   로그인
                 </Button>
               </Link>
@@ -169,7 +184,11 @@ export default function Header() {
           </div>
         </div>
       </div>
+      <LoginRequiredModal
+        isOpen={isLoginModalOpen}
+        onConfirm={() => router.push('/login')}
+        onCancel={() => setIsLoginModalOpen(false)}
+      />
     </header>
   )
 }
-

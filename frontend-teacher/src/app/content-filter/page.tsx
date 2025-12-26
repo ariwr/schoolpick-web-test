@@ -23,7 +23,43 @@ import {
   XMarkIcon
 } from "@heroicons/react/24/outline"
 
-// ... (interfaces remain same)
+// Interfaces
+interface FilterIssue {
+  id: string
+  original_text: string
+  position: number
+  length: number
+  type: string
+  reason: string
+  suggestion?: string
+  severity: 'critical' | 'warning'
+  source?: 'rule_based' | 'llm'
+  displayStart?: number
+  displayEnd?: number
+  displayText?: string
+}
+
+interface FilterResponse {
+  filtered_content: string
+  issues: FilterIssue[]
+}
+
+interface TextSegment {
+  id: string
+  start: number
+  end: number
+  text: string
+  type: 'normal' | 'issue'
+  issue?: FilterIssue
+  style?: {
+    className: string
+    severity: string
+    hasCritical: boolean
+    hasWarning: boolean
+    allIssues: FilterIssue[]
+    primaryIssue: FilterIssue
+  }
+}
 
 interface CustomRule {
   id: number
@@ -31,8 +67,6 @@ interface CustomRule {
   replacement: string
   created_at: string
 }
-
-// ... (existing FilterIssue interface if any, or just rely on existing code)
 
 function ContentFilterPageContent() {
   const [content, setContent] = useState("")
@@ -808,99 +842,140 @@ function ContentFilterPageContent() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div>
-                      <Textarea
-                        value={content}
-                        onChange={(e) => handleContentChange(e.target.value)}
-                        placeholder="내용을 입력해 주세요. (PDF 파일로도 불러올 수 있습니다)"
-                        rows={20}
-                        className="resize-none text-base"
-                      />
+                    {/* PDF 업로드 및 텍스트 에디터 영역 */}
+                    <input
+                      type="file"
+                      accept=".pdf"
+                      onChange={handlePdfUpload}
+                      ref={fileInputRef}
+                      className="hidden"
+                    />
 
-                      {/* PDF 업로드 버튼 영역 */}
-                      <div className="flex justify-end mt-2">
-                        <input
-                          type="file"
-                          accept=".pdf"
-                          onChange={handlePdfUpload}
-                          ref={fileInputRef}
-                          className="hidden"
-                        />
+                    {!content ? (
+                      <div
+                        className="flex flex-col items-center justify-center py-20 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50/50 hover:bg-white hover:border-godding-primary/50 transition-all group cursor-pointer"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 group-hover:shadow-md transition-all duration-300">
+                          <DocumentArrowUpIcon className="w-12 h-12 text-godding-primary/80 group-hover:text-godding-primary" />
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-800 mb-2">PDF 파일 업로드</h3>
+                        <p className="text-gray-500 mb-8 text-center max-w-sm leading-relaxed">
+                          생활기록부 PDF 파일을 업로드하면<br />
+                          자동으로 내용을 추출하여 점검해드립니다
+                        </p>
                         <Button
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          onClick={() => fileInputRef.current?.click()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            fileInputRef.current?.click();
+                          }}
                           disabled={isExtracting || isLoading}
-                          className="flex items-center space-x-2 text-godding-text-secondary hover:text-godding-primary border-dashed"
+                          size="lg"
+                          className="px-8 h-12 text-base shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all"
                         >
                           {isExtracting ? (
                             <>
-                              <ArrowPathIcon className="w-4 h-4 animate-spin mr-1" />
-                              <span>PDF 추출 중...</span>
+                              <ArrowPathIcon className="w-5 h-5 animate-spin mr-2" />
+                              텍스트 추출 중...
                             </>
                           ) : (
                             <>
-                              <DocumentArrowUpIcon className="w-4 h-4 mr-1" />
-                              <span>PDF 내용 불러오기</span>
+                              <DocumentArrowUpIcon className="w-5 h-5 mr-2" />
+                              PDF 파일 선택하기
+                            </>
+                          )}
+                        </Button>
+                        <p className="mt-4 text-xs text-gray-400">
+                          (*.pdf 파일만 지원합니다)
+                        </p>
+                      </div>
+                    ) : (
+                      <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+                            <DocumentTextIcon className="w-5 h-5 mr-2 text-godding-primary" />
+                            추출된 내용
+                          </h3>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              if (confirm("현재 내용을 지우고 새로운 파일을 업로드하시겠습니까?")) {
+                                setContent("");
+                                setFilteredContent("");
+                                setIssues([]);
+                                setError(null);
+                              }
+                            }}
+                            className="text-gray-500 hover:text-red-500"
+                          >
+                            <TrashIcon className="w-4 h-4 mr-1" />
+                            다시 올리기
+                          </Button>
+                        </div>
+
+                        <Textarea
+                          value={content}
+                          onChange={(e) => handleContentChange(e.target.value)}
+                          placeholder="추출된 텍스트가 여기에 표시됩니다."
+                          rows={20}
+                          className="resize-none text-base bg-white focus:bg-white"
+                        />
+
+                        <div className="mt-2 flex items-center justify-between text-sm">
+                          <span className={`font-medium ${byteCount > maxBytes ? 'text-red-600' :
+                            byteCount > maxBytes * 0.9 ? 'text-yellow-600' :
+                              'text-gray-600'
+                            }`}>
+                            {byteCount}자 / {maxBytes}자
+                          </span>
+                        </div>
+                        {maxBytes && (
+                          <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div
+                              className={`h-2 rounded-full transition-all ${byteCount > maxBytes ? 'bg-red-500' :
+                                byteCount > maxBytes * 0.9 ? 'bg-yellow-500' :
+                                  'bg-blue-500'
+                                }`}
+                              style={{ width: `${Math.min((byteCount / maxBytes) * 100, 100)}%` }}
+                            />
+                          </div>
+                        )}
+
+                        {/* 1차 필터만 사용 옵션 */}
+                        <div className="flex items-center space-x-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                          <input
+                            type="checkbox"
+                            id="ruleOnly"
+                            checked={ruleOnly}
+                            onChange={(e) => setRuleOnly(e.target.checked)}
+                            className="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500"
+                          />
+                          <label htmlFor="ruleOnly" className="text-sm font-medium text-yellow-800 cursor-pointer select-none">
+                            테스트 모드: 1차 규칙 기반 필터만 사용 (ChatGPT 건너뛰기)
+                          </label>
+                        </div>
+
+                        <Button
+                          onClick={handleFilter}
+                          disabled={!content.trim() || isLoading || byteCount > maxBytes}
+                          className="w-full h-12 text-lg shadow-md hover:shadow-lg transition-all"
+                          size="lg"
+                        >
+                          {isLoading ? (
+                            <>
+                              <ArrowPathIcon className="w-5 h-5 mr-2 animate-spin" />
+                              점검 중...
+                            </>
+                          ) : (
+                            <>
+                              <ShieldCheckIcon className="w-5 h-5 mr-2" />
+                              세특점검 시작하기
                             </>
                           )}
                         </Button>
                       </div>
-
-                      <div className="mt-2 flex items-center justify-between text-sm">
-                        <span className={`font-medium ${byteCount > maxBytes ? 'text-red-600' :
-                          byteCount > maxBytes * 0.9 ? 'text-yellow-600' :
-                            'text-gray-600'
-                          }`}>
-                          {byteCount}자
-                        </span>
-                      </div>
-                      {maxBytes && (
-                        <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
-                          <div
-                            className={`h-2 rounded-full transition-all ${byteCount > maxBytes ? 'bg-red-500' :
-                              byteCount > maxBytes * 0.9 ? 'bg-yellow-500' :
-                                'bg-blue-500'
-                              }`}
-                            style={{ width: `${Math.min((byteCount / maxBytes) * 100, 100)}%` }}
-                          />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* 1차 필터만 사용 옵션 */}
-                    <div className="flex items-center space-x-2 mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-                      <input
-                        type="checkbox"
-                        id="ruleOnly"
-                        checked={ruleOnly}
-                        onChange={(e) => setRuleOnly(e.target.checked)}
-                        className="w-4 h-4 text-yellow-600 border-gray-300 rounded focus:ring-yellow-500"
-                      />
-                      <label htmlFor="ruleOnly" className="text-sm font-medium text-yellow-800 cursor-pointer">
-                        테스트 모드: 1차 규칙 기반 필터만 사용 (ChatGPT 건너뛰기)
-                      </label>
-                    </div>
-
-                    <Button
-                      onClick={handleFilter}
-                      disabled={!content.trim() || isLoading || byteCount > maxBytes}
-                      className="w-full"
-                      size="lg"
-                    >
-                      {isLoading ? (
-                        <>
-                          <ArrowPathIcon className="w-4 h-4 mr-2 animate-spin" />
-                          점검 중...
-                        </>
-                      ) : (
-                        <>
-                          <ShieldCheckIcon className="w-4 h-4 mr-2" />
-                          세특점검하기
-                        </>
-                      )}
-                    </Button>
+                    )}
 
                     {error && (
                       <div className="p-3 bg-red-50 border border-red-200 rounded-lg">

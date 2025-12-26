@@ -1,5 +1,6 @@
 "use client";
 
+import { Fragment } from "react";
 import { useScheduleStore } from "@/store/schedule-store";
 import { DayOfWeek, Period } from "@/types/schedule";
 import TimetableCell from "./timetable-cell";
@@ -32,7 +33,7 @@ export default function TimetableGrid() {
 
                 {/* Grid Body */}
                 {PERIODS.map((period) => (
-                    <>
+                    <Fragment key={period}>
                         {/* Period Label */}
                         <div className="flex items-center justify-center font-semibold text-gray-500">
                             {period}교시
@@ -57,7 +58,7 @@ export default function TimetableGrid() {
                                 />
                             );
                         })}
-                    </>
+                    </Fragment>
                 ))}
             </div>
         </div>

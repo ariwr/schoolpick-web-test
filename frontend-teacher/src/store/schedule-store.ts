@@ -1,12 +1,13 @@
 import { create } from 'zustand';
-import { ClassBlock, Conflict, DayOfWeek, Period, Subject, Teacher } from '../types/schedule';
-import { v4 as uuidv4 } from 'uuid'; // We might need uuid, or just use simple random string for now
+import { ClassBlock, Conflict, DayOfWeek, Period, Subject, Teacher, UnassignedCard } from '../types/schedule';
+import { MOCK_TEACHERS } from "@/data/mock-data";
 
 interface ScheduleState {
     subjects: Subject[];
     teachers: Teacher[];
     blocks: ClassBlock[]; // Flat list of all assigned blocks
     conflicts: Conflict[];
+    unassignedCards: UnassignedCard[]; // 미배정 카드 리스트
 
     // Actions
     addSubject: (subject: Subject) => void;
@@ -14,64 +15,143 @@ interface ScheduleState {
     addTeacher: (teacher: Teacher) => void;
 
     // DnD Actions
-    addBlock: (subjectId: string, day: DayOfWeek, period: Period) => void;
-    moveBlock: (blockId: string, toDay: DayOfWeek, toPeriod: Period) => void;
+    addBlock: (subjectId: string, day: DayOfWeek, period: Period, grade: number, classNum: number) => void;
+    moveBlock: (blockId: string, toDay: DayOfWeek, toPeriod: Period, grade: number, classNum: number) => void;
     removeBlock: (blockId: string) => void;
     assignTeacherToBlock: (blockId: string, teacherId: string) => void;
 
     // Validation
     validateSchedule: () => void;
+
+    // API Actions
+    fetchSchoolData: () => Promise<void>;
+
+    // Unassigned Cards Actions
+    createUnassignedCard: (subjectId: string, credits: number, grade: number, classNum: number, slicingOption?: '2+2' | '3+1' | '4') => void;
+    assignCardToSlot: (cardId: string, day: DayOfWeek, period: Period, grade: number, classNum: number) => void;
+    returnCardToUnassigned: (blockId: string) => void;
+    setUnassignedCards: (cards: UnassignedCard[]) => void; // wizard-store에서 사용
 }
 
 // Temporary ID generator
 const generateId = () => Math.random().toString(36).substr(2, 9);
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export const useScheduleStore = create<ScheduleState>((set, get) => ({
-    subjects: [
-        { id: 'sub-1', name: '국어', category: '국어', requiredHours: 4, color: 'bg-red-100 hover:bg-red-200 border-red-300' },
-        { id: 'sub-2', name: '수학', category: '수학', requiredHours: 4, color: 'bg-blue-100 hover:bg-blue-200 border-blue-300' },
-        { id: 'sub-3', name: '영어', category: '영어', requiredHours: 4, color: 'bg-yellow-100 hover:bg-yellow-200 border-yellow-300' },
-        { id: 'sub-4', name: '한국사', category: '탐구', requiredHours: 3, color: 'bg-green-100 hover:bg-green-200 border-green-300' },
-        { id: 'sub-5', name: '통합사회', category: '탐구', requiredHours: 3, color: 'bg-green-100 hover:bg-green-200 border-green-300' },
-        { id: 'sub-6', name: '음악', category: '체육예술', requiredHours: 2, color: 'bg-purple-100 hover:bg-purple-200 border-purple-300' },
-        { id: 'sub-7', name: '창체/진로', category: '창체', requiredHours: 2, color: 'bg-gray-100 hover:bg-gray-200 border-gray-300' },
-    ],
-    teachers: [
-        { id: 'tea-1', name: '김국어', subjectId: 'sub-1', maxHoursPerWeek: 15 },
-        { id: 'tea-2', name: '이수학', subjectId: 'sub-2', maxHoursPerWeek: 15 },
-        { id: 'tea-3', name: '박영어', subjectId: 'sub-3', maxHoursPerWeek: 15 },
-        { id: 'tea-4', name: '최사회', subjectId: 'sub-5', maxHoursPerWeek: 12 },
-        { id: 'tea-5', name: '정음악', subjectId: 'sub-6', maxHoursPerWeek: 10 },
-    ],
+    subjects: [], // Initial empty, fetched from API
+    teachers: [], // Initial empty, fetched from API
     blocks: [],
     conflicts: [],
+    unassignedCards: [], // 미배정 카드 초기 상태
 
     addSubject: (subject) => set((state) => ({ subjects: [...state.subjects, subject] })),
     removeSubject: (id) => set((state) => ({ subjects: state.subjects.filter(s => s.id !== id) })),
     addTeacher: (teacher) => set((state) => ({ teachers: [...state.teachers, teacher] })),
 
-    addBlock: (subjectId, day, period) => {
+    fetchSchoolData: async () => {
+        try {
+            console.log("Fetching school data from:", API_BASE);
+            const [teachersRes, subjectsRes] = await Promise.all([
+                fetch(`${API_BASE}/api/school-data/teachers-detail`),
+                fetch(`${API_BASE}/api/school-data/subjects-detail`)
+            ]);
+
+            if (teachersRes.ok && subjectsRes.ok) {
+                const teachersData = await teachersRes.json();
+                const subjectsData = await subjectsRes.json();
+
+                // Transform API data to Frontend format if needed
+                // Backend TeacherResponse: {id, teacher_number, name, department_id, max_hours_per_week}
+                // Frontend Teacher: {id, name, subjectId, homeroomClass, maxHoursPerWeek}
+
+                // We need to map backend Subject ID to frontend Subject ID logic or just use ID.
+                // Assuming backend IDs are integers, frontend uses strings mostly in mocks but string|number is fine if consistent.
+
+                const mappedTeachers: Teacher[] = teachersData.map((t: any) => ({
+                    id: t.id.toString(),
+                    name: t.name,
+                    subjectId: t.department_id ? `dept-${t.department_id}` : 'unknown', // Map department to subjectGroup?
+                    // Frontend 'subjectId' in Teacher meant "Major Subject". Backends 'department_id' is similar.
+                    maxHoursPerWeek: t.max_hours_per_week,
+                    homeroomClass: undefined // Not yet in backend API, maybe add later?
+                }));
+
+                const mappedSubjects: Subject[] = subjectsData.map((s: any) => ({
+                    id: s.id.toString(),
+                    name: s.name,
+                    category: s.category || '기타',
+                    requiredHours: s.required_hours,
+                    color: 'bg-white border-gray-200' // Default color, maybe map category to color
+                }));
+
+                // If API returns empty (no data seeded), fallback to Mock?
+                if (mappedTeachers.length === 0) {
+                    console.warn("API returned no teachers, using mock data fallback.");
+                    set({ teachers: MOCK_TEACHERS });
+                } else {
+                    set({ teachers: mappedTeachers });
+                }
+
+                if (mappedSubjects.length > 0) {
+                    set({ subjects: mappedSubjects });
+                } else {
+                    // Fallback subjects
+                    set({
+                        subjects: [
+                            { id: 'sub-1', name: '국어', category: '국어', requiredHours: 4, color: 'bg-red-100 hover:bg-red-200 border-red-300' },
+                            { id: 'sub-2', name: '수학', category: '수학', requiredHours: 4, color: 'bg-blue-100 hover:bg-blue-200 border-blue-300' }
+                        ]
+                    });
+                }
+
+
+            } else {
+                console.error("Failed to fetch data", teachersRes.status, subjectsRes.status);
+                // Fallback to Mocks on API Error (500 etc)
+                console.warn("⚠️ Backend error - using mock data for frontend testing.");
+                set({ teachers: MOCK_TEACHERS });
+                set({
+                    subjects: [
+                        { id: 'sub-1', name: '국어', category: '국어', requiredHours: 4, color: 'bg-red-100 hover:bg-red-200 border-red-300' },
+                        { id: 'sub-2', name: '수학', category: '수학', requiredHours: 4, color: 'bg-blue-100 hover:bg-blue-200 border-blue-300' }
+                    ]
+                });
+            }
+        } catch (e) {
+            console.warn("⚠️ Backend not available - using mock data for frontend testing:", e);
+            // Fallback to Mocks on Network Error
+            set({ teachers: MOCK_TEACHERS });
+            set({
+                subjects: [
+                    { id: 'sub-1', name: '국어', category: '국어', requiredHours: 4, color: 'bg-red-100 hover:bg-red-200 border-red-300' },
+                    { id: 'sub-2', name: '수학', category: '수학', requiredHours: 4, color: 'bg-blue-100 hover:bg-blue-200 border-blue-300' }
+                ]
+            });
+        }
+    },
+
+    addBlock: (subjectId, day, period, grade, classNum) => {
         const newBlock: ClassBlock = {
             id: generateId(),
             subjectId,
             day,
             period,
+            grade,
+            classNum,
         };
 
         set((state) => {
             const newBlocks = [...state.blocks, newBlock];
-            // Trigger validation immediately? Or wait? 
-            // Let's trigger it.
             return { blocks: newBlocks };
         });
         get().validateSchedule();
     },
 
-    moveBlock: (blockId, toDay, toPeriod) => {
+    moveBlock: (blockId, toDay, toPeriod, grade, classNum) => {
         set((state) => ({
             blocks: state.blocks.map(b =>
                 b.id === blockId
-                    ? { ...b, day: toDay, period: toPeriod }
+                    ? { ...b, day: toDay, period: toPeriod, grade, classNum }
                     : b
             )
         }));
@@ -96,71 +176,105 @@ export const useScheduleStore = create<ScheduleState>((set, get) => ({
         const { blocks, teachers, subjects } = get();
         const conflicts: Conflict[] = [];
 
-        // 1. Double Booking (Teacher)
-        // Check if a teacher is assigned to multiple blocks at the same time
-        // For this simplified demo, we assume "blocks" are for ONE class.
-        // But the requirements say "Logic Contradiction" -> "Total Math Classes > Math Teachers"
-
+        // Simple validation logic placeholder
         // Group by Day-Period
         const slots: Record<string, ClassBlock[]> = {};
         blocks.forEach(b => {
+            // For conflict detection, we check collisions globally across all classes?
+            // Or maybe just "Teacher Double Booking"
             const key = `${b.day}-${b.period}`;
             if (!slots[key]) slots[key] = [];
             slots[key].push(b);
         });
 
-        // Check Logic: "Teacher overflow"
-        // Ideally, we need to know "How many classes are running in parallel?"
-        // If this dashboard is for ONE GRADE (e.g., 10 classes), and we schedule 11 Math classes at Mon-1st,
-        // and we only have 10 Math teachers, that's a problem.
-        // **Assumption**: This dashboard is simulating a single class's timetable for now, 
-        // BUT the requirement mentions "Math Teacher Count (3)".
-        // So let's implement the "Subject Limit" check per slot.
+        // 1. Teacher Double Booking
+        // Iterate all blocks, check if same teacher is in different blocks at same time (and not same block)
+        // Actually, we can just iterate slots.
 
-        // "Specific time block math class count > Math teacher count"
-        // We need to count how many MATH blocks are in Mon-1st across "All Classes"?
-        // OR, is this dashboard just for "User" (a Head Teacher) managing ONE class?
-        // "Left: Subject hour input, Right: 5-day grid" -> This looks like ONE class timetable.
-        // If it's one class, you can't have 4 Math classes at Mon-1st. You can only have 1.
-        //
-        // Re-reading: "Left: Subject hour input, Right: 5-day grid"
-        // "Specific time block math class > Math teacher count (e.g. 3)" -> This implies MULTIPLE classes context.
-        // Maybe the user means: "I am allocating resources for the WHOLE SCHOOL/GRADE".
-        // 
-        // Let's interpret: I (Head Teacher) am setting the "Standard Time Grid" or managing resources.
-        // OR, maybe the user wants to see: "If I put Math here, does it conflict with OTHER classes?"
-        // Since we don't have other classes data, let's allow "Multiple Blocks per Cell" for now
-        // to simulate the "Aggregate View" or just implement the logic as requested:
-        // "Count blocks with Subject='Math' at Mon-1" (maybe user drags multiple Math cards there?)
-
-        // Let's enable putting multiple cards in one cell to test this logic.
-
-        Object.entries(slots).forEach(([key, slotBlocks]) => {
-            // Count per subject
-            const subjectCounts: Record<string, number> = {};
+        Object.values(slots).forEach(slotBlocks => {
+            const teacherCounts: Record<string, number> = {};
             slotBlocks.forEach(b => {
-                const sub = subjects.find(s => s.id === b.subjectId);
-                if (sub) {
-                    subjectCounts[sub.id] = (subjectCounts[sub.id] || 0) + 1;
+                if (b.teacherId) {
+                    teacherCounts[b.teacherId] = (teacherCounts[b.teacherId] || 0) + 1;
                 }
             });
 
-            // Check against teacher count
-            Object.entries(subjectCounts).forEach(([subId, count]) => {
-                const sub = subjects.find(s => s.id === subId);
-                const availableTeachers = teachers.filter(t => t.subjectId === subId).length;
-
-                if (availableTeachers > 0 && count > availableTeachers) {
+            Object.entries(teacherCounts).forEach(([tid, count]) => {
+                if (count > 1) {
+                    const teacherName = teachers.find(t => t.id === tid)?.name || tid;
                     conflicts.push({
                         id: generateId(),
-                        type: 'teacher-overflow',
-                        message: `${sub?.name} 교사 부족! (${count}명 필요 / ${availableTeachers}명 가능)`,
-                        blockIds: slotBlocks.filter(b => b.subjectId === subId).map(b => b.id)
+                        type: 'teacher-double-book',
+                        message: `${teacherName} 선생님 중복 배정!`,
+                        blockIds: slotBlocks.filter(b => b.teacherId === tid).map(b => b.id)
                     });
                 }
             });
         });
 
         set({ conflicts });
-    }
+    },
+
+    // Unassigned Cards Actions
+    createUnassignedCard: (subjectId, credits, grade, classNum, slicingOption) => {
+        const newCard: UnassignedCard = {
+            id: generateId(),
+            subjectId,
+            credits,
+            slicingOption,
+            originalSubjectId: slicingOption ? subjectId : undefined,
+            grade,
+            classNum,
+        };
+
+        set((state) => ({
+            unassignedCards: [...state.unassignedCards, newCard],
+        }));
+    },
+
+    assignCardToSlot: (cardId, day, period, grade, classNum) => {
+        const card = get().unassignedCards.find((c) => c.id === cardId);
+        if (!card) return;
+
+        // Create a new block from the card
+        const newBlock: ClassBlock = {
+            id: generateId(),
+            subjectId: card.subjectId,
+            day,
+            period,
+            grade,
+            classNum,
+        };
+
+        set((state) => ({
+            blocks: [...state.blocks, newBlock],
+            unassignedCards: state.unassignedCards.filter((c) => c.id !== cardId),
+        }));
+
+        get().validateSchedule();
+    },
+
+    returnCardToUnassigned: (blockId) => {
+        const block = get().blocks.find((b) => b.id === blockId);
+        if (!block) return;
+
+        // Create an unassigned card from the block
+        const newCard: UnassignedCard = {
+            id: generateId(),
+            subjectId: block.subjectId,
+            credits: 1,
+            grade: block.grade,
+            classNum: block.classNum,
+        };
+
+        set((state) => ({
+            unassignedCards: [...state.unassignedCards, newCard],
+            blocks: state.blocks.filter((b) => b.id !== blockId),
+        }));
+
+        get().validateSchedule();
+    },
+
+    // wizard-store에서 사용
+    setUnassignedCards: (cards) => set({ unassignedCards: cards }),
 }));
