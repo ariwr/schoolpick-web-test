@@ -28,15 +28,16 @@ const DAY_LABELS: Record<DayOfWeek, string> = {
 };
 
 export default function MainTimetable() {
-    const { blocks, conflicts, teachers, fetchSchoolData } = useScheduleStore();
+    const { blocks, conflicts, teachers, fetchSchoolData, fetchActiveSchedule } = useScheduleStore();
     const [viewMode, setViewMode] = useState<ViewMode>("CLASS");
     const [selectedDay, setSelectedDay] = useState<DayOfWeek>("MON");
     const [selectedCell, setSelectedCell] = useState<{ day: string, period: number, target: string } | null>(null);
-    const [drawerOpen, setDrawerOpen] = useState(false);
+    const [drawerOpen, setDrawerOpen] = useState(true); // 🆕 기본적으로 열려있도록 변경
 
     useEffect(() => {
         fetchSchoolData();
-    }, [fetchSchoolData]);
+        fetchActiveSchedule(); // 🆕 페이지 로드 시 활성 스케줄 및 카드 불러오기
+    }, [fetchSchoolData, fetchActiveSchedule]);
 
     function handleDayChange(delta: number) {
         const currentIndex = DAYS.indexOf(selectedDay);

@@ -43,7 +43,7 @@ class TeacherDescUpdate(BaseModel):
 class TeacherResponse(BaseModel):
     id: int
     teacher_number: str
-    name: str # From User relation? Complex.
+    name: Optional[str] = None # From User relation? Complex.
     department_id: Optional[int]
     max_hours_per_week: int
     
@@ -59,7 +59,7 @@ class SubjectDescUpdate(BaseModel):
 
 class SubjectResponse(BaseModel):
     id: int
-    name: str
+    name: Optional[str] = None
     department_id: Optional[int]
     required_hours: int
     target_grade: Optional[int]

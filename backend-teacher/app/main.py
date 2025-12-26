@@ -4,7 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from app.config import settings
-from app.api import auth, users, students, attendance, schedule, admin
+from app.api import auth, users, students, attendance, admin
+from app.api.endpoints import schedule
 import sys
 import logging
 
@@ -267,8 +268,9 @@ if ocr:
 if check_router:
     app.include_router(check_router, tags=["세특 점검"])
 
-from app.api.endpoints import school_data
+from app.api.endpoints import school_data, wizard
 app.include_router(school_data.router, prefix="/api/school-data", tags=["학교 설정"])
+app.include_router(wizard.router, prefix="/api/wizard", tags=["학교 설정 마법사"])
 
 # 야자 출석 스케줄러 시작
 @app.on_event("startup")

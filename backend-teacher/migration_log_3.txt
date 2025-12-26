@@ -1,0 +1,424 @@
+﻿alembic : \u26a0\ufe0f OPE
+NAI_API_KEY�� �̹� ȯ�溯���� 
+�����Ǿ� �־� �ǳʶݴϴ�.
+위치 줄:1 문자:1
++ alembic upgrade head > m
+igration_log_3.txt 2>&1
++ ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo        
+      : NotSpecified: (\  
+  u26a0\ufe0f OP...�Ǿ�    
+ �־� �ǳʶݴϴ�.:String) [    
+], RemoteException
+    + FullyQualifiedError 
+   Id : NativeCommandErr  
+  or
+ 
+INFO  [alembic.runtime.mig
+ration] Context impl Postg
+resqlImpl.
+INFO  [alembic.runtime.mig
+ration] Will assume transa
+ctional DDL.
+INFO  [alembic.runtime.mig
+ration] Running upgrade 09
+ce3b7adc54 -> 739d80b24ddd
+, Add user isolation and w
+izard tables
+Traceback (most recent cal
+l last):
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\base.py"
+, line 1967, in _exec_sing
+le_context
+    self.dialect.do_execut
+e(
+    ~~~~~~~~~~~~~~~~~~~~~~
+~^
+        cursor, str_statem
+ent, effective_parameters,
+ context
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\default.
+py", line 952, in do_execu
+te
+    cursor.execute(stateme
+nt, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^
+^^^^^^^^^^^^^^^
+psycopg2.errors.UndefinedF
+unction: operator does not
+ exist: character varying 
+>= integer
+HINT:  No operator matches
+ the given name and argume
+nt types. You might need t
+o add explicit type casts.
+
+
+The above exception was th
+e direct cause of the foll
+owing exception:
+
+Traceback (most recent cal
+l last):
+  File "<frozen runpy>", l
+ine 198, in _run_module_as
+_main
+  File "<frozen runpy>", l
+ine 88, in _run_code
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Scripts\alembic.ex
+e\__main__.py", line 6, in
+ <module>
+    sys.exit(main())
+             ~~~~^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\config.py", line 1
+033, in main
+    CommandLine(prog=prog)
+.main(argv=argv)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\config.py", line 1
+023, in main
+    self.run_cmd(cfg, opti
+ons)
+    ~~~~~~~~~~~~^^^^^^^^^^
+^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\config.py", line 9
+57, in run_cmd
+    fn(
+    ~~^
+        config,
+        ^^^^^^^
+        *[getattr(options,
+ k, None) for k in positio
+nal],
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^
+        **{k: getattr(opti
+ons, k, None) for k in kwa
+rg},
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\command.py", line 
+483, in upgrade
+    script.run_env()
+    ~~~~~~~~~~~~~~^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\script\base.py", l
+ine 545, in run_env
+    util.load_python_file(
+self.dir, "env.py")
+    ~~~~~~~~~~~~~~~~~~~~~^
+^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\util\pyfiles.py", 
+line 116, in load_python_f
+ile
+    module = load_module_p
+y(module_id, path)
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\util\pyfiles.py", 
+line 136, in load_module_p
+y
+    spec.loader.exec_modul
+e(module)  # type: ignore
+    ~~~~~~~~~~~~~~~~~~~~~~
+~^^^^^^^^
+  File "<frozen importlib.
+_bootstrap_external>", lin
+e 762, in exec_module
+  File "<frozen importlib.
+_bootstrap>", line 491, in
+ _call_with_frames_removed
+  File "C:\Users\LG\Heart_
+Ware\schoolpick-web\backen
+d-teacher\alembic\env.py",
+ line 70, in <module>
+    run_migrations_online(
+)
+    ~~~~~~~~~~~~~~~~~~~~~^
+^
+  File "C:\Users\LG\Heart_
+Ware\schoolpick-web\backen
+d-teacher\alembic\env.py",
+ line 65, in run_migration
+s_online
+    context.run_migrations
+()
+    ~~~~~~~~~~~~~~~~~~~~~~
+^^
+  File "<string>", line 8,
+ in run_migrations
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\runtime\environmen
+t.py", line 946, in run_mi
+grations
+    self.get_context().run
+_migrations(**kw)
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\runtime\migration.
+py", line 627, in run_migr
+ations
+    step.migration_fn(**kw
+)
+    ~~~~~~~~~~~~~~~~~^^^^^
+^
+  File "C:\Users\LG\Heart_
+Ware\schoolpick-web\backen
+d-teacher\alembic\versions
+\739d80b24ddd_add_user_iso
+lation_and_wizard_tables.p
+y", line 319, in upgrade
+    op.alter_column('teach
+er_timetables', 'day_of_we
+ek',
+    ~~~~~~~~~~~~~~~^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^
+               existing_ty
+pe=sa.INTEGER(),
+               ^^^^^^^^^^^
+^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+               comment=Non
+e,
+               ^^^^^^^^^^^
+^^
+               existing_co
+mment='���� (1=��, 2=ȭ, 3=
+��, 4=��, 5=��)')
+               ^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
+  File "<string>", line 8,
+ in alter_column
+  File "<string>", line 3,
+ in alter_column
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\operations\ops.py"
+, line 1973, in alter_colu
+mn
+    return operations.invo
+ke(alt)
+           ~~~~~~~~~~~~~~~
+~~^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\operations\base.py
+", line 454, in invoke
+    return fn(self, operat
+ion)
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\operations\toimpl.
+py", line 53, in alter_col
+umn
+    operations.impl.alter_
+column(
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~^
+        table_name,
+        ^^^^^^^^^^^
+    ...<11 lines>...
+        **operation.kw,
+        ^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\ddl\postgresql.py"
+, line 179, in alter_colum
+n
+    self._exec(
+    ~~~~~~~~~~^
+        PostgresqlColumnTy
+pe(
+        ^^^^^^^^^^^^^^^^^^
+^^^
+    ...<8 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+alembic\ddl\impl.py", line
+ 246, in _exec
+    return conn.execute(co
+nstruct, params)
+           ~~~~~~~~~~~~^^^
+^^^^^^^^^^^^^^^^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\base.py"
+, line 1419, in execute
+    return meth(
+        self,
+        distilled_paramete
+rs,
+        execution_options 
+or NO_OPTIONS,
+    )
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\sql\ddl.py", li
+ne 187, in _execute_on_con
+nection
+    return connection._exe
+cute_ddl(
+           ~~~~~~~~~~~~~~~
+~~~~~~~~^
+        self, distilled_pa
+rams, execution_options
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\base.py"
+, line 1530, in _execute_d
+dl
+    ret = self._execute_co
+ntext(
+        dialect,
+    ...<4 lines>...
+        compiled,
+    )
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\base.py"
+, line 1846, in _execute_c
+ontext
+    return self._exec_sing
+le_context(
+           ~~~~~~~~~~~~~~~
+~~~~~~~~~~^
+        dialect, context, 
+statement, parameters
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\base.py"
+, line 1986, in _exec_sing
+le_context
+    self._handle_dbapi_exc
+eption(
+    ~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~^
+        e, str_statement, 
+effective_parameters, curs
+or, context
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\base.py"
+, line 2363, in _handle_db
+api_exception
+    raise sqlalchemy_excep
+tion.with_traceback(exc_in
+fo[2]) from e
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\base.py"
+, line 1967, in _exec_sing
+le_context
+    self.dialect.do_execut
+e(
+    ~~~~~~~~~~~~~~~~~~~~~~
+~^
+        cursor, str_statem
+ent, effective_parameters,
+ context
+        ^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^
+    )
+    ^
+  File "C:\Users\LG\AppDat
+a\Local\Programs\Python\Py
+thon314\Lib\site-packages\
+sqlalchemy\engine\default.
+py", line 952, in do_execu
+te
+    cursor.execute(stateme
+nt, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^
+^^^^^^^^^^^^^^^
+sqlalchemy.exc.Programming
+Error: (psycopg2.errors.Un
+definedFunction) operator 
+does not exist: character 
+varying >= integer
+HINT:  No operator matches
+ the given name and argume
+nt types. You might need t
+o add explicit type casts.
+
+[SQL: ALTER TABLE teacher_
+timetables ALTER COLUMN da
+y_of_week TYPE VARCHAR ]
+(Background on this error 
+at: https://sqlalche.me/e/
+20/f405)

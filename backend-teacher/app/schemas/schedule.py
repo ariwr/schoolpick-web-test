@@ -1,36 +1,65 @@
-# 시간표 관련 스키마
-from pydantic import BaseModel
-from typing import Optional
-from datetime import datetime
-from app.models.schedule import DayOfWeek
+from typing import List, Optional
+from pydantic import BaseModel, Field
 
-class ScheduleBase(BaseModel):
-    subject: str
-    grade: int
-    class_number: int
-    day_of_week: DayOfWeek
+# --- Validation Response ---
+class ValidationResult(BaseModel):
+    is_valid: bool
+    errors: List[str] = []   # Hard constraints (blocking)
+    warnings: List[str] = [] # Soft constraints (advisory)
+
+# --- Lecture Block Schemas ---
+class LectureBlockBase(BaseModel):
+    day: str # MON, TUE, WED, THU, FRI
     period: int
-    start_time: Optional[str] = None
-    end_time: Optional[str] = None
-    classroom: Optional[str] = None
-    semester: int = 1
-    year: int
+    room_id: Optional[int] = None
+    is_fixed: bool = False
 
-class ScheduleCreate(ScheduleBase):
+class LectureBlockCreate(LectureBlockBase):
+    group_id: int
+
+class LectureBlockUpdate(LectureBlockBase):
     pass
 
-class ScheduleUpdate(BaseModel):
-    subject: Optional[str] = None
-    start_time: Optional[str] = None
-    end_time: Optional[str] = None
-    classroom: Optional[str] = None
-    note: Optional[str] = None
-
-class ScheduleResponse(ScheduleBase):
+class LectureBlockResponse(LectureBlockBase):
     id: int
+    group_id: int
+
+    class Config:
+        from_attributes = True
+
+# --- Lecture Group Schemas ---
+class LectureGroupBase(BaseModel):
+    subject_id: int
     teacher_id: int
-    created_at: datetime
-    updated_at: Optional[datetime] = None
+    grade: int
+    class_num: Optional[int] = None
+    total_credits: int
+    slicing_option: Optional[str] = None
+    neis_class_code: Optional[str] = None
+    student_count: Optional[int] = None
+
+class LectureGroupCreate(LectureGroupBase):
+    schedule_id: int
+
+class LectureGroupResponse(LectureGroupBase):
+    id: int
+    schedule_id: int
+
+    class Config:
+        from_attributes = True
+
+# --- Schedule Metadata Schemas ---
+class ScheduleMetadataBase(BaseModel):
+    version_name: str
+    description: Optional[str] = None
+    is_active: bool = False
+    is_published: bool = False
+
+class ScheduleMetadataCreate(ScheduleMetadataBase):
+    pass
+
+class ScheduleMetadataResponse(ScheduleMetadataBase):
+    id: int
     
     class Config:
         from_attributes = True

@@ -1,5 +1,6 @@
 # 기존 데이터베이스 테이블에 맞는 모델 (교사용)
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text, Date
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -19,8 +20,14 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True))
     
     # 관계 설정
-    # Teacher 모델과의 관계 (backref를 통해 teacher 속성 사용 가능)
-    # 주의: Student 모델은 학생용 앱에서 사용되므로 여기서는 관계를 정의하지 않음
+    teachers = relationship("Teacher", back_populates="user", foreign_keys="[Teacher.user_id]")
+    departments = relationship("Department", back_populates="user")
+    subjects = relationship("Subject", back_populates="user")
+    facilities = relationship("Facility", back_populates="user")
+    lecture_groups = relationship("LectureGroup", back_populates="user")
+    school_config = relationship("SchoolConfiguration", back_populates="user", uselist=False)
+    teacher_time_offs = relationship("TeacherTimeOff", back_populates="user")
+    block_definitions = relationship("BlockGroupDefinition", back_populates="user")
 
 # 기존 teachers 테이블 활용 (교사 전용 정보)
 class Teacher(Base):
@@ -31,6 +38,11 @@ class Teacher(Base):
     teacher_number = Column(String(20), nullable=False)  # DB 스키마에 맞게 NOT NULL로 변경, unique 제거
     school_id = Column(Integer)
     # school_name = Column(String(200))  # 데이터베이스에 컬럼이 없으므로 주석 처리
+    
+    # New Fields for Wizard/Ghost Teachers
+    name = Column(String(100)) # 교사 이름 (User 연결 없이도 가능)
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE")) # 생성자(스케줄러) ID
+    
     position = Column(String(50), nullable=False, default="교과")
     hire_date = Column(Date)  # DB 스키마에 맞게 Date 타입으로 변경
     is_homeroom_teacher = Column(Boolean, default=False)
@@ -41,8 +53,11 @@ class Teacher(Base):
     max_hours_per_week = Column(Integer, default=15)
     
     # 관계 설정
-    user = relationship("User", backref="teacher")
-    department = relationship("Department")
+    # 관계 설정
+    user = relationship("User", back_populates="teachers", foreign_keys=[user_id])
+    owner = relationship("User", foreign_keys=[owner_id]) # Optional access to owner
+    department = relationship("Department", back_populates="teachers")
+    constraints = relationship("TeacherTimeOff", back_populates="teacher")
 
 # 주의: Student 모델은 app.models.student에 정의되어 있습니다.
 # 기존 students 테이블은 app.models.student.Student를 사용합니다.
@@ -68,6 +83,7 @@ class Subject(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
     code = Column(String)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     
     # New Fields
     department_id = Column(Integer, ForeignKey("departments.id"))
@@ -77,7 +93,8 @@ class Subject(Base):
     
     created_at = Column(DateTime(timezone=True))
     
-    department = relationship("Department")
+    department = relationship("Department", back_populates="subjects")
+    user = relationship("User", back_populates="subjects")
 
 # 기존 teacher_timetables 테이블 활용
 class TeacherTimetable(Base):
@@ -106,7 +123,12 @@ class Department(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)  # 국어과, 수학교과
     description = Column(String(200))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     created_at = Column(DateTime(timezone=True))
+    
+    user = relationship("User", back_populates="departments")
+    teachers = relationship("Teacher", back_populates="department")
+    subjects = relationship("Subject", back_populates="department")
 
 class Facility(Base):
     __tablename__ = "facilities"
@@ -116,19 +138,135 @@ class Facility(Base):
     type = Column(String(50)) # SPECIAL, NORMAL
     capacity = Column(Integer)
     description = Column(String(200))
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
     created_at = Column(DateTime(timezone=True))
 
-# Update Teacher/Subject (We can't easily change existing class defs in-place without re-writing file, 
-# but for this tool I must replace the whole class or append? 
-# I will use separate attributes augmentation if I can't rewrite.
-# Actually I will rewrite the classes in the file using ReplaceFileContent on a large range or standard Replace.)
+    user = relationship("User", back_populates="facilities")
 
-# Re-defining classes with new columns for the purpose of the tool's output.
-# IMPORTANT: In a real migration, we need ALEMBIC. Here we assume we define the models 
-# and the user/alembic will handle the DB Schema change.
+# --- Phase 5: Advanced Timetable Models ---
 
-# To properly add columns to 'Teacher' and 'Subject', I need to modify their class definitions above.
-# So I will target the specific class blocks.
+class LectureGroup(Base):
+    """
+    수업 그룹 (Intent).
+    예: "3학년 국어 4학점" (2+2 분할)
+    """
+    __tablename__ = "lecture_groups"
+
+    id = Column(Integer, primary_key=True, index=True)
+    schedule_id = Column(Integer, ForeignKey("schedule_metadata.id", ondelete="CASCADE"))
+    subject_id = Column(Integer, ForeignKey("subjects.id"), nullable=False)
+    teacher_id = Column(Integer, ForeignKey("teachers.id"), nullable=False)
+    grade = Column(Integer, nullable=False)
+    class_num = Column(Integer)  # Nullable for elective classes
+    total_credits = Column(Integer, nullable=False)
+    slicing_option = Column(String(20)) # "2+2", "3+1"
+    neis_class_code = Column(String(50))
+    student_count = Column(Integer)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+
+    # Relationships
+    subject = relationship("Subject")
+    teacher = relationship("Teacher")
+    user = relationship("User", back_populates="lecture_groups")
+
+class ScheduleMetadata(Base):
+    """
+    시간표 메타데이터 (버전 관리).
+    여러 버전의 시간표를 관리하고 활성화된 버전을 추적합니다.
+    """
+    __tablename__ = "schedule_metadata"
+
+    id = Column(Integer, primary_key=True, index=True)
+    version_name = Column(String(100), nullable=False)  # e.g., "2024-1학기", "초안 v1"
+    description = Column(Text)
+    is_active = Column(Boolean, default=False)  # 현재 활성화된 시간표인지
+    is_published = Column(Boolean, default=False)  # 게시 여부
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+
+class LectureBlock(Base):
+    """
+    수업 블록 (Implementation).
+    실제 시간표 칸에 배정된 조각.
+    """
+    __tablename__ = "lecture_blocks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    group_id = Column(Integer, ForeignKey("lecture_groups.id", ondelete="CASCADE"))
+    day = Column(String(10), nullable=False)
+    period = Column(Integer, nullable=False)
+    room_id = Column(Integer, ForeignKey("facilities.id")) # Nullable
+    is_fixed = Column(Boolean, default=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+    # Relationships
+    group = relationship("LectureGroup")
+    room = relationship("Facility")
+
+class TeacherConstraint(Base):
+    """
+    교사 제약 조건.
+    """
+    __tablename__ = "teacher_constraints"
+
+    id = Column(Integer, primary_key=True, index=True)
+    schedule_id = Column(Integer, ForeignKey("schedule_metadata.id", ondelete="CASCADE"))
+    teacher_id = Column(Integer, ForeignKey("teachers.id"), nullable=False)
+    day = Column(String(10), nullable=False)
+    period = Column(Integer, nullable=False)
+    constraint_type = Column(String(20), default='TIME_OFF') # TIME_OFF, MAX_DAILY
+    reason = Column(String(255))
+    is_hard_constraint = Column(Boolean, default=True)
+
+    # Relationships
+    teacher = relationship("Teacher")
+
+class SchoolConfiguration(Base):
+    """Wizard Step 1: School basic information"""
+    __tablename__ = "school_configurations"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), unique=True)
+    school_name = Column(String(200), nullable=False)
+    total_grades = Column(Integer, default=3)
+    periods_per_day = Column(Integer, default=7)
+    days_per_week = Column(Integer, default=5)
+    lunch_period = Column(Integer)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    
+    user = relationship("User", back_populates="school_config")
+
+class TeacherTimeOff(Base):
+    """Wizard Step 4: Teacher time-off constraints"""
+    __tablename__ = "teacher_time_offs"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    teacher_id = Column(Integer, ForeignKey("teachers.id", ondelete="CASCADE"))
+    day = Column(String(10), nullable=False)
+    period = Column(Integer, nullable=False)
+    reason = Column(String(255))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    user = relationship("User", back_populates="teacher_time_offs")
+    teacher = relationship("Teacher", back_populates="constraints")
+
+class BlockGroupDefinition(Base):
+    """Wizard Step 4: Block group definitions"""
+    __tablename__ = "block_group_definitions"
+    
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"))
+    name = Column(String(100), nullable=False)
+    days = Column(ARRAY(String))
+    periods = Column(ARRAY(Integer))
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    
+    user = relationship("User", back_populates="block_definitions")
+
 
 
 

@@ -57,14 +57,21 @@ export interface Conflict {
 }
 
 export interface UnassignedCard {
-    id: string;
+    id: string; // Front-end ID (or creates API ID)
+    groupId?: number; // Backend Lecture Group ID (Phase 5)
     subjectId: string;
-    credits: number; // 1, 2, 3, 4
-    slicingOption?: '2+2' | '3+1' | '4'; // 원본 슬라이싱 옵션
-    originalSubjectId?: string; // 슬라이싱된 경우 원본 과목 ID
-    grade: number; // 🆕 학년
-    classNum: number; // 🆕 반
-    teacherId?: string; // 🆕 담당 교사 (아직 배정되지 않음)
+    credits: number;
+    slicingOption?: '2+2' | '3+1' | '4' | '1+1+1+1';
+    originalSubjectId?: string;
+    grade: number;
+    classNum: number;
+    teacherId?: string; // Optional context
+}
+
+export interface ValidationResult {
+    is_valid: boolean;
+    errors: string[];
+    warnings: string[];
 }
 
 // ===== Phase 0: School Data Wizard 타입 =====

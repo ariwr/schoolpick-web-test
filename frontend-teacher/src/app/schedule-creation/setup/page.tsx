@@ -21,7 +21,7 @@ const STEPS = [
 ];
 
 export default function SchoolDataWizardPage() {
-    const { currentStep, setCurrentStep, resetWizard } = useWizardStore();
+    const { currentStep, setCurrentStep, resetWizard, loadFromBackend } = useWizardStore();
     const router = useRouter();
     const searchParams = useSearchParams();
     const isEditMode = searchParams.get('mode') === 'edit';
@@ -29,20 +29,33 @@ export default function SchoolDataWizardPage() {
 
     // Auth Check & Reset Logic
     React.useEffect(() => {
-        // 1. Auth Check - 엄격 모드로 복구
-        if (!isAuthenticated()) {
-            alert("로그인이 필요한 서비스입니다.");
-            router.push("/login"); // 메인 또는 로그인 페이지로 이동
-            return;
-        }
+        const initWizard = async () => {
+            // 1. Auth Check - 엄격 모드로 복구
+            if (!isAuthenticated()) {
+                alert("로그인이 필요한 서비스입니다.");
+                router.push("/login"); // 메인 또는 로그인 페이지로 이동
+                return;
+            }
 
-        // 2. Wizard Reset Logic
-        if (!isEditMode) {
-            resetWizard();
-        }
+            // 2. Wizard Reset Logic
+            try {
+                if (isEditMode) {
+                    await loadFromBackend();
+                } else {
+                    // Check if data exists? Or just reset.
+                    // If user explicitly wants NEW wizard, reset.
+                    resetWizard();
+                }
+            } catch (error) {
+                console.error("Failed to load/reset wizard:", error);
+                // Optionally show error toast
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-        setIsLoading(false);
-    }, [isEditMode, resetWizard, router]);
+        initWizard();
+    }, [isEditMode, resetWizard, loadFromBackend, router]);
 
     const handleStepClick = (stepNumber: number) => {
         if (stepNumber === currentStep) return;

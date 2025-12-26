@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2 } from "lucide-react";
 import { useWizardStore } from "@/store/wizard-store";
+import { useScheduleStore } from "@/store/schedule-store";
 
 export function ReviewAndGenerateStep() {
     const router = useRouter();
@@ -16,18 +17,59 @@ export function ReviewAndGenerateStep() {
         blockGroups,
         generateUnassignedCards,
         completeWizard,
-        prevStep
+        prevStep,
+        saveToBackend
     } = useWizardStore();
 
-    const handleGenerate = () => {
-        // 미배정 카드 생성
-        generateUnassignedCards();
+    const handleGenerate = async () => {
+        try {
+            // 1. Generate local unassigned cards (Wizard Logic)
+            generateUnassignedCards();
 
-        // 마법사 완료 표시
-        completeWizard();
+            // 2. Persist to Backend (Batch Create)
+            // A. Wizard Config Data
+            console.log("Saving Wizard Config to Backend...");
+            await saveToBackend();
 
-        // 메인 시간표 페이지로 이동
-        router.push('/schedule-creation');
+            // B. Schedule Items (Lecture Blocks / Unassigned Cards)
+            // Note: createLectureGroupsBatch relies on Schedule Metadata? 
+            // Or does it assume 'current' context?
+            // Wizard completion implies "Setup Done".
+            // The cards generated are in 'Unassigned' state (Zustand: unassignedCards).
+            // Do we need to POST them to backend immediately?
+            // Or does 'saveToBackend' (Wizard Config) cover the 'Subjects/Teachers' part, 
+            // and 'createLectureGroupsBatch' creates 'LectureGroups'?
+
+            // saveToBackend saves Schools, Depts, Teachers, Subjects, TimeOffs, BlockGroups.
+            // It does NOT save LectureGroups (the cards).
+            // However, the 'Unassigned Cards' are derived from Subjects (School Config).
+
+            // If we want detailed tracking (LectureGroup rows in DB), we should call createLectureGroupsBatch.
+            // But createLectureGroupsBatch likely needs 'schedule_id'.
+            // Does Wizard create a Schedule Version?
+            // Not explicitly in my code yet.
+            // Maybe we skip LectureGroup persistence for now (localStorage persist logic handles card state)
+            // OR we rely on 'save-all' covering the intent data?
+
+            // Given the task was "persistence for wizard settings".
+            // Card generation is a "Simulation" step initially.
+            // I will keep the existing logic for unassignedCards (store call).
+
+            // const { unassignedCards, createLectureGroupsBatch } = useScheduleStore.getState();
+            // if (unassignedCards.length > 0) {
+            //    console.log("Persisting cards to backend...", unassignedCards.length);
+            //    await createLectureGroupsBatch(unassignedCards);
+            // }
+
+            // 3. Mark Wizard Completed
+            completeWizard();
+
+            // 4. Navigate to dashboard
+            router.push('/schedule-creation');
+        } catch (error) {
+            console.error("Failed to save wizard data:", error);
+            alert("저장에 실패했습니다. 다시 시도해주세요.");
+        }
     };
 
     const totalClasses = schoolBasicInfo?.grades.reduce((sum, g) => sum + g.classCount, 0) || 0;

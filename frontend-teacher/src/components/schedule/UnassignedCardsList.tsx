@@ -52,11 +52,9 @@ export default function UnassignedCardsList() {
                     <p className="text-sm text-gray-500">카드를 드래그하여 배치하세요</p>
                 </div>
                 {/* Test Button - Only show if empty? Or always for now */}
-                {unassignedCards.length === 0 && (
-                    <Button variant="outline" size="xs" onClick={handleAddMockCards} title="테스트용 카드 3개 추가">
-                        <PlusIcon className="w-4 h-4" />
-                    </Button>
-                )}
+                <Button variant="outline" size="sm" onClick={handleAddMockCards} title="테스트용 카드 3개 추가">
+                    <PlusIcon className="w-4 h-4" />
+                </Button>
             </div>
 
             {/* 진행률 표시 */}
@@ -132,12 +130,34 @@ export default function UnassignedCardsList() {
                         <UnassignedCardItem key={card.id} card={card} />
                     ))
                 ) : (
-                    <div className="text-center py-12 text-gray-400">
-                        <p className="text-sm">
-                            {filterCategory
-                                ? `${filterCategory} 카테고리에 미배정 카드가 없습니다`
-                                : "모든 카드가 배정되었습니다"}
-                        </p>
+                    <div className="text-center py-12 space-y-4">
+                        {filterCategory ? (
+                            <p className="text-sm text-gray-400">
+                                {`${filterCategory} 카테고리에 미배정 카드가 없습니다`}
+                            </p>
+                        ) : (
+                            <>
+                                <div className="text-gray-400 space-y-2">
+                                    <p className="text-sm font-medium">미배정 카드가 없습니다</p>
+                                    <p className="text-xs text-gray-500">
+                                        학교 데이터 수정 페이지에서<br />
+                                        과목과 시수를 설정한 후<br />
+                                        "수업 카드 생성" 버튼을 눌러주세요
+                                    </p>
+                                </div>
+                                <div className="pt-4">
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={handleAddMockCards}
+                                        className="gap-2"
+                                    >
+                                        <PlusIcon className="w-4 h-4" />
+                                        테스트용 카드 추가
+                                    </Button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
             </div>

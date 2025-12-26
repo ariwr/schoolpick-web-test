@@ -25,7 +25,10 @@ interface ScheduleState {
 
     // API Actions
     fetchSchoolData: () => Promise<void>;
-
+    fetchActiveSchedule: () => Promise<number | null>;
+    fetchScheduleState: (scheduleId: number) => Promise<void>; // 🆕
+    fetchScheduleState: (scheduleId: number) => Promise<void>;
+    createLectureGroupsBatch: (cards: UnassignedCard[]) => Promise<boolean>; // 🆕
     // Unassigned Cards Actions
     createUnassignedCard: (subjectId: string, credits: number, grade: number, classNum: number, slicingOption?: '2+2' | '3+1' | '4') => void;
     assignCardToSlot: (cardId: string, day: DayOfWeek, period: Period, grade: number, classNum: number) => void;
@@ -232,11 +235,260 @@ export const useScheduleStore = create<ScheduleState>((set, get) => ({
         }));
     },
 
-    assignCardToSlot: (cardId, day, period, grade, classNum) => {
-        const card = get().unassignedCards.find((c) => c.id === cardId);
+    fetchActiveSchedule: async () => {
+        try {
+            const res = await fetch(`${API_BASE}/api/schedule/active`);
+            if (res.ok) {
+                const data = await res.json();
+                set({ activeScheduleId: data.id });
+                console.log("Active Schedule Loaded:", data.id, data.name);
+
+                // 🆕 Load actual schedule data after getting ID
+                await get().fetchScheduleState(data.id);
+                return data.id;
+            } else if (res.status === 404) {
+                // 없다면 하나 자동 생성 (편의상)
+                console.warn("No active schedule found. Creating default...");
+                const createRes = await fetch(`${API_BASE}/api/schedule/metadata`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: '2025-1학기 기본',
+                        semester: '2025-1',
+                        is_active: true
+                    })
+                });
+                if (createRes.ok) {
+                    const newData = await createRes.json();
+                    set({ activeScheduleId: newData.id });
+                    // Newly created, so empty state is correct
+                    return newData.id;
+                }
+            }
+        } catch (e) {
+            console.error("Failed to fetch schedule:", e);
+        }
+        return null;
+    },
+
+    fetchScheduleState: async (scheduleId: number) => {
+        try {
+            const [groupsRes, blocksRes] = await Promise.all([
+                fetch(`${API_BASE}/api/schedule/groups?schedule_id=${scheduleId}`),
+                fetch(`${API_BASE}/api/schedule/blocks?schedule_id=${scheduleId}`)
+            ]);
+
+            if (groupsRes.ok && blocksRes.ok) {
+                const groups = await groupsRes.json();
+                const blocks = await blocksRes.json();
+
+                // 1. Map Blocks
+                const mappedBlocks: ClassBlock[] = blocks.map((b: any) => ({
+                    id: b.id.toString(), // Backend ID is int, Frontend uses string
+                    subjectId: 'unknown', // Need to resolve from group? -> Optimally Backend Block should imply Subject, but we need Group info for that.
+                    // Wait, Block only has group_id. We need detailed info.
+                    // We can map from groups.
+                    day: b.day,
+                    period: b.period,
+                    grade: 0,   // Resolve later
+                    classNum: 0, // Resolve later
+                    groupId: b.group_id
+                }));
+
+                // 2. Map Groups (Unassigned + Context for Blocks)
+                const mappedUnassigned: UnassignedCard[] = [];
+                const groupMap = new Map<number, any>();
+
+                groups.forEach((g: any) => {
+                    groupMap.set(g.id, g);
+
+                    // Check if this group is fully assigned or not?
+                    // "UnassignedCards" are technically "LectureGroups that need blocks".
+                    // If total_credits > assigned_blocks_count, it appears in Unassigned.
+                    // Complex logic: We need to count assigned blocks per group.
+
+                    const assignedCount = blocks.filter((b: any) => b.group_id === g.id).length;
+                    const remaining = g.total_credits - assignedCount;
+
+                    if (remaining > 0) {
+                        // Create a card for the remaining hours? 
+                        // Or usually 1 card = 1 group in simple drag mode?
+                        // If slicing is 2+2, we might have multiple cards?
+                        // For simplicity: If group exists, and has remaining credits, show as Unassigned Card.
+                        // Ideally, we need ID for the Card. Using `group-${g.id}` might be distinct from `UnassignedCard.id`.
+                        // Let's assume 1 Group = 1 Card in 'Unassigned' list until fully placed?
+                        // Actually, if I place 1 block of a 4 credit class, 3 are left.
+                        // The store logic usually treats "UnassignedCard" as a distinct entity that *becomes* a block.
+                        // But here, we are reconstructing state.
+
+                        // Let's create `remaining` number of 1-credit cards? Or one 2-credit card?
+                        // Simplest: Create one card representing the group with `credits` = remaining.
+
+                        mappedUnassigned.push({
+                            id: `group-${g.id}-rem`, // Virtual ID
+                            groupId: g.id,
+                            subjectId: g.subject_id.toString(), // or map to 'sub-1' if needed
+                            credits: remaining,
+                            grade: g.grade,
+                            classNum: g.class_num,
+                            slicingOption: g.slicing_option as any
+                        });
+                    }
+                });
+
+                // 3. Hydrate Blocks with Group Info
+                const hydratedBlocks = mappedBlocks.map(b => {
+                    const g = groupMap.get(b.groupId!);
+                    if (g) {
+                        return {
+                            ...b,
+                            subjectId: g.subject_id.toString(),
+                            grade: g.grade,
+                            classNum: g.class_num,
+                        };
+                    }
+                    return b;
+                });
+
+                set({
+                    blocks: hydratedBlocks,
+                    unassignedCards: mappedUnassigned
+                });
+                get().validateSchedule();
+                console.log("Schedule State Synced:", hydratedBlocks.length, "blocks", mappedUnassigned.length, "cards");
+            }
+        } catch (e) {
+            console.error("Failed to load schedule state:", e);
+        }
+    },
+
+    // API Integration: Create Lecture Group (Backend)
+    // In real app, this should be called when Wizard finishes.
+    createLectureGroupHelper: async (card: UnassignedCard) => {
+        const { activeScheduleId } = get();
+        if (!activeScheduleId) {
+            console.error("No active schedule ID found! Cannot create Lecture Group.");
+            return null;
+        }
+
+        try {
+            const body = {
+                schedule_id: activeScheduleId, // 🆕 Dynamic ID usage
+                subject_id: parseInt(card.subjectId.replace(/\D/g, '')) || 1, // Try parse 'sub-1' -> 1
+                teacher_id: 1, // Default mock teacher
+                grade: card.grade,
+                class_num: card.classNum,
+                total_credits: card.credits,
+                slicing_option: card.slicingOption,
+            };
+            const res = await fetch(`${API_BASE}/api/schedule/groups`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (res.ok) {
+                const data = await res.json();
+                console.log("Lecture Group Created:", data);
+                return data.id; // Returns group_id
+            } else {
+                console.error("Failed to create group:", res.status);
+            }
+        } catch (e) {
+            console.error("Failed to create lecture group:", e);
+        }
+        return null;
+    },
+
+    // 🆕 Batch Creation for Wizard
+    createLectureGroupsBatch: async (cards: UnassignedCard[]) => {
+        const { activeScheduleId } = get();
+        if (!activeScheduleId) return false;
+
+        try {
+            // Sequential or Parallel? Parallel is faster but might hit rate limits.
+            // Let's do parallel for now.
+            const promises = cards.map(card => {
+                const body = {
+                    schedule_id: activeScheduleId,
+                    subject_id: parseInt(card.subjectId.replace(/\D/g, '')) || 1,
+                    teacher_id: 1, // Still using mock teacher ID 1 for now
+                    grade: card.grade,
+                    class_num: card.classNum,
+                    total_credits: card.credits,
+                    slicing_option: card.slicingOption,
+                };
+                return fetch(`${API_BASE}/api/schedule/groups`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+            });
+
+            await Promise.all(promises);
+            // Refresh state
+            await get().fetchScheduleState(activeScheduleId);
+            return true;
+        } catch (e) {
+            console.error("Batch creation failed:", e);
+            return false;
+        }
+    },
+
+    assignCardToSlot: async (cardId, day, period, grade, classNum) => {
+        const { unassignedCards, blocks } = get();
+        const card = unassignedCards.find((c) => c.id === cardId);
         if (!card) return;
 
-        // Create a new block from the card
+        // 1. Ensure Group ID exists (Sync process)
+        // Since our mock cards don't have DB IDs yet, we attempt to create one on the fly for TESTING.
+        let groupId = card.groupId;
+        if (!groupId) {
+            // Check if we already have a block for this "logical" group?
+            // Or assume Wizard should have created it.
+            // If JIT creation is needed:
+            groupId = await get().createLectureGroupHelper(card);
+            if (!groupId) {
+                console.warn("Backend sync failed, falling back to local only mode.");
+                // We proceed locally anyway to avoid UI freezing
+            }
+        }
+
+        // 2. Call Backend Validation & Save
+        let isBackendValid = true;
+        if (groupId) {
+            try {
+                const blockBody = {
+                    group_id: groupId,
+                    day,
+                    period,
+                    is_fixed: false
+                };
+                const res = await fetch(`${API_BASE}/api/schedule/blocks`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(blockBody)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    // Validation Failed (Hard Error)
+                    if (data.detail && data.detail.errors) {
+                        alert(`[배정 불가] ${data.detail.errors.join("\n")}`);
+                        return; // Stop here!
+                    }
+                    console.error("API Error", data);
+                }
+                // If success, we update local store below
+            } catch (e) {
+                console.error("Failed to save block to backend:", e);
+            }
+        }
+
+        // 3. Update Frontend Store (Optimistic or Confirmed)
+        // ... rest of logic
+
+        // 3. Update Frontend Store (Optimistic or Confirmed)
         const newBlock: ClassBlock = {
             id: generateId(),
             subjectId: card.subjectId,
@@ -244,6 +496,7 @@ export const useScheduleStore = create<ScheduleState>((set, get) => ({
             period,
             grade,
             classNum,
+            groupId, // Store the linked ID
         };
 
         set((state) => ({
@@ -251,7 +504,7 @@ export const useScheduleStore = create<ScheduleState>((set, get) => ({
             unassignedCards: state.unassignedCards.filter((c) => c.id !== cardId),
         }));
 
-        get().validateSchedule();
+        get().validateSchedule(); // Local basic check
     },
 
     returnCardToUnassigned: (blockId) => {
