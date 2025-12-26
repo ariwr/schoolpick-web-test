@@ -69,13 +69,17 @@ def save_wizard_data(
         
         # School Config
         if data.school_config:
-            new_config = SchoolConfiguration(**data.school_config.model_dump(), user_id=user_id)
+            config_dict = data.school_config.model_dump()
+            facilities_list = config_dict.pop('facilities', []) # Remove incompatible field
+            
+            new_config = SchoolConfiguration(**config_dict, user_id=user_id)
             db.add(new_config)
             
         # Facilities from SchoolConfig
         facility_map = {}
-        if data.school_config and data.school_config.facilities:
-            for fac_name in data.school_config.facilities:
+        # Use the extracted list instead of accessing data.school_config again, though both work
+        if facilities_list: 
+            for fac_name in facilities_list:
                 new_fac = Facility(
                     name=fac_name,
                     type="SPECIAL", # Assume all wizard facilities are SPECIAL
